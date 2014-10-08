@@ -6,3 +6,5 @@ Checkers client for CEG 4110 Software Engineering. Team Members: Scott, Brad, Co
 -Colin some change
 
 -Brad was here
+
+-another commit
