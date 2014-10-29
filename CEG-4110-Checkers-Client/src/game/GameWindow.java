@@ -78,7 +78,7 @@ public class GameWindow {
 	 */
 	private void initialize() {
 		frmCheckers = new JFrame();
-		frmCheckers.setTitle("Checkers");
+		frmCheckers.setTitle("Checker");
 		frmCheckers.setResizable(false);
 		frmCheckers.getContentPane().setBackground(Color.DARK_GRAY);
 		frmCheckers.setBounds(100, 100, 762, 637);
