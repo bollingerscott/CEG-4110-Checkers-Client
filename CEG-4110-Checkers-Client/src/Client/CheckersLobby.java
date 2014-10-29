@@ -12,6 +12,8 @@ import java.rmi.server.UnicastRemoteObject;
 
 import javax.swing.*;
 
+import game.GameWindow;
+
 /**
 * This code was edited or generated using CloudGarden's Jigloo
 * SWT/Swing GUI Builder, which is free for non-commercial
@@ -59,6 +61,8 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient{
 	private boolean isCheckers;
 	private byte[][] curBoardState;
 	private boolean debug = false;	// set true for debug mode, which prints more messages.
+	
+	private GameWindow game;
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -401,7 +405,7 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient{
 		curState = State.connected;
 		debugOutput(">> You have left the table");
 	}
-	//alert that at the table you are sitting at, a game is starting.
+	//alert that at the table you are sitting, a game is starting.
 	public void gameStart() {
 		curState = State.inGame;
 		if (isCheckers) {
@@ -427,11 +431,11 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient{
 	}
 	//alert that your color is Black, for the game.
 	public void colorBlack() {
-		
+		game.getGame().setColor("black");
 	}
 	//alert that your color is Red, for the game.
 	public void colorRed() {
-		
+		game.getGame().setColor("red");
 	}
 	//notice that your opponent has moved from position (fr,fc) to (tr,tc)
 	public void oppMove(int fr, int fc, int tr, int tc) {
@@ -439,19 +443,22 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient{
 	}
 	//server has updated the board state
 	public void curBoardState(int t, byte[][] boardState) {
-		
+		game.getGame().setBoardState(boardState);
+		game.getGame().setTid(t);
 	}
 	//notice that for the game you are playing, you win!
 	public void youWin() {
-		
+		game.getGame().setGameStatus("win");
 	}
 	//notice that for the game you are playing, you lost.
 	public void youLose() {
 		debugOutput(">> youLose()");
+		game.getGame().setGameStatus("lose");
 	}
 	//its your turn.
 	public void yourTurn() {
 		debugOutput(">> yourTurn()");
+		game.getGame().setTurn(true);
 	}
 	//you are now observing table tid.
 	public void nowObserving(int tid) {
