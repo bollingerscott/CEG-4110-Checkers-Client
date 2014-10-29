@@ -80,7 +80,6 @@ public class GameWindow {
 		frmCheckers = new JFrame();
 		frmCheckers.setTitle("Checkers");
 		frmCheckers.setResizable(false);
-		frmCheckers.setIconImage(Toolkit.getDefaultToolkit().createImage("/black_piece.png"));
 		frmCheckers.getContentPane().setBackground(Color.DARK_GRAY);
 		frmCheckers.setBounds(100, 100, 762, 637);
 		frmCheckers.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
