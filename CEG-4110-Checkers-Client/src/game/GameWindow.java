@@ -57,7 +57,6 @@ public class GameWindow {
 			public void run() {
 				try {
 					GameWindow window = new GameWindow();
-					window.frmCheckers.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -78,8 +77,9 @@ public class GameWindow {
 	 */
 	private void initialize() {
 		frmCheckers = new JFrame();
-		frmCheckers.setTitle("Checker");
+		frmCheckers.setTitle("Checkers");
 		frmCheckers.setResizable(false);
+		frmCheckers.setVisible(true);
 		frmCheckers.getContentPane().setBackground(Color.DARK_GRAY);
 		frmCheckers.setBounds(100, 100, 762, 637);
 		frmCheckers.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -239,7 +239,7 @@ public class GameWindow {
 		lblPlayer1.setBounds(537, 6, 86, 29);
 		frmCheckers.getContentPane().add(lblPlayer1);
 		
-		game = new Game();
+		game = new Game(false);
 		game.setBackground(new Color(139, 69, 19));
 		game.setBounds(6, 6, 521, 424);
 		frmCheckers.getContentPane().add(game);
@@ -247,7 +247,7 @@ public class GameWindow {
 		JButton buttonHint = new JButton("Hint");
 		buttonHint.setBounds(656, 570, 89, 23);
 		frmCheckers.getContentPane().add(buttonHint);
-		
 		frmCheckers.repaint();
+
 	}
 }

@@ -13,7 +13,7 @@ public class Checker_Piece extends Component {
 		this.x = x;
 		this.y = y;
 		if (color.toLowerCase() == "red"){
-			setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_piece.png")));
+			setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_checker.png")));
 		}
 		else if (color.toLowerCase() == "black") {
 			setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_piece.png")));

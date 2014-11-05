@@ -3,12 +3,16 @@ package game;
 import javax.swing.*;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.image.ImageProducer;
+import java.rmi.RemoteException;
 
 import javax.swing.border.BevelBorder;
 
 import RMIConnection.Interfaces.RMIServerInterface;
 
-public class Game extends JPanel {
+public class Game extends JPanel implements MouseListener {
 
 	private Board board;
 	private String user;
@@ -18,11 +22,15 @@ public class Game extends JPanel {
 	private String gameStatus = null;
 	private boolean turn;
 	private Image table;
+	private boolean observer;
 	
 	/**
 	 * Create the panel.
 	 */
-	public Game() {
+	public Game(boolean observer/*, RMIServerInterface server*/) {
+		//this.server = server; //commented for testing purposes
+		this.setObserver(observer);
+
 		setBorder(new BevelBorder(BevelBorder.RAISED, new Color(139, 69, 19), null, null, null));
 		setLayout(null);
 		
@@ -33,13 +41,27 @@ public class Game extends JPanel {
 		board.setLayout(null);
 		
 		table = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/table.jpg"));
+		
+		addMouseListener(this);
 	}
 	
 	protected void paintComponent(Graphics g){
 		board.paintComponent(g);
-		//g.setColor(new Color(139, 69, 19));
-		//g.fillRect(0, 0, 521, 424);
 		g.drawImage(table, 0, 0, null);
+		repaint();
+	}
+	
+	public void draw(){
+		repaint();
+	}
+	
+	private void move(String user, int fr, int fc, int tr, int tc){
+		try {
+			server.move(user, fr, fc, tr, tc);
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public byte[][] getBoardState() {
@@ -88,5 +110,48 @@ public class Game extends JPanel {
 
 	public void setTurn(boolean turn) {
 		this.turn = turn;
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		if (!isObserver()){
+			board.mouseClicked(e);
+			if (board.isMoving()){
+				move(user, board.getFr(), board.getFc(), board.getTr(), board.getTc());
+				board.setMoving(false);
+			}
+		}
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public boolean isObserver() {
+		return observer;
+	}
+
+	public void setObserver(boolean observer) {
+		this.observer = observer;
 	}
 }

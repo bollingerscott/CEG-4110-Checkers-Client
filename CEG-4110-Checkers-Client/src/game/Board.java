@@ -1,15 +1,22 @@
 package game;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 
-public class Board extends JPanel{
-
+public class Board extends JPanel implements MouseListener{
+	
 	private final int LENGTH = 8;
 	private Tile[][] board;
+	private boolean click = false;
 	private final int TILE_LENGTH = 50;
+	private int fr, fc, tr, tc;
+	private Tile clickedTile;
 	private byte[][] board_state = new byte[][]{
 									{0,1,0,1,0,1,0,1},
 									{1,0,1,0,1,0,1,0},
@@ -19,6 +26,8 @@ public class Board extends JPanel{
 									{2,0,2,0,2,0,2,0},
 									{0,2,0,2,0,2,0,2},
 									{2,0,2,0,2,0,2,0}};
+	private boolean moving = false;
+	
 	
 	public Board(){
 		super();
@@ -51,15 +60,8 @@ public class Board extends JPanel{
 			x = 0;
 			for (int j = 0; j < LENGTH; j++){
 				Tile currentTile = board[i][j];
-				if (((i % 2 == 0) && (j % 2 == 0)) || ((i % 2 != 0) && (j % 2 != 0))){
-					//g.setColor(Color.RED);
-					g.drawImage(currentTile.getTile(), x, y, null);
-				}
-				else {
-					g.setColor(Color.BLACK);
-					g.fillRect(x, y, TILE_LENGTH, TILE_LENGTH);
-				}
-				//g.fillRect(x, y, TILE_LENGTH, TILE_LENGTH);
+				currentTile.paintComponent(g);
+				g.drawImage(currentTile.getTile(), x, y, null);
 				if (currentTile.isOccupied()){
 					currentTile.getPiece().paintComponent(g);
 				}
@@ -68,6 +70,119 @@ public class Board extends JPanel{
 				x += TILE_LENGTH;
 			}
 		}
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		//Find tile clicked
+		int x = e.getX() - getLocation().x;
+		int y = e.getY() - getLocation().y;
+		System.out.println(x + " " + y);
+		int i = 0;
+		int j = 0;
+		int coordX = 0;
+		int coordY = 0;
+		while (i+TILE_LENGTH < x){
+			coordX++;
+			i += TILE_LENGTH;
+		}
+		while (j+TILE_LENGTH < y){
+			coordY++;
+			j += TILE_LENGTH;
+		}
+		System.out.println(coordX + " " + coordY);
+		Tile tile = board[coordY][coordX];
+		assert(!moving);
+		//if first click on tile with piece on it
+		if (!click && tile.isOccupied()) {
+			click = true;
+			tile.mouseClicked(e);//set tile to clicked
+			fr = coordY;
+			fc = coordX;
+			clickedTile = tile;
+			moving = false;
+		}
+		//if clicked on same tile reset it
+		else if (clickedTile == tile){
+			click = false;
+			tile.reset();
+			moving = false;
+			fc = fr = -1;
+		}
+		//if clicked for second time and tile is not occupied
+		else if (!tile.isOccupied() && click){
+			clickedTile.reset();
+			click = false;
+			tr = coordY;
+			tc = coordX;
+			moving = true;
+		}
+		else {
+			moving = false;
+		}
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public int getFr() {
+		return fr;
+	}
+
+	public void setFr(int fr) {
+		this.fr = fr;
+	}
+
+	public int getFc() {
+		return fc;
+	}
+
+	public void setFc(int fc) {
+		this.fc = fc;
+	}
+
+	public int getTr() {
+		return tr;
+	}
+
+	public void setTr(int tr) {
+		this.tr = tr;
+	}
+
+	public int getTc() {
+		return tc;
+	}
+
+	public void setTc(int tc) {
+		this.tc = tc;
+	}
+
+	public boolean isMoving() {
+		return moving;
+	}
+
+	public void setMoving(boolean moving) {
+		this.moving = moving;
 	}
 
 	public Tile[][] getBoard() {
@@ -110,6 +225,5 @@ public class Board extends JPanel{
 			}
 		}
 	}
-
 }
 

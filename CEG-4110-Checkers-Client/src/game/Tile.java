@@ -1,14 +1,19 @@
 package game;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-public class Tile extends Rectangle {
+import javax.swing.JPanel;
+
+public class Tile extends JPanel implements MouseListener {
 	
 	private String color;
 	private Image tile;
 	private boolean occupied;
 	private Checker_Piece piece;
 	private int coordX, coordY;
+	private boolean click = false;
 	
 	public Tile(String color){
 		this.color = color;
@@ -16,11 +21,16 @@ public class Tile extends Rectangle {
 			setTile(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_tile.jpg")));
 		}
 		else if (color.toLowerCase() == "black") {
-			//setTile(Toolkit.getDefaultToolkit().createImage(getClass().getResource("/black_Tile.png")));
+			setTile(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_tile.jpg")));
 		}
 		else {
 			System.out.println("Bad color");
 		}	
+		addMouseListener(this);
+	}
+	
+	protected void paintComponent(Graphics g){
+		
 	}
 	
 	public String getColor() {
@@ -66,6 +76,55 @@ public class Tile extends Rectangle {
 
 	public void setCoordY(int coordY) {
 		this.coordY = coordY;
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		setTile(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/clicked_tile.jpg")));
+		getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/clicked_checker.png")));
+	}
+	
+	public void clicked(MouseEvent e){
+
+	}
+	
+	public void reset(){
+		setTile(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_tile.jpg")));
+		if (getPiece().getColor().equals("red")){
+			getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_checker.png")));
+		}
+		else {
+			getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_piece.png")));
+		}
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		if (isOccupied()){
+			setBackground(Color.green);
+		}
+		else {
+			setBackground(Color.red);
+		}
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 
