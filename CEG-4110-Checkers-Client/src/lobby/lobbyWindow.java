@@ -1,51 +1,50 @@
-package lobbyWindowTest;
+package lobby;
 
 import java.awt.EventQueue;
 
+import javax.swing.Icon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JButton;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
+
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
+
 import java.awt.FlowLayout;
+
 import javax.swing.ImageIcon;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.rmi.RemoteException;
+
 import javax.swing.ScrollPaneConstants;
 
-public class appWindow {
+import RMIConnection.Interfaces.RMIServerInterface;
+
+public class lobbyWindow {
 
 	private JFrame frame;
 	private JTextField chatInputField;
 	private JLabel currentlyActiveTable;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					appWindow window = new appWindow();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	private static RMIServerInterface serverConnection;
+	private ImageIcon normalTableIcon;
+	private ImageIcon highlightedTableIcon;
+	private JTextArea chatTextArea;
 
 	/**
 	 * Create the application.
 	 * 
 	 * @wbp.parser.entryPoint
 	 */
-	public appWindow() {
+	public lobbyWindow(RMIServerInterface server) {
+		serverConnection = server;
 		initialize();
 	}
 
@@ -53,6 +52,12 @@ public class appWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		normalTableIcon = (new ImageIcon(
+				lobbyWindow.class
+						.getResource("/lobbyWindowTest/FOIV6Q7GOHMB1SO.MEDIUM.jpg")));
+		highlightedTableIcon = (new ImageIcon(
+				lobbyWindow.class
+						.getResource("/lobbyWindowTest/FOIV6Q7GOHMB1SO.MEDIUM_2.jpg")));
 		frame = new JFrame();
 		frame.setBounds(100, 100, 1028, 735);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -69,11 +74,25 @@ public class appWindow {
 		chatInputField.setColumns(10);
 
 		JButton chatSendButton = new JButton("Send");
+		chatSendButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (chatInputField.getText().length() > 0) {
+					try {
+						serverConnection.sendMsg_All(chatInputField.getText());
+						System.out.println("we sent ");
+					} catch (RemoteException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} finally {
+						chatInputField.setText("");
+					}
+				}
+			}
+		});
 		chatSendButton.setBounds(276, 579, 118, 32);
 		chatPlaceHolderPanel.add(chatSendButton);
 
-		JTextArea chatTextArea = new JTextArea();
-		chatTextArea.setText("Chat placeholder");
+		chatTextArea = new JTextArea();
 		chatTextArea.setEditable(false);
 		chatTextArea.setBounds(0, 0, 394, 576);
 		chatPlaceHolderPanel.add(chatTextArea);
@@ -88,9 +107,8 @@ public class appWindow {
 		listOfUsersPanel.add(scrollingUserList);
 
 		JTextArea listOfUsers = new JTextArea();
+		listOfUsers.setEditable(false);
 		listOfUsers.setBackground(Color.LIGHT_GRAY);
-		listOfUsers
-				.setText("Hyman\r\nJeanett\r\nGenevive\r\nVerona\r\nKaryl\r\nElaina\r\nQiana\r\nZachery\r\nVirgina\r\nNicki\r\nDarnell\r\nElfriede\r\nAntonetta\r\nCasie\r\nPhyliss\r\nKorey\r\nMajorie\r\nKandy\r\nOrville\r\nKrystal\r\nLaure\r\nDalila\r\nMaudie\r\nLouie\r\nWynell\r\nFredda\r\nSondra\r\nJosie\r\nMeryl\r\nMaren\r\nJazmin\r\nLatonia\r\nRoselia\r\nArletta\r\nEllyn\r\nZona\r\nCassondra\r\nRowena\r\nDwana\r\nPhoebe\r\nMaurine\r\nLillie\r\nMaurice\r\nJulietta\r\nAja\r\nInez\r\nBrittany\r\nDannie\r\nCatalina\r\nTesha");
 		scrollingUserList.setViewportView(listOfUsers);
 
 		JPanel tabelControlButtons = new JPanel();
@@ -117,35 +135,30 @@ public class appWindow {
 		JButton btnWatchReplays = new JButton("Watch Replays");
 		btnWatchReplays.setBounds(697, 644, 196, 42);
 		frame.getContentPane().add(btnWatchReplays);
-		
+
 		JScrollPane scrollingTableList = new JScrollPane();
-		scrollingTableList.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		scrollingTableList.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollingTableList
+				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		scrollingTableList
+				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollingTableList.setBounds(556, 11, 446, 538);
 		frame.getContentPane().add(scrollingTableList);
-		
+
 		JPanel tableListFlowPanel = new JPanel();
 		scrollingTableList.setViewportView(tableListFlowPanel);
 		tableListFlowPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
 
-		for (int i = 0; i < 13; i++) {
-			final JLabel table = new JLabel("");
-			table.setIcon(new ImageIcon(appWindow.class
-					.getResource("/lobbyWindowTest/FOIV6Q7GOHMB1SO.MEDIUM.jpg")));
-			table.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					if (currentlyActiveTable != null) {
-						currentlyActiveTable.setIcon(new ImageIcon(appWindow.class
-								.getResource("/lobbyWindowTest/FOIV6Q7GOHMB1SO.MEDIUM.jpg")));					}
-					currentlyActiveTable = table;
-					table.setIcon(new ImageIcon(
-							appWindow.class
-									.getResource("/lobbyWindowTest/FOIV6Q7GOHMB1SO.MEDIUM_2.jpg")));
-				}
-			});
-			tableListFlowPanel.add(table);
-		}
+		frame.setVisible(true);
+		addTextMainLobbyWindow("123");
 
+	}
+
+	public void addTextMainLobbyWindow(String string) {
+		if (chatTextArea != null) {
+			if (chatTextArea.getText().length() == 0) {
+				chatTextArea.setText(string);
+			} else
+				chatTextArea.setText(chatTextArea.getText() + "\n" + string);
+		}
 	}
 }
