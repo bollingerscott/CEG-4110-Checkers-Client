@@ -1,6 +1,8 @@
 package lobby;
 
 import java.awt.EventQueue;
+import java.awt.Image;
+import java.awt.Toolkit;
 
 import javax.swing.Icon;
 import javax.swing.JFrame;
@@ -34,8 +36,8 @@ public class lobbyWindow {
 	private JTextField chatInputField;
 	private JLabel currentlyActiveTable;
 	private static RMIServerInterface serverConnection;
-	private ImageIcon normalTableIcon;
-	private ImageIcon highlightedTableIcon;
+	private Image normalTableIcon;
+	private Image highlightedTableIcon;
 	private JTextArea chatTextArea;
 
 	/**
@@ -52,12 +54,8 @@ public class lobbyWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		normalTableIcon = (new ImageIcon(
-				lobbyWindow.class
-						.getResource("/lobbyWindowTest/FOIV6Q7GOHMB1SO.MEDIUM.jpg")));
-		highlightedTableIcon = (new ImageIcon(
-				lobbyWindow.class
-						.getResource("/lobbyWindowTest/FOIV6Q7GOHMB1SO.MEDIUM_2.jpg")));
+//		normalTableIcon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/unselectedTabe.jpg"));
+//		highlightedTableIcon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/selected.jpg"));
 		frame = new JFrame();
 		frame.setBounds(100, 100, 1028, 735);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
