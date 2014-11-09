@@ -3,7 +3,7 @@ package lobby;
 import java.awt.EventQueue;
 import java.awt.Image;
 import java.awt.Toolkit;
-
+import java.util.Arrays;
 import javax.swing.Icon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -25,6 +25,7 @@ import javax.swing.ImageIcon;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 import javax.swing.ScrollPaneConstants;
 
@@ -36,26 +37,47 @@ public class lobbyWindow {
 	private JTextField chatInputField;
 	private JLabel currentlyActiveTable;
 	private static RMIServerInterface serverConnection;
-	private Image normalTableIcon;
-	private Image highlightedTableIcon;
+	private ImageIcon normalTableIcon;
+	private ImageIcon highlightedTableIcon;
 	private JTextArea chatTextArea;
+	private String myName;
+	JPanel tableListFlowPanel;
+	private ArrayList usersInMainChat;
+	private ArrayList<Integer> listOfTables;
 
 	/**
 	 * Create the application.
 	 * 
 	 * @wbp.parser.entryPoint
 	 */
-	public lobbyWindow(RMIServerInterface server) {
+
+	public void startWindow(RMIServerInterface server, String name) {
 		serverConnection = server;
+		myName = name;
 		initialize();
+	
+		int[] myIntArray = new int[listOfTables.size()];
+		for (int i = 0; i < listOfTables.size(); i++) {
+			myIntArray[i] = listOfTables.get(i);
+		}
+		addTables(myIntArray);
+	}
+
+	public lobbyWindow() {
+		super();
+		usersInMainChat = new ArrayList();
+		listOfTables = new ArrayList<Integer>();
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-//		normalTableIcon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/unselectedTabe.jpg"));
-//		highlightedTableIcon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/selected.jpg"));
+
+		normalTableIcon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
+				getClass().getResource("/unselectedTable.jpg")));
+		highlightedTableIcon = new ImageIcon(Toolkit.getDefaultToolkit()
+				.getImage(getClass().getResource("/selectedTable.jpg")));
 		frame = new JFrame();
 		frame.setBounds(100, 100, 1028, 735);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -77,10 +99,11 @@ public class lobbyWindow {
 				if (chatInputField.getText().length() > 0) {
 					try {
 						serverConnection.sendMsg_All(chatInputField.getText());
-						System.out.println("we sent ");
 					} catch (RemoteException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
+						System.out.println("Caught error sending message?");
+
 					} finally {
 						chatInputField.setText("");
 					}
@@ -121,6 +144,16 @@ public class lobbyWindow {
 		JButton btnCreateTable = new JButton("Create Table");
 		btnCreateTable.setBounds(165, 11, 127, 43);
 		tabelControlButtons.add(btnCreateTable);
+		btnCreateTable.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					serverConnection.makeTable(myName);
+				} catch (RemoteException e1) {
+					e1.printStackTrace();
+				}
+
+			}
+		});
 
 		JButton btnObserveTable = new JButton("Observe Table");
 		btnObserveTable.addActionListener(new ActionListener() {
@@ -142,13 +175,36 @@ public class lobbyWindow {
 		scrollingTableList.setBounds(556, 11, 446, 538);
 		frame.getContentPane().add(scrollingTableList);
 
-		JPanel tableListFlowPanel = new JPanel();
+		tableListFlowPanel = new JPanel();
 		scrollingTableList.setViewportView(tableListFlowPanel);
 		tableListFlowPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
 
 		frame.setVisible(true);
-		addTextMainLobbyWindow("123");
 
+	}
+
+	public void addInitialTables(int[] array) {
+		for (int i : array) {
+			listOfTables.add(i);
+		}
+	}
+
+	public void addTables(int[] array) {
+		for (int i = 0; i < array.length; i++) {
+			final JLabel table = new JLabel("");
+			table.setIcon(normalTableIcon);
+			table.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					if (currentlyActiveTable != null) {
+						currentlyActiveTable.setIcon(normalTableIcon);
+					}
+					currentlyActiveTable = table;
+					table.setIcon(highlightedTableIcon);
+				}
+			});
+			tableListFlowPanel.add(table);
+		}
 	}
 
 	public void addTextMainLobbyWindow(String string) {

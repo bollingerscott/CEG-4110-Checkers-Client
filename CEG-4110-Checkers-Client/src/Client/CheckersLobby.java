@@ -66,7 +66,7 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 	private boolean isCheckers;
 	private byte[][] curBoardState;
 	private boolean debug = true; // set true for debug mode, which prints more
-	private lobbyWindow myLobby;
+	private static lobbyWindow myLobby;
 	private JFrame frame;
 	private JTextField serverTextField;
 	private JTextField Username;
@@ -75,6 +75,7 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
+				myLobby = new lobbyWindow();
 				CheckersLobby tester = new CheckersLobby();
 
 				System.setProperty("java.security.policy",
@@ -167,12 +168,12 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 		btnStartClient.setBounds(299, 104, 125, 23);
 		frame.getContentPane().add(btnStartClient);
 
-		serverTextField = new JTextField("130.108.28.165");
+		serverTextField = new JTextField("::1");
 		serverTextField.setBounds(135, 81, 146, 23);
 		frame.getContentPane().add(serverTextField);
 		serverTextField.setColumns(10);
 
-		Username = new JTextField();
+		Username = new JTextField("brad");
 		Username.setBounds(135, 138, 146, 23);
 		frame.getContentPane().add(Username);
 		Username.setColumns(10);
@@ -206,10 +207,9 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 				} else {
 					System.out.println("Connection success");
 					curState = State.connected;
-
-					myLobby = new lobbyWindow(serverConnection);
-					serverConnection.sendMsg_All("test");
-
+					frame.setVisible(false);
+					myLobby.startWindow(serverConnection, name);
+					serverConnection.sendMsg_All("123");
 				}
 			}
 
@@ -234,8 +234,6 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 	// Helper method for outputing to the chat pane
 	private void output(String s) {
 		myLobby.addTextMainLobbyWindow(s);
-		System.out.println("outputmethod main output to main window");
-
 	}
 
 	// Forwards debug messages to output() if debugging is turned on
@@ -269,10 +267,12 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 	}
 
 	public void newMsg(String user, String msg, boolean pm) {
+		System.out.println("got new message");
 		if (pm) {
 			output("[PM] " + user + ": " + msg);
 		} else
 			output(user + ": " + msg);
+
 	}
 
 	// alert that a user has left the lobby
@@ -307,11 +307,8 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 
 	// initial listing of tables
 	public void tableList(int[] tids) {
-		System.out.println("outputmethod tid " + tids.length);
-
-		for (int i : tids) {
-			System.out.println(tids[i]);
-		}
+		System.out.println("Table length =  " + tids.length);
+		myLobby.addInitialTables(tids);
 	}
 
 	// an alert saying that a table state has changed.
@@ -330,6 +327,8 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 	}
 
 	public void newTable(int t) {
+		int[] myIntArray = { t };
+		myLobby.addTables(myIntArray);
 		System.out.println("outputmethod new table");
 
 	}
