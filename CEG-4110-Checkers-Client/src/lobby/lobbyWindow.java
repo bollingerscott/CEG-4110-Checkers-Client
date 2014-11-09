@@ -1,9 +1,13 @@
 package lobby;
 
+import game.Game;
+
 import java.awt.EventQueue;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.util.Arrays;
+
 import javax.swing.Icon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -29,6 +33,7 @@ import java.util.ArrayList;
 
 import javax.swing.ScrollPaneConstants;
 
+import table.Table;
 import RMIConnection.Interfaces.RMIServerInterface;
 
 public class lobbyWindow {
@@ -42,30 +47,38 @@ public class lobbyWindow {
 	private JTextArea chatTextArea;
 	private String myName;
 	JPanel tableListFlowPanel;
-	private ArrayList usersInMainChat;
+	private ArrayList<String> usersInMainChat;
 	private ArrayList<Integer> listOfTables;
-
+	private JTextArea listOfUsers;
+	
+	
+	private Table currentTable; //Declared these for general use? feel free to edit BR
+	private Game currentGame;
+	private Game currentObservedGame;
 	/**
-	 * Create the application.
-	 * 
-	 * @wbp.parser.entryPoint
+	 * Starts window, not done in constructor because constructor called
+	 * intially. This is because table list and user list were being sent before
+	 * the lobby was made causing issues
 	 */
 
 	public void startWindow(RMIServerInterface server, String name) {
 		serverConnection = server;
 		myName = name;
 		initialize();
-	
+
 		int[] myIntArray = new int[listOfTables.size()];
 		for (int i = 0; i < listOfTables.size(); i++) {
 			myIntArray[i] = listOfTables.get(i);
 		}
 		addTables(myIntArray);
+		updateUsers();
 	}
-
+	/**
+	 * Init for lobby. sets table and user list so they can be edited before the table window is actually called up
+	 */
 	public lobbyWindow() {
 		super();
-		usersInMainChat = new ArrayList();
+		usersInMainChat = new ArrayList<String>();
 		listOfTables = new ArrayList<Integer>();
 	}
 
@@ -100,7 +113,6 @@ public class lobbyWindow {
 					try {
 						serverConnection.sendMsg_All(chatInputField.getText());
 					} catch (RemoteException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 						System.out.println("Caught error sending message?");
 
@@ -127,26 +139,26 @@ public class lobbyWindow {
 		scrollingUserList.setBounds(0, 0, 122, 622);
 		listOfUsersPanel.add(scrollingUserList);
 
-		JTextArea listOfUsers = new JTextArea();
+		listOfUsers = new JTextArea();
 		listOfUsers.setEditable(false);
 		listOfUsers.setBackground(Color.LIGHT_GRAY);
 		scrollingUserList.setViewportView(listOfUsers);
 
-		JPanel tabelControlButtons = new JPanel();
-		tabelControlButtons.setBounds(556, 560, 446, 73);
-		frame.getContentPane().add(tabelControlButtons);
-		tabelControlButtons.setLayout(null);
+		JPanel tableControlButtons = new JPanel();
+		tableControlButtons.setBounds(556, 560, 446, 73);
+		frame.getContentPane().add(tableControlButtons);
+		tableControlButtons.setLayout(null); 
 
 		JButton btnJoinTable = new JButton("Join Table");
 		btnJoinTable.setBounds(10, 11, 145, 43);
-		tabelControlButtons.add(btnJoinTable);
+		tableControlButtons.add(btnJoinTable);//TODO Table logic?
 
 		JButton btnCreateTable = new JButton("Create Table");
 		btnCreateTable.setBounds(165, 11, 127, 43);
-		tabelControlButtons.add(btnCreateTable);
+		tableControlButtons.add(btnCreateTable);
 		btnCreateTable.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
+				try { //TODO Table logic?
 					serverConnection.makeTable(myName);
 				} catch (RemoteException e1) {
 					e1.printStackTrace();
@@ -161,34 +173,32 @@ public class lobbyWindow {
 			}
 		});
 		btnObserveTable.setBounds(309, 11, 127, 43);
-		tabelControlButtons.add(btnObserveTable);
+		tableControlButtons.add(btnObserveTable);
 
 		JButton btnWatchReplays = new JButton("Watch Replays");
 		btnWatchReplays.setBounds(697, 644, 196, 42);
 		frame.getContentPane().add(btnWatchReplays);
 
-		JScrollPane scrollingTableList = new JScrollPane();
-		scrollingTableList
-				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		scrollingTableList
-				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollingTableList.setBounds(556, 11, 446, 538);
-		frame.getContentPane().add(scrollingTableList);
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(556, 11, 446, 539);
+		frame.getContentPane().add(scrollPane);
 
 		tableListFlowPanel = new JPanel();
-		scrollingTableList.setViewportView(tableListFlowPanel);
-		tableListFlowPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+		scrollPane.setViewportView(tableListFlowPanel);
+		tableListFlowPanel.setLayout(new GridLayout(0, 5, 0, 0));
 
 		frame.setVisible(true);
 
 	}
-
+	
+	
+	//Adds intial tables to list before lobby window is shown
 	public void addInitialTables(int[] array) {
 		for (int i : array) {
 			listOfTables.add(i);
 		}
 	}
-
+	//Actually adds tables to panel
 	public void addTables(int[] array) {
 		for (int i = 0; i < array.length; i++) {
 			final JLabel table = new JLabel("");
@@ -206,7 +216,7 @@ public class lobbyWindow {
 			tableListFlowPanel.add(table);
 		}
 	}
-
+	//Adds to main table screen
 	public void addTextMainLobbyWindow(String string) {
 		if (chatTextArea != null) {
 			if (chatTextArea.getText().length() == 0) {
@@ -214,5 +224,24 @@ public class lobbyWindow {
 			} else
 				chatTextArea.setText(chatTextArea.getText() + "\n" + string);
 		}
+	}
+	//Sets users before lobby has been intialized.
+	public void setUsers(ArrayList<String> lobbyUserList) {
+		usersInMainChat = lobbyUserList;
+	}
+	//Updates users based on list. Called when window is intialized.
+	public void updateUsers() {
+
+		listOfUsers.setText("");
+
+		for (int i = 0; i < usersInMainChat.size(); i++) {
+			if (i == usersInMainChat.size() - 1) {
+				listOfUsers.setText(listOfUsers.getText()
+						+ usersInMainChat.get(i));
+			} else
+				listOfUsers.setText(listOfUsers.getText()
+						+ usersInMainChat.get(i) + "\n");
+		}
+
 	}
 }

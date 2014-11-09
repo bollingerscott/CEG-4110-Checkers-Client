@@ -1,8 +1,5 @@
 package Client;
 
-import game.Board;
-import game.GameWindow;
-
 import java.util.*;
 
 import RMIConnection.Interfaces.CheckersClient;
@@ -19,23 +16,15 @@ import javax.swing.*;
 import lobby.lobbyWindow;
 
 /**
- * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
- * Builder, which is free for non-commercial use. If Jigloo is being used
- * commercially (ie, by a corporation, company or business for any purpose
- * whatever) then you should purchase a license for each developer using Jigloo.
- * Please visit www.cloudgarden.com for details. Use of Jigloo implies
- * acceptance of these licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN
- * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR
- * ANY CORPORATE OR COMMERCIAL PURPOSE.
- * 
- * @author derek 8.15.08 - 8.1.14
- * 
+ * Modified dereks code. Starts with a window for inputting server name and user
+ * name. If that connects correctly the lobby window opens. This is where the
+ * bulk of the work will be done. (Adding tables, joining tables, observing
+ * tables, chat private message etc.)
  */
 @SuppressWarnings({ "rawtypes", "unchecked", "serial" })
 public class CheckersLobby extends javax.swing.JFrame implements CheckersClient {
 
 	{
-		// Set Look & Feel
 		try {
 			javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager
 					.getSystemLookAndFeelClassName());
@@ -51,17 +40,7 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 	private ArrayList<String> lobbyUserList; // string lists of users for output
 	private static RMIServerInterface serverConnection;
 	private static State curState;
-	private String conText = "To connect, enter <ip address> <username>"; //
-	private JList userListPane;
-	private JScrollPane userPane;
-	private JTabbedPane jTabbedPane;
-	private JButton submitButton;
-	private JTextField chatInputField;
-	private JPanel submitPanel;
-	private JTextArea chatArea;
-	private JScrollPane chatPane;
 	private String myName = "";
-	private String selectedUser = "";
 
 	private boolean isCheckers;
 	private byte[][] curBoardState;
@@ -71,6 +50,9 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 	private JTextField serverTextField;
 	private JTextField Username;
 	private JButton btnStartClient;
+	private final String DEFAULT_SERVER_IP = "::1"; // Usefor For debugging-
+													// Brad local server = ::1,
+													// derekServer 137.99.11.115
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -161,19 +143,19 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 		frame.getContentPane().setLayout(null);
 
 		btnStartClient = new JButton("Start Client!");
-		btnStartClient.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			}
-		});
 		btnStartClient.setBounds(299, 104, 125, 23);
 		frame.getContentPane().add(btnStartClient);
 
-		serverTextField = new JTextField("::1");
+		serverTextField = new JTextField(DEFAULT_SERVER_IP); // My default
+																// server ip,
+																// set
+		// for easier testing. Feel
+		// free to change
 		serverTextField.setBounds(135, 81, 146, 23);
 		frame.getContentPane().add(serverTextField);
 		serverTextField.setColumns(10);
 
-		Username = new JTextField("brad");
+		Username = new JTextField("DefaultUserName");
 		Username.setBounds(135, 138, 146, 23);
 		frame.getContentPane().add(Username);
 		Username.setColumns(10);
@@ -193,7 +175,7 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 		});
 	}
 
-	// Event for submitButton and ENTER key
+	// Event for when user presses connect button on setup window.
 	private void inputSubmit() {
 		try {
 			if (curState.equals(State.notConnected)) {
@@ -209,7 +191,6 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 					curState = State.connected;
 					frame.setVisible(false);
 					myLobby.startWindow(serverConnection, name);
-					serverConnection.sendMsg_All("123");
 				}
 			}
 
@@ -220,59 +201,52 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 		}
 	}
 
-	// // Event for adding private message format to text area
-	// private void userListSelect() {
-	// String input = chatInputField.getText();
-	// if (input.startsWith("@")) {
-	// String pmInput[] = input.split("\\s", 2);
-	// pmInput[0] = "@" + selectedUser;
-	// chatInputField.setText(pmInput[0] + " " + pmInput[1]);
-	// } else
-	// chatInputField.setText("@" + selectedUser + " " + input);
-	// }
+	// ///////////////////////////////////////////////////////////////////////////
+	// //////////Utility functions to help deal with server interaction with GUI
+	// ///////////////////////////////////////////////////////////////////////////
 
-	// Helper method for outputing to the chat pane
+	// Outputs to main window in lobby window.
 	private void output(String s) {
 		myLobby.addTextMainLobbyWindow(s);
 	}
 
-	// Forwards debug messages to output() if debugging is turned on
+	// Only works if debug is true, prints to console
 	private void debugOutput(String s) {
 		if (debug)
-			System.out.println(s);
+			System.out.println(">Debug message " + s);
 	}
 
-	// Updates the actual user list pane
+	// Updates user list, common funciton used by add/remove user as well as
+	// intial user list
 	private void updateUserList() {
-		String[] userList = new String[lobbyUserList.size()];
-		lobbyUserList.toArray(userList);
-		ListModel lstUsersModel = new DefaultComboBoxModel(userList);
-		userListPane.setModel(lstUsersModel);
+		myLobby.setUsers(lobbyUserList);
+		myLobby.updateUsers();
 	}
 
-	/*
-	 * Methods satisfying the checkers client interface
-	 */
+	// ///////////////////////////////////////////////////////////////////////////
+	// //////////////Server interaction functions, needed for satisfying
+	// interface
+	// ///////////////////////////////////////////////////////////////////////////
 	public void connectionOK() {
 		debugOutput("Server says connection OK!");
 		curState = State.connected;
 	}
 
 	public void nowJoinedLobby(String user) {
-		if (!user.equals(this.myName)) {
-			debugOutput(">> " + user + " has joined the lobby.");
+		if (user.equals(this.myName)) {
+			output(">> You have  joined the lobby.");
 		}
 		lobbyUserList.add(user);
 		updateUserList();
 	}
 
+	// Got message from server, set at private message or global message and
+	// update.
 	public void newMsg(String user, String msg, boolean pm) {
-		System.out.println("got new message");
 		if (pm) {
 			output("[PM] " + user + ": " + msg);
 		} else
 			output(user + ": " + msg);
-
 	}
 
 	// alert that a user has left the lobby
@@ -292,22 +266,17 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 	// alert that you have joined the lobby
 	public void youInLobby() {
 		curState = State.inLobby;
-		System.out.println("outputmethod in lobby");
-
 		output(">> Welcome to the game lobby.");
 	}
 
 	// alert that you have left the lobby
 	public void youLeftLobby() {
 		curState = State.connected;
-		System.out.println("outputmethod left lobby");
-
 		output(">> You have left the game lobby.");
 	}
 
 	// initial listing of tables
 	public void tableList(int[] tids) {
-		System.out.println("Table length =  " + tids.length);
 		myLobby.addInitialTables(tids);
 	}
 
@@ -316,6 +285,7 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 	// or if table state is queried by calling getTblStatus()
 	public void onTable(int tid, String blackSeat, String redSeat) {
 		System.out.println("outputmethod on table");
+		// TODO Table related logic
 
 	}
 
@@ -323,13 +293,12 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 	// called immediately after onTable()
 	public void tableGame(int tid) throws RemoteException {
 		System.out.println("outputmethod tablegame");
-
+		// TODO Table related logic
 	}
 
 	public void newTable(int t) {
 		int[] myIntArray = { t };
 		myLobby.addTables(myIntArray);
-		System.out.println("outputmethod new table");
 
 	}
 
@@ -337,12 +306,14 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 	public void joinedTable(int tid) {
 		curState = State.onTable;
 		debugOutput(">> You have joined table " + Integer.toString(tid));
+		// TODO Table related logic
 	}
 
 	// alert that you have left your table.
 	public void alertLeftTable() {
 		curState = State.connected;
 		debugOutput(">> You have left the table");
+		// TODO Table related logic
 	}
 
 	// alert that at the table you are sitting at, a game is starting.
@@ -368,130 +339,154 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 				for (int x = 0; x < 19; x++)
 					curBoardState[y][x] = 0;
 		}
+		// TODO Game related logic
+
 	}
 
 	// alert that your color is Black, for the game.
 	public void colorBlack() {
+		// TODO Game related logic
 
 	}
 
 	// alert that your color is Red, for the game.
 	public void colorRed() {
+		// TODO Game related logic
 
 	}
 
 	// notice that your opponent has moved from position (fr,fc) to (tr,tc)
 	public void oppMove(int fr, int fc, int tr, int tc) {
+		// TODO Game related logic
+
 		debugOutput(">> oppMove(" + fr + "," + fc + "," + tr + "," + tc + ")");
 	}
 
 	// server has updated the board state
 	public void curBoardState(int t, byte[][] boardState) {
+		// TODO Game related logic
 
 	}
 
 	// notice that for the game you are playing, you win!
 	public void youWin() {
+		// TODO Game related logic
 
 	}
 
 	// notice that for the game you are playing, you lost.
 	public void youLose() {
+		// TODO Game related logic
+
 		debugOutput(">> youLose()");
 	}
 
 	// its your turn.
 	public void yourTurn() {
+		// TODO Game related logic
 		debugOutput(">> yourTurn()");
 	}
 
 	// you are now observing table tid.
 	public void nowObserving(int tid) {
+		// TODO Observe related logic
 		debugOutput(">> nowObserving(" + tid + ")");
 	}
 
 	// you stopped observing table tid.
 	public void stoppedObserving(int tid) {
+		// TODO Game related logic
 		debugOutput(">> stoppedObserving(" + tid + ")");
 	}
 
-	/**
-	 * Error messages
-	 */
+	// ///////////////////////////////////////////////////////////////
+	// /////////////////////////////////////////////////Error messages
+	// ///////////////////////////////////////////////////////////////
 	public void networkException(String msg) {
-		output("A network exception has occured. Connection lost.");
-		output(conText);
+		JOptionPane.showMessageDialog(null, "A network exception has occured. Connection lost.", "Error",
+                JOptionPane.ERROR_MESSAGE);
 		curState = State.notConnected;
 	}
 
 	public void nameInUseError() {
-		chatArea.setText("");
-		output("The name requested is in use. Please choose another.");
-		output(conText);
+		Username.setText("");
+		JOptionPane.showMessageDialog(null, "The name requested is in use. Please choose another.", "Error",
+                JOptionPane.ERROR_MESSAGE);
 		curState = State.notConnected;
-		chatInputField.setText("137.99.11.115 ");
+		serverTextField.setText(DEFAULT_SERVER_IP);
 	}
 
 	public void nameIllegal() throws RemoteException {
-		output("The name requested is illegal. Length must be > 0 and have no whitespace.");
-		output(conText);
+		JOptionPane.showMessageDialog(null, "The name requested is in illegal. Please choose another.", "Error",
+                JOptionPane.ERROR_MESSAGE);
 		curState = State.notConnected;
-		chatInputField.setText("137.99.11.115 ");
+		Username.setText("");
 	}
 
 	// the requested move is illegal.
 	public void illegalMove() {
+		//TODO GAMELOGIC?
 		output(">> That move is illegal!");
 	}
 
 	// the table your trying to join is full.
 	public void tableFull() {
+		//TODO TABLE LOGIC
 		output(">> The table you are trying to join is full. Please choose another one.");
 	}
 
 	// the table queried does not exist.
 	public void tblNotExists() {
+		//TODO TABLE LOGIC
 		debugOutput(">> tblNotExists()");
 	}
 
 	// called if you say you are ready on a table with no current game.
 	public void gameNotCreatedYet() {
+		//TODO TABLE LOGIC/GAME LOGIC?
 		output(">> Please wait for an opponent before starting the game.");
 	}
 
 	// called if it is not your turn but you make a move.
 	public void notYourTurn() {
+		//TODO GAME LOGIc
 		output(">> It is not your turn!");
 	}
 
 	// called if you send a stop observing command but you are not observing a
 	// table.
 	public void notObserving() {
+		//TODO OBserver logic
 		debugOutput(">> notObserving()");
 	}
 
 	// called if you send a game command but your opponent is not ready
 	public void oppNotReady() {
+		//TODO Table logic/Game logic?
 		output(">> Please wait for your opponent to start the game.");
 	}
 
 	// you cannot perform the requested operation because you are in the lobby.
 	public void errorInLobby() {
+		//TODO Lobby logic
 		output(">> You cannot perform that action from within the lobby.");
 	}
 
 	// called if the client sends an ill-formated TCP message
 	public void badMessage() {
+		//TODO Lobby logic?
 		debugOutput(">> badMessage()");
 	}
 
 	// called when your opponent leaves the table
 	public void oppLeftTable() {
+		//TODO Table logic
 		debugOutput(">> oppLeftTable()");
 	}
 
 	// you cannot perform the requested op because you are not in the lobby.
 	public void notInLobby() {
+		//TODO lobby logic
 		output(">> You cannot perform that action from outside of the lobby.");
 	}
 }
