@@ -15,20 +15,24 @@ import RMIConnection.Interfaces.RMIServerInterface;
 public class Game extends JPanel implements MouseListener {
 
 	private Board board;
-	private String user;
-	private String color;
-	private RMIServerInterface server;
+	private String user = "Scott";
+	private String opponent = "Opponent";
+	private Integer moves = 0;
+	private String color = "red";
+	private static RMIServerInterface server;
 	private int tid;
 	private String gameStatus = null;
 	private boolean turn;
 	private Image table;
 	private boolean observer;
+	private Integer left, taken, opponentLeft, opponentTaken;
+	
 	
 	/**
 	 * Create the panel.
 	 */
-	public Game(boolean observer/*, RMIServerInterface server*/) {
-		//this.server = server; //commented for testing purposes
+	public Game(boolean observer, RMIServerInterface server) {
+		this.server = server;
 		this.setObserver(observer);
 
 		setBorder(new BevelBorder(BevelBorder.RAISED, new Color(139, 69, 19), null, null, null));
@@ -41,7 +45,7 @@ public class Game extends JPanel implements MouseListener {
 		board.setLayout(null);
 		
 		table = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/table.jpg"));
-		
+		setStats();
 		addMouseListener(this);
 	}
 	
@@ -61,6 +65,55 @@ public class Game extends JPanel implements MouseListener {
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		setStats();
+		moves += 1;
+	}
+	
+	public Integer getLeft() {
+		return left;
+	}
+
+	public void setLeft(Integer left) {
+		this.left = left;
+	}
+
+	public Integer getTaken() {
+		return taken;
+	}
+
+	public void setTaken(Integer taken) {
+		this.taken = taken;
+	}
+
+	public Integer getOpponentLeft() {
+		return opponentLeft;
+	}
+
+	public void setOpponentLeft(Integer opponentLeft) {
+		this.opponentLeft = opponentLeft;
+	}
+
+	public Integer getOpponentTaken() {
+		return opponentTaken;
+	}
+
+	public void setOpponentTaken(Integer opponentTaken) {
+		this.opponentTaken = opponentTaken;
+	}
+
+	public void setStats(){
+		if (color.equals("red")){
+			setTaken(board.getBlackTaken());
+			setLeft(board.getRedLeft());
+			setOpponentTaken(board.getRedTaken());
+			setOpponentLeft(board.getBlackLeft());
+		}
+		else {
+			setTaken(board.getRedTaken());
+			setLeft(board.getBlackLeft());
+			setOpponentTaken(board.getBlackTaken());
+			setOpponentLeft(board.getRedLeft());
 		}
 	}
 	
@@ -153,5 +206,21 @@ public class Game extends JPanel implements MouseListener {
 
 	public void setObserver(boolean observer) {
 		this.observer = observer;
+	}
+
+	public String getOpponent() {
+		return opponent;
+	}
+
+	public void setOpponent(String opponent) {
+		this.opponent = opponent;
+	}
+
+	public Integer getMoves() {
+		return moves;
+	}
+
+	public void setMoves(Integer moves) {
+		this.moves = moves;
 	}
 }

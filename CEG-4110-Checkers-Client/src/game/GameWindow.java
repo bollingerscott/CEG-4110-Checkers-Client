@@ -3,34 +3,19 @@ package game;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import java.awt.Color;
-import java.awt.GridLayout;
-import javax.swing.BoxLayout;
-import java.awt.Component;
-import java.awt.BorderLayout;
+
 import javax.swing.JTextField;
-import javax.swing.JSplitPane;
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
+
 import java.awt.Font;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.MatteBorder;
-import javax.swing.border.TitledBorder;
-import javax.swing.JTextPane;
+
 import javax.swing.JTextArea;
-import java.awt.Toolkit;
-import javax.swing.JScrollBar;
-import javax.swing.Box;
-import javax.swing.DropMode;
-import javax.swing.JLayeredPane;
-import java.awt.FlowLayout;
+
 import javax.swing.JLabel;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JSeparator;
+
+import RMIConnection.Interfaces.RMIServerInterface;
 
 public class GameWindow {
 
@@ -43,6 +28,8 @@ public class GameWindow {
 	private JTextField moves2;
 	private JTextField piecesLeft2;
 	private JTextField piecesTaken2;
+	private static RMIServerInterface server;
+	private boolean observer;
 	private Game game;
 
 	public Game getGame() {
@@ -56,7 +43,7 @@ public class GameWindow {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					GameWindow window = new GameWindow();
+					GameWindow window = new GameWindow(false, null);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -68,7 +55,9 @@ public class GameWindow {
 	/**
 	 * Create the application.
 	 */
-	public GameWindow() {
+	public GameWindow(boolean observer, RMIServerInterface server) {
+		this.server = server;
+		this.observer = observer;
 		initialize();
 	}
 
@@ -84,6 +73,12 @@ public class GameWindow {
 		frmCheckers.setBounds(100, 100, 762, 637);
 		frmCheckers.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmCheckers.getContentPane().setLayout(null);
+		
+		game = new Game(observer, server);
+		game.setForeground(Color.ORANGE);
+		game.setBackground(new Color(139, 69, 19));
+		game.setBounds(6, 6, 521, 424);
+		frmCheckers.getContentPane().add(game);
 		
 		JButton send = new JButton("Send");
 		send.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -121,14 +116,16 @@ public class GameWindow {
 		player1name.setBounds(537, 46, 208, 37);
 		frmCheckers.getContentPane().add(player1name);
 		player1name.setColumns(10);
-		//player1name.setText(game.getUser());
+		player1name.setText(game.getUser());
 		
 		player2name = new JTextField();
+		player2name.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		player2name.setBackground(Color.LIGHT_GRAY);
 		player2name.setEditable(false);
 		player2name.setColumns(10);
 		player2name.setBounds(537, 326, 208, 37);
 		frmCheckers.getContentPane().add(player2name);
+		player2name.setText(game.getOpponent());
 		
 		
 		JLabel lblOfMoves1 = new JLabel("# of Moves");
@@ -145,6 +142,7 @@ public class GameWindow {
 		moves1.setBounds(674, 94, 71, 35);
 		frmCheckers.getContentPane().add(moves1);
 		moves1.setColumns(10);
+		moves1.setText(game.getMoves().toString());
 		
 		JLabel lblPiecesLeft1 = new JLabel("Pieces Left");
 		lblPiecesLeft1.setFont(new Font("Tahoma", Font.PLAIN, 20));
@@ -153,12 +151,14 @@ public class GameWindow {
 		frmCheckers.getContentPane().add(lblPiecesLeft1);
 		
 		piecesLeft1 = new JTextField();
+		piecesLeft1.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		piecesLeft1.setEditable(false);
 		lblPiecesLeft1.setLabelFor(piecesLeft1);
 		piecesLeft1.setBackground(Color.LIGHT_GRAY);
 		piecesLeft1.setBounds(674, 140, 71, 37);
 		frmCheckers.getContentPane().add(piecesLeft1);
 		piecesLeft1.setColumns(10);
+		piecesLeft1.setText(game.getLeft().toString());
 		
 		JLabel lblPiecesTaken1 = new JLabel("Pieces Taken");
 		lblPiecesTaken1.setForeground(Color.LIGHT_GRAY);
@@ -167,12 +167,14 @@ public class GameWindow {
 		frmCheckers.getContentPane().add(lblPiecesTaken1);
 		
 		piecesTaken1 = new JTextField();
+		piecesTaken1.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		piecesTaken1.setEditable(false);
 		lblPiecesTaken1.setLabelFor(piecesTaken1);
 		piecesTaken1.setBackground(Color.LIGHT_GRAY);
 		piecesTaken1.setBounds(674, 188, 71, 37);
 		frmCheckers.getContentPane().add(piecesTaken1);
 		piecesTaken1.setColumns(10);
+		piecesTaken1.setText(game.getTaken().toString());
 		
 		JLabel lblPlayer2 = new JLabel("Player 2");
 		lblPlayer2.setLabelFor(player2name);
@@ -207,6 +209,8 @@ public class GameWindow {
 		moves2.setColumns(10);
 		moves2.setBounds(674, 374, 71, 35);
 		frmCheckers.getContentPane().add(moves2);
+		Integer moves = game.getMoves() - 1;
+		moves2.setText(moves.toString());
 		
 		piecesLeft2 = new JTextField();
 		lblPiecesLeft2.setLabelFor(piecesLeft2);
@@ -216,6 +220,7 @@ public class GameWindow {
 		piecesLeft2.setColumns(10);
 		piecesLeft2.setBounds(674, 415, 71, 35);
 		frmCheckers.getContentPane().add(piecesLeft2);
+		piecesLeft2.setText(game.getOpponentLeft().toString());
 		
 		piecesTaken2 = new JTextField();
 		lblPiecesTaken2.setLabelFor(piecesTaken2);
@@ -225,6 +230,7 @@ public class GameWindow {
 		piecesTaken2.setColumns(10);
 		piecesTaken2.setBounds(674, 458, 71, 35);
 		frmCheckers.getContentPane().add(piecesTaken2);
+		piecesTaken2.setText(game.getOpponentTaken().toString());
 		
 		JLabel lblVS = new JLabel("VS");
 		lblVS.setForeground(Color.RED);
@@ -238,11 +244,6 @@ public class GameWindow {
 		lblPlayer1.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		lblPlayer1.setBounds(537, 6, 86, 29);
 		frmCheckers.getContentPane().add(lblPlayer1);
-		
-		game = new Game(false);
-		game.setBackground(new Color(139, 69, 19));
-		game.setBounds(6, 6, 521, 424);
-		frmCheckers.getContentPane().add(game);
 		
 		JButton buttonHint = new JButton("Hint");
 		buttonHint.setBounds(656, 570, 89, 23);

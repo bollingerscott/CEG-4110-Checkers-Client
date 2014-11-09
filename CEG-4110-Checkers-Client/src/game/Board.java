@@ -13,6 +13,7 @@ public class Board extends JPanel implements MouseListener{
 	
 	private final int LENGTH = 8;
 	private Tile[][] board;
+	private Integer blackLeft = 0, blackTaken = 0, redLeft = 0, redTaken = 0;
 	private boolean click = false;
 	private final int TILE_LENGTH = 50;
 	private int fr, fc, tr, tc;
@@ -60,7 +61,6 @@ public class Board extends JPanel implements MouseListener{
 			x = 0;
 			for (int j = 0; j < LENGTH; j++){
 				Tile currentTile = board[i][j];
-				currentTile.paintComponent(g);
 				g.drawImage(currentTile.getTile(), x, y, null);
 				if (currentTile.isOccupied()){
 					currentTile.getPiece().paintComponent(g);
@@ -145,6 +145,38 @@ public class Board extends JPanel implements MouseListener{
 		
 	}
 	
+	public Integer getBlackLeft() {
+		return blackLeft;
+	}
+
+	public void setBlackLeft(Integer left) {
+		this.blackLeft = left;
+	}
+
+	public Integer getBlackTaken() {
+		return blackTaken;
+	}
+
+	public void setBlackTaken(Integer taken) {
+		this.blackTaken = taken;
+	}
+
+	public Integer getRedLeft() {
+		return redLeft;
+	}
+
+	public void setRedLeft(Integer opponentLeft) {
+		this.redLeft = opponentLeft;
+	}
+
+	public Integer getRedTaken() {
+		return redTaken;
+	}
+
+	public void setRedTaken(Integer opponentTaken) {
+		this.redTaken = opponentTaken;
+	}
+
 	public int getFr() {
 		return fr;
 	}
@@ -217,13 +249,17 @@ public class Board extends JPanel implements MouseListener{
 				}
 				else if (state == 1){
 					tile.setOccupied(true, new Checker_Piece("black", x, y));
+					blackLeft++;
 				}
 				else {
 					tile.setOccupied(true, new Checker_Piece("red", x, y));
+					redLeft++;
 				}
 				x += TILE_LENGTH;
 			}
 		}
+		redTaken = 12 - redLeft;
+		blackTaken = 12 - blackLeft;
 	}
 }
 

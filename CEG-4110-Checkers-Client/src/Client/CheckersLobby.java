@@ -1,6 +1,5 @@
 package Client;
 
-import game.Board;
 import game.GameWindow;
 
 import java.util.*;
@@ -71,6 +70,8 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 	private JTextField serverTextField;
 	private JTextField Username;
 	private JButton btnStartClient;
+	
+	private GameWindow game;
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -369,16 +370,18 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 				for (int x = 0; x < 19; x++)
 					curBoardState[y][x] = 0;
 		}
+		game = new GameWindow(false, serverConnection);
+		game.getGame().setUser(myName);
 	}
 
 	// alert that your color is Black, for the game.
 	public void colorBlack() {
-
+		game.getGame().setColor("black");
 	}
 
 	// alert that your color is Red, for the game.
 	public void colorRed() {
-
+		game.getGame().setColor("red");
 	}
 
 	// notice that your opponent has moved from position (fr,fc) to (tr,tc)
@@ -388,32 +391,36 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 
 	// server has updated the board state
 	public void curBoardState(int t, byte[][] boardState) {
-
+		game.getGame().setBoardState(boardState);
 	}
 
 	// notice that for the game you are playing, you win!
 	public void youWin() {
-
+		game.getGame().setGameStatus("win");
 	}
 
 	// notice that for the game you are playing, you lost.
 	public void youLose() {
 		debugOutput(">> youLose()");
+		game.getGame().setGameStatus("lose");
 	}
 
 	// its your turn.
 	public void yourTurn() {
 		debugOutput(">> yourTurn()");
+		game.getGame().setTurn(true);
 	}
 
 	// you are now observing table tid.
 	public void nowObserving(int tid) {
 		debugOutput(">> nowObserving(" + tid + ")");
+		game.getGame().setObserver(true);
 	}
 
 	// you stopped observing table tid.
 	public void stoppedObserving(int tid) {
 		debugOutput(">> stoppedObserving(" + tid + ")");
+		game.getGame().setObserver(false);
 	}
 
 	/**

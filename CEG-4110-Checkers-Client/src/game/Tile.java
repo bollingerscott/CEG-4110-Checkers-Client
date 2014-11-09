@@ -29,10 +29,6 @@ public class Tile extends JPanel implements MouseListener {
 		addMouseListener(this);
 	}
 	
-	protected void paintComponent(Graphics g){
-		
-	}
-	
 	public String getColor() {
 		return color;
 	}
