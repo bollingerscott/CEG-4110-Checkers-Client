@@ -53,13 +53,11 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 	private JTextField Username;
 	private JButton btnStartClient;
 
-	
 	private GameWindow game;
 
 	private final String DEFAULT_SERVER_IP = "::1"; // Usefor For debugging-
 													// Brad local server = ::1,
 													// derekServer 137.99.11.115
-
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
@@ -141,6 +139,7 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 		super();
 		lobbyUserList = new ArrayList<String>();
 		curState = State.notConnected;
+		myLobby.syncState(curState);
 		initialize();
 	}
 
@@ -196,8 +195,9 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 				} else {
 					System.out.println("Connection success");
 					curState = State.connected;
+					myLobby.syncState(curState);
 					frame.setVisible(false);
-					myLobby.startWindow(serverConnection, name);
+					myLobby.startWindow(serverConnection, name, curState);
 				}
 			}
 
@@ -237,6 +237,7 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 	public void connectionOK() {
 		debugOutput("Server says connection OK!");
 		curState = State.connected;
+		myLobby.syncState(curState);
 	}
 
 	public void nowJoinedLobby(String user) {
@@ -273,12 +274,14 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 	// alert that you have joined the lobby
 	public void youInLobby() {
 		curState = State.inLobby;
+		myLobby.syncState(curState);
 		output(">> Welcome to the game lobby.");
 	}
 
 	// alert that you have left the lobby
 	public void youLeftLobby() {
 		curState = State.connected;
+		myLobby.syncState(curState);
 		output(">> You have left the game lobby.");
 	}
 
@@ -312,6 +315,8 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 	// alert that you have joined the table with id tid.
 	public void joinedTable(int tid) {
 		curState = State.onTable;
+		myLobby.syncState(curState);
+
 		debugOutput(">> You have joined table " + Integer.toString(tid));
 		// TODO Table related logic
 	}
@@ -319,6 +324,7 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 	// alert that you have left your table.
 	public void alertLeftTable() {
 		curState = State.connected;
+		myLobby.syncState(curState);
 		debugOutput(">> You have left the table");
 		// TODO Table related logic
 	}
@@ -326,6 +332,8 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 	// alert that at the table you are sitting at, a game is starting.
 	public void gameStart() {
 		curState = State.inGame;
+		myLobby.syncState(curState);
+
 		if (isCheckers) {
 			curBoardState = new byte[8][8];
 			for (int y = 0; y < 8; y++) {
@@ -403,90 +411,99 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 	// /////////////////////////////////////////////////Error messages
 	// ///////////////////////////////////////////////////////////////
 	public void networkException(String msg) {
-		JOptionPane.showMessageDialog(null, "A network exception has occured. Connection lost.", "Error",
-                JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(null,
+				"A network exception has occured. Connection lost.", "Error",
+				JOptionPane.ERROR_MESSAGE);
 		curState = State.notConnected;
+		myLobby.syncState(curState);
+
 	}
 
 	public void nameInUseError() {
 		Username.setText("");
-		JOptionPane.showMessageDialog(null, "The name requested is in use. Please choose another.", "Error",
-                JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(null,
+				"The name requested is in use. Please choose another.",
+				"Error", JOptionPane.ERROR_MESSAGE);
 		curState = State.notConnected;
+		myLobby.syncState(curState);
+
 		serverTextField.setText(DEFAULT_SERVER_IP);
 	}
 
 	public void nameIllegal() throws RemoteException {
-		JOptionPane.showMessageDialog(null, "The name requested is in illegal. Please choose another.", "Error",
-                JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(null,
+				"The name requested is in illegal. Please choose another.",
+				"Error", JOptionPane.ERROR_MESSAGE);
 		curState = State.notConnected;
+		myLobby.syncState(curState);
+
 		Username.setText("");
 	}
 
 	// the requested move is illegal.
 	public void illegalMove() {
-		//TODO GAMELOGIC?
+		// TODO GAMELOGIC?
 		output(">> That move is illegal!");
 	}
 
 	// the table your trying to join is full.
 	public void tableFull() {
-		//TODO TABLE LOGIC
+		// TODO TABLE LOGIC
 		output(">> The table you are trying to join is full. Please choose another one.");
 	}
 
 	// the table queried does not exist.
 	public void tblNotExists() {
-		//TODO TABLE LOGIC
+		// TODO TABLE LOGIC
 		debugOutput(">> tblNotExists()");
 	}
 
 	// called if you say you are ready on a table with no current game.
 	public void gameNotCreatedYet() {
-		//TODO TABLE LOGIC/GAME LOGIC?
+		// TODO TABLE LOGIC/GAME LOGIC?
 		output(">> Please wait for an opponent before starting the game.");
 	}
 
 	// called if it is not your turn but you make a move.
 	public void notYourTurn() {
-		//TODO GAME LOGIc
+		// TODO GAME LOGIc
 		output(">> It is not your turn!");
 	}
 
 	// called if you send a stop observing command but you are not observing a
 	// table.
 	public void notObserving() {
-		//TODO OBserver logic
+		// TODO OBserver logic
 		debugOutput(">> notObserving()");
 	}
 
 	// called if you send a game command but your opponent is not ready
 	public void oppNotReady() {
-		//TODO Table logic/Game logic?
+		// TODO Table logic/Game logic?
 		output(">> Please wait for your opponent to start the game.");
 	}
 
 	// you cannot perform the requested operation because you are in the lobby.
 	public void errorInLobby() {
-		//TODO Lobby logic
+		// TODO Lobby logic
 		output(">> You cannot perform that action from within the lobby.");
 	}
 
 	// called if the client sends an ill-formated TCP message
 	public void badMessage() {
-		//TODO Lobby logic?
+		// TODO Lobby logic?
 		debugOutput(">> badMessage()");
 	}
 
 	// called when your opponent leaves the table
 	public void oppLeftTable() {
-		//TODO Table logic
+		// TODO Table logic
 		debugOutput(">> oppLeftTable()");
 	}
 
 	// you cannot perform the requested op because you are not in the lobby.
 	public void notInLobby() {
-		//TODO lobby logic
+		// TODO lobby logic
 		output(">> You cannot perform that action from outside of the lobby.");
 	}
 }

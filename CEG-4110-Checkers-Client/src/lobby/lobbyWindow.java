@@ -7,6 +7,8 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.Icon;
 import javax.swing.JFrame;
@@ -34,6 +36,7 @@ import java.util.ArrayList;
 import javax.swing.ScrollPaneConstants;
 
 import table.Table;
+import Client.CheckersLobby.State;
 import RMIConnection.Interfaces.RMIServerInterface;
 
 public class lobbyWindow {
@@ -50,20 +53,28 @@ public class lobbyWindow {
 	private ArrayList<String> usersInMainChat;
 	private ArrayList<Integer> listOfTables;
 	private JTextArea listOfUsers;
-	
-	
-	private Table currentTable; //Declared these for general use? feel free to edit BR
+	private static State curState;
+	private boolean newTableCreation;
+	private Map<JLabel, Integer> tidHashTable; // used for extracting tid from a
+												// jlabel
+	private Table currentTable; // Declared these for general use? feel free to
+								// edit BR
 	private Game currentGame;
 	private Game currentObservedGame;
+
 	/**
 	 * Starts window, not done in constructor because constructor called
 	 * intially. This is because table list and user list were being sent before
 	 * the lobby was made causing issues
+	 * 
+	 * @param curState2
 	 */
 
-	public void startWindow(RMIServerInterface server, String name) {
+	public void startWindow(RMIServerInterface server, String name,
+			Client.CheckersLobby.State curState) {
 		serverConnection = server;
 		myName = name;
+		this.curState = curState;
 		initialize();
 
 		int[] myIntArray = new int[listOfTables.size()];
@@ -73,13 +84,18 @@ public class lobbyWindow {
 		addTables(myIntArray);
 		updateUsers();
 	}
+
 	/**
-	 * Init for lobby. sets table and user list so they can be edited before the table window is actually called up
+	 * Init for lobby. sets table and user list so they can be edited before the
+	 * table window is actually called up
 	 */
 	public lobbyWindow() {
 		super();
 		usersInMainChat = new ArrayList<String>();
 		listOfTables = new ArrayList<Integer>();
+		curState = State.notConnected;
+		tidHashTable = new HashMap<JLabel, Integer>();
+		newTableCreation = false;
 	}
 
 	/**
@@ -110,15 +126,18 @@ public class lobbyWindow {
 		chatSendButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (chatInputField.getText().length() > 0) {
-					try {
-						serverConnection.sendMsg_All(chatInputField.getText());
-					} catch (RemoteException e) {
-						e.printStackTrace();
-						System.out.println("Caught error sending message?");
+					if (curState == State.inLobby) {
+						try {
+							serverConnection.sendMsg_All(chatInputField
+									.getText());
+						} catch (RemoteException e) {
+							e.printStackTrace();
+							System.out.println("Caught error sending message?");
 
-					} finally {
-						chatInputField.setText("");
+						}
 					}
+					chatInputField.setText("");
+
 				}
 			}
 		});
@@ -147,19 +166,38 @@ public class lobbyWindow {
 		JPanel tableControlButtons = new JPanel();
 		tableControlButtons.setBounds(556, 560, 446, 73);
 		frame.getContentPane().add(tableControlButtons);
-		tableControlButtons.setLayout(null); 
+		tableControlButtons.setLayout(null);
 
 		JButton btnJoinTable = new JButton("Join Table");
 		btnJoinTable.setBounds(10, 11, 145, 43);
-		tableControlButtons.add(btnJoinTable);//TODO Table logic?
+		tableControlButtons.add(btnJoinTable);// TODO Table logic?
+		btnJoinTable.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if (curState.equals(State.inLobby)) {
+						int tid = tidHashTable.get(currentlyActiveTable);
+						serverConnection.joinTable(myName, tid);
+						// TODO JOIN TABLE LOGIC
+						// If successful?
+					}
+				} catch (RemoteException e1) {
+					e1.printStackTrace();
+				}
+
+			}
+		});
 
 		JButton btnCreateTable = new JButton("Create Table");
 		btnCreateTable.setBounds(165, 11, 127, 43);
 		tableControlButtons.add(btnCreateTable);
 		btnCreateTable.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try { //TODO Table logic?
-					serverConnection.makeTable(myName);
+				try {
+					if (curState.equals(State.inLobby)) {
+						serverConnection.makeTable(myName);
+						// TODO Making table logic.
+						newTableCreation = true;
+					}
 				} catch (RemoteException e1) {
 					e1.printStackTrace();
 				}
@@ -170,6 +208,16 @@ public class lobbyWindow {
 		JButton btnObserveTable = new JButton("Observe Table");
 		btnObserveTable.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+
+				try {
+					int tid = tidHashTable.get(currentlyActiveTable);
+					System.out.println(tid);
+					serverConnection.observeTable(myName, tid);
+					// TODO insert observe table logic here
+				} catch (RemoteException e1) {
+					e1.printStackTrace();
+				}
+
 			}
 		});
 		btnObserveTable.setBounds(309, 11, 127, 43);
@@ -178,6 +226,7 @@ public class lobbyWindow {
 		JButton btnWatchReplays = new JButton("Watch Replays");
 		btnWatchReplays.setBounds(697, 644, 196, 42);
 		frame.getContentPane().add(btnWatchReplays);
+		// TODO stretch goal of replays window. Don't focus now
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(556, 11, 446, 539);
@@ -190,33 +239,46 @@ public class lobbyWindow {
 		frame.setVisible(true);
 
 	}
-	
-	
-	//Adds intial tables to list before lobby window is shown
+
+	// Adds intial tables to list before lobby window is shown
 	public void addInitialTables(int[] array) {
 		for (int i : array) {
 			listOfTables.add(i);
 		}
 	}
-	//Actually adds tables to panel
+
+	// Actually adds tables to panel
 	public void addTables(int[] array) {
 		for (int i = 0; i < array.length; i++) {
-			final JLabel table = new JLabel("");
-			table.setIcon(normalTableIcon);
+			final JLabel table = new JLabel();
+
 			table.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					if (currentlyActiveTable != null) {
-						currentlyActiveTable.setIcon(normalTableIcon);
+					if (curState == State.inLobby) {
+						if (currentlyActiveTable != null) {
+							currentlyActiveTable.setIcon(normalTableIcon);
+						}
+						currentlyActiveTable = table;
+						table.setIcon(highlightedTableIcon);
 					}
-					currentlyActiveTable = table;
-					table.setIcon(highlightedTableIcon);
 				}
 			});
+			tidHashTable.put(table, array[i]);
+			if (newTableCreation) {
+				table.setIcon(highlightedTableIcon);
+				newTableCreation = false;
+				if (currentlyActiveTable != null) {
+					currentlyActiveTable.setIcon(normalTableIcon);
+				}
+				currentlyActiveTable = table;
+			} else
+				table.setIcon(normalTableIcon);
 			tableListFlowPanel.add(table);
 		}
 	}
-	//Adds to main table screen
+
+	// Adds to main table screen
 	public void addTextMainLobbyWindow(String string) {
 		if (chatTextArea != null) {
 			if (chatTextArea.getText().length() == 0) {
@@ -225,15 +287,16 @@ public class lobbyWindow {
 				chatTextArea.setText(chatTextArea.getText() + "\n" + string);
 		}
 	}
-	//Sets users before lobby has been intialized.
+
+	// Sets users before lobby has been intialized.
 	public void setUsers(ArrayList<String> lobbyUserList) {
 		usersInMainChat = lobbyUserList;
 	}
-	//Updates users based on list. Called when window is intialized.
+
+	// Updates users based on list. Called when window is intialized.
 	public void updateUsers() {
 
 		listOfUsers.setText("");
-
 		for (int i = 0; i < usersInMainChat.size(); i++) {
 			if (i == usersInMainChat.size() - 1) {
 				listOfUsers.setText(listOfUsers.getText()
@@ -243,5 +306,13 @@ public class lobbyWindow {
 						+ usersInMainChat.get(i) + "\n");
 		}
 
+	}
+
+	public State getState() {
+		return curState;
+	}
+
+	public void syncState(State a) {
+		curState = a;
 	}
 }
