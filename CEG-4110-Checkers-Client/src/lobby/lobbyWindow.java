@@ -98,7 +98,7 @@ public class lobbyWindow {
 		newTableCreation = false;
 	}
 
-	/**
+	/** Test GIT COmment
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
