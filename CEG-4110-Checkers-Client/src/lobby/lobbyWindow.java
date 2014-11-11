@@ -68,9 +68,7 @@ public class lobbyWindow {
 	 * Starts window, not done in constructor because constructor called
 	 * intially. This is because table list and user list were being sent before
 	 * the lobby was made causing issues
-	 * 
-	 * @param curState2
-	 */
+	 * */
 
 	public void startWindow(RMIServerInterface server, String name,
 			Client.CheckersLobby.State curState) {
