@@ -49,18 +49,20 @@ public class lobbyWindow {
 	private ImageIcon highlightedTableIcon;
 	private JTextArea chatTextArea;
 	private String myName;
-	JPanel tableListFlowPanel;
-	private ArrayList<String> usersInMainChat;
-	private ArrayList<Integer> listOfTables;
-	private JTextArea listOfUsers;
-	private static State curState;
-	private boolean newTableCreation;
+	private JPanel tableListFlowPanel;
+	private ArrayList<String> usersInMainChat; // List of users in main chat
+	private ArrayList<Integer> listOfTables; // List of table IDS (integers)
+	private JTextArea listOfUsers; // List of users text area, might change to
+									// JList for PMs
+	private static State curState; // Current state, not altered within here
+									// however important for knowing if clicks
+									// are possible. Sync'd from Checkers Lobby
+	private boolean newTableCreation; // Used for selecting your newly created
+										// table
 	private Map<JLabel, Integer> tidHashTable; // used for extracting tid from a
-												// jlabel
-	private Table currentTable; // Declared these for general use? feel free to
-								// edit BR
-	private Game currentGame;
-	private Game currentObservedGame;
+												// jlabel rather than making new
+												// class for JPANEL that contain
+												// an ID.
 
 	/**
 	 * Starts window, not done in constructor because constructor called
@@ -111,6 +113,7 @@ public class lobbyWindow {
 		frame.setBounds(100, 100, 1028, 735);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
+		frame.setTitle("Lobby");
 
 		JPanel chatPlaceHolderPanel = new JPanel();
 		chatPlaceHolderPanel.setBounds(10, 11, 404, 622);
@@ -174,11 +177,11 @@ public class lobbyWindow {
 		btnJoinTable.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					if (curState.equals(State.inLobby)) {
+					if (curState.equals(State.inLobby)
+							&& currentlyActiveTable != null) {
 						int tid = tidHashTable.get(currentlyActiveTable);
 						serverConnection.joinTable(myName, tid);
-						// TODO JOIN TABLE LOGIC
-						// If successful?
+						// Should que up lobby window server messages to handle
 					}
 				} catch (RemoteException e1) {
 					e1.printStackTrace();
@@ -195,7 +198,7 @@ public class lobbyWindow {
 				try {
 					if (curState.equals(State.inLobby)) {
 						serverConnection.makeTable(myName);
-						// TODO Making table logic.
+						// Should que up lobby window server messages to handle
 						newTableCreation = true;
 					}
 				} catch (RemoteException e1) {
@@ -208,16 +211,16 @@ public class lobbyWindow {
 		JButton btnObserveTable = new JButton("Observe Table");
 		btnObserveTable.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
-				try {
-					int tid = tidHashTable.get(currentlyActiveTable);
-					System.out.println(tid);
-					serverConnection.observeTable(myName, tid);
-					// TODO insert observe table logic here
-				} catch (RemoteException e1) {
-					e1.printStackTrace();
+				if (currentlyActiveTable != null) {
+					try {
+						int tid = tidHashTable.get(currentlyActiveTable);
+						System.out.println(tid);
+						serverConnection.observeTable(myName, tid);
+						// Should que up lobby window server messages to handle
+					} catch (RemoteException e1) {
+						e1.printStackTrace();
+					}
 				}
-
 			}
 		});
 		btnObserveTable.setBounds(309, 11, 127, 43);
@@ -226,7 +229,7 @@ public class lobbyWindow {
 		JButton btnWatchReplays = new JButton("Watch Replays");
 		btnWatchReplays.setBounds(697, 644, 196, 42);
 		frame.getContentPane().add(btnWatchReplays);
-		// TODO stretch goal of replays window. Don't focus now
+		// TODO stretch goal of replays window. Don't focus now.
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(556, 11, 446, 539);
@@ -315,4 +318,5 @@ public class lobbyWindow {
 	public void syncState(State a) {
 		curState = a;
 	}
+
 }

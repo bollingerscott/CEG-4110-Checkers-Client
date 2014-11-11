@@ -15,6 +15,7 @@ import java.rmi.server.UnicastRemoteObject;
 
 import javax.swing.*;
 
+import table.Table;
 import lobby.lobbyWindow;
 
 /**
@@ -54,7 +55,9 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 	private JButton btnStartClient;
 
 	private GameWindow game;
-
+	private Table myTable;
+	
+	
 	private final String DEFAULT_SERVER_IP = "::1"; // Usefor For debugging-
 													// Brad local server = ::1,
 													// derekServer 137.99.11.115
@@ -294,7 +297,12 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 	// this is received whenever anyone joins or leaves a table,
 	// or if table state is queried by calling getTblStatus()
 	public void onTable(int tid, String blackSeat, String redSeat) {
-		System.out.println("outputmethod on table");
+	
+		System.out.println("Should have created table");
+		myTable = new Table(serverConnection,myName,tid,blackSeat,redSeat);
+
+		//Add setting black and red seat names, aswell as TID somewhere.
+		
 		// TODO Table related logic
 
 	}
@@ -316,15 +324,15 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 	public void joinedTable(int tid) {
 		curState = State.onTable;
 		myLobby.syncState(curState);
-
 		debugOutput(">> You have joined table " + Integer.toString(tid));
-		// TODO Table related logic
 	}
 
 	// alert that you have left your table.
 	public void alertLeftTable() {
 		curState = State.connected;
 		myLobby.syncState(curState);
+		
+		//myTable.closeWindow(); //TODO add closing window here
 		debugOutput(">> You have left the table");
 		// TODO Table related logic
 	}
