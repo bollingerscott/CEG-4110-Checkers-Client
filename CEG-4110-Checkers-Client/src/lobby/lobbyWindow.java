@@ -37,7 +37,7 @@ import java.util.ArrayList;
 
 import javax.swing.ScrollPaneConstants;
 
-import table.Table;
+import table.TableScreen;
 import Client.CheckersLobby.State;
 import RMIConnection.Interfaces.RMIServerInterface;
 

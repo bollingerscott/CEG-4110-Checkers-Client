@@ -15,7 +15,7 @@ import java.rmi.server.UnicastRemoteObject;
 
 import javax.swing.*;
 
-import table.Table;
+import table.TableScreen;
 import lobby.lobbyWindow;
 
 /**
@@ -55,7 +55,7 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 	private JButton btnStartClient;
 
 	private GameWindow game;
-	private Table myTable;
+	private TableScreen myTable;
 	
 	
 	private final String DEFAULT_SERVER_IP = "::1"; // Usefor For debugging-
@@ -298,10 +298,14 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 	// or if table state is queried by calling getTblStatus()
 	public void onTable(int tid, String blackSeat, String redSeat) {
 	
+		//TODO: have a list of tables. to check against. This currently assumes one (myTable)
 		System.out.println("Should have created table");
-		myTable = new Table(serverConnection,myName,tid,blackSeat,redSeat);
-
-		//Add setting black and red seat names, aswell as TID somewhere.
+		if (myTable == null) {
+			myTable = new TableScreen(serverConnection,myName,tid,blackSeat,redSeat);
+		}
+		else {
+			myTable.update(blackSeat, redSeat);
+		}
 		
 		// TODO Table related logic
 
@@ -312,6 +316,8 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 	public void tableGame(int tid) throws RemoteException {
 		System.out.println("outputmethod tablegame");
 		// TODO Table related logic
+		output(">> tableGame called");
+		newTable(tid);
 	}
 
 	public void newTable(int t) {
@@ -325,6 +331,8 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 		curState = State.onTable;
 		myLobby.syncState(curState);
 		debugOutput(">> You have joined table " + Integer.toString(tid));
+		
+		//TODO: grab table and make a TableScreen
 	}
 
 	// alert that you have left your table.
@@ -505,6 +513,10 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 
 	// called when your opponent leaves the table
 	public void oppLeftTable() {
+		if (myTable != null) {
+			myTable.oppLeft();
+		}
+		this.curState = State.inLobby;
 		// TODO Table logic
 		debugOutput(">> oppLeftTable()");
 	}
