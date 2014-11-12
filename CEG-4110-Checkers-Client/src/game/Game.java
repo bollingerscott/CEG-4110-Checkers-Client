@@ -5,13 +5,21 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.ImageProducer;
 import java.rmi.RemoteException;
 
 import javax.swing.border.BevelBorder;
 
 import RMIConnection.Interfaces.RMIServerInterface;
 
+/*
+ * The panel for the game
+ * Sets the background image and draws the board
+ * Sends user interaction to the board
+ * Interfaces with the server for move operation with coordinates from board
+ * 
+ * @author Scott Bollinger
+ */
+@SuppressWarnings("serial")
 public class Game extends JPanel implements MouseListener {
 
 	private Board board;
@@ -26,14 +34,16 @@ public class Game extends JPanel implements MouseListener {
 	private Image table;
 	private boolean observer;
 	private Integer left, taken, opponentLeft, opponentTaken;
-	
+	private GameWindow window;
 	
 	/**
 	 * Create the panel.
 	 */
-	public Game(boolean observer, RMIServerInterface server) {
+	@SuppressWarnings("static-access")
+	public Game(GameWindow window, boolean observer, RMIServerInterface server) {
 		this.server = server;
 		this.setObserver(observer);
+		this.window = window;
 
 		setBorder(new BevelBorder(BevelBorder.RAISED, new Color(139, 69, 19), null, null, null));
 		setLayout(null);
@@ -47,6 +57,8 @@ public class Game extends JPanel implements MouseListener {
 		table = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/table.jpg"));
 		setStats();
 		addMouseListener(this);
+		
+		
 	}
 	
 	protected void paintComponent(Graphics g){
@@ -63,11 +75,11 @@ public class Game extends JPanel implements MouseListener {
 		try {
 			server.move(user, fr, fc, tr, tc);
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		setStats();
 		moves += 1;
+		window.setMoves(moves);
 	}
 	
 	public Integer getLeft() {
@@ -139,6 +151,14 @@ public class Game extends JPanel implements MouseListener {
 
 	public void setColor(String color) {
 		this.color = color;
+		if (color.equals("black")){
+			board.setFlip(true);
+			board.setOppositeColor("red");
+		}
+		else {
+			board.setOppositeColor("black");
+		}
+		board.setColor(color);
 	}
 
 	public int getTid() {
@@ -165,7 +185,7 @@ public class Game extends JPanel implements MouseListener {
 		this.turn = turn;
 	}
 
-	@Override
+	@Override//TODO sound fx
 	public void mouseClicked(MouseEvent e) {
 		if (!isObserver()){
 			board.mouseClicked(e);
@@ -178,25 +198,21 @@ public class Game extends JPanel implements MouseListener {
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 

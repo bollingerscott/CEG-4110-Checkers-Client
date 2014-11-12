@@ -6,6 +6,12 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
 
+/*
+ * Defines a tile
+ * 
+ * @author Scott Bollinger
+ */
+@SuppressWarnings("serial")
 public class Tile extends JPanel implements MouseListener {
 	
 	private String color;
@@ -13,7 +19,7 @@ public class Tile extends JPanel implements MouseListener {
 	private boolean occupied;
 	private Checker_Piece piece;
 	private int coordX, coordY;
-	private boolean click = false;
+	private boolean enable = false;
 	
 	public Tile(String color){
 		this.color = color;
@@ -92,6 +98,7 @@ public class Tile extends JPanel implements MouseListener {
 		else {
 			getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_piece.png")));
 		}
+		
 	}
 
 	@Override
@@ -121,6 +128,20 @@ public class Tile extends JPanel implements MouseListener {
 	public void mouseReleased(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public boolean isEnable() {
+		return enable;
+	}
+
+	public void setEnable(boolean enable) {
+		this.enable = enable;
+		if (enable){
+			setTile(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/enabled_tile.jpg")));
+		}
+		else {
+			setTile(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_tile.jpg")));
+		}
 	}
 
 

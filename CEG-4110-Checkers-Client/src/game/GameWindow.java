@@ -3,23 +3,32 @@ package game;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+
 import java.awt.Color;
 
 import javax.swing.JTextField;
-import javax.swing.JScrollPane;
 import javax.swing.JButton;
 
 import java.awt.Font;
-
-import javax.swing.JTextArea;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JLabel;
 
 import RMIConnection.Interfaces.RMIServerInterface;
+import Chat.ChatBar;
 
+/*
+ * The frame for the game
+ * includes game instance and chat
+ * Interfaces with the lobby
+ * 
+ * @author Scott Bollinger
+ */
 public class GameWindow {
 
 	private JFrame frmCheckers;
+
 	private JTextField player1name;
 	private JTextField player2name;
 	private JTextField moves1;
@@ -30,19 +39,19 @@ public class GameWindow {
 	private JTextField piecesTaken2;
 	private static RMIServerInterface server;
 	private boolean observer;
+	private Integer oppMoves = 0;
+	private Integer moves = 0;//TODO fix updating stats by moving stats into game class =(
 	private Game game;
 
-	public Game getGame() {
-		return game;
-	}
 
 	/**
-	 * Launch the application.
+	 * Launch the application. for testing
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					@SuppressWarnings("unused")
 					GameWindow window = new GameWindow(false, null);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -55,10 +64,13 @@ public class GameWindow {
 	/**
 	 * Create the application.
 	 */
+	@SuppressWarnings("static-access")
 	public GameWindow(boolean observer, RMIServerInterface server) {
 		this.server = server;
 		this.observer = observer;
 		initialize();
+		
+		
 	}
 
 	/**
@@ -73,41 +85,19 @@ public class GameWindow {
 		frmCheckers.setBounds(100, 100, 762, 637);
 		frmCheckers.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmCheckers.getContentPane().setLayout(null);
+		frmCheckers.addWindowListener(new WindowAdapter() {
+			
+			public void windowClosing(WindowEvent e) {
+				frmCheckers.setVisible(false);
+				frmCheckers.dispose();
+			}
+		});
 		
-		game = new Game(observer, server);
+		game = new Game(this, observer, server);
 		game.setForeground(Color.ORANGE);
 		game.setBackground(new Color(139, 69, 19));
 		game.setBounds(6, 6, 521, 424);
 		frmCheckers.getContentPane().add(game);
-		
-		JButton send = new JButton("Send");
-		send.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		send.setForeground(Color.BLACK);
-		send.setBounds(451, 560, 76, 37);
-		frmCheckers.getContentPane().add(send);
-		
-		JScrollPane scrollTextArea = new JScrollPane();
-		scrollTextArea.setBounds(6, 441, 521, 108);
-		frmCheckers.getContentPane().add(scrollTextArea);
-
-		
-		JTextArea textArea = new JTextArea();
-		textArea.setBackground(Color.WHITE);
-		scrollTextArea.setViewportView(textArea);
-		textArea.setEditable(false);
-		textArea.setWrapStyleWord(true);
-		
-		JScrollPane scrollChatInput = new JScrollPane();
-		scrollChatInput.setBounds(6, 560, 435, 37);
-		frmCheckers.getContentPane().add(scrollChatInput);
-		
-		JTextArea chatInput = new JTextArea();
-		chatInput.setFont(new Font("Monospaced", Font.PLAIN, 14));
-		chatInput.setBackground(Color.WHITE);
-		chatInput.setLineWrap(true);
-		scrollChatInput.setViewportView(chatInput);
-		chatInput.setColumns(5);
-		chatInput.setWrapStyleWord(true);
 		
 		player1name = new JTextField();
 		player1name.setEditable(false);
@@ -126,7 +116,7 @@ public class GameWindow {
 		player2name.setBounds(537, 326, 208, 37);
 		frmCheckers.getContentPane().add(player2name);
 		player2name.setText(game.getOpponent());
-		
+		//TODO get opponent name somehow
 		
 		JLabel lblOfMoves1 = new JLabel("# of Moves");
 		lblOfMoves1.setForeground(Color.LIGHT_GRAY);
@@ -142,7 +132,7 @@ public class GameWindow {
 		moves1.setBounds(674, 94, 71, 35);
 		frmCheckers.getContentPane().add(moves1);
 		moves1.setColumns(10);
-		moves1.setText(game.getMoves().toString());
+		moves1.setText(moves.toString());
 		
 		JLabel lblPiecesLeft1 = new JLabel("Pieces Left");
 		lblPiecesLeft1.setFont(new Font("Tahoma", Font.PLAIN, 20));
@@ -209,8 +199,7 @@ public class GameWindow {
 		moves2.setColumns(10);
 		moves2.setBounds(674, 374, 71, 35);
 		frmCheckers.getContentPane().add(moves2);
-		Integer moves = game.getMoves() - 1;
-		moves2.setText(moves.toString());
+		moves2.setText(oppMoves.toString());
 		
 		piecesLeft2 = new JTextField();
 		lblPiecesLeft2.setLabelFor(piecesLeft2);
@@ -248,7 +237,82 @@ public class GameWindow {
 		JButton buttonHint = new JButton("Hint");
 		buttonHint.setBounds(656, 570, 89, 23);
 		frmCheckers.getContentPane().add(buttonHint);
+		
+		ChatBar chatBar = new ChatBar(server);
+		chatBar.setBounds(6, 436, 521, 161);
+		frmCheckers.getContentPane().add(chatBar);
 		frmCheckers.repaint();
+		//TODO hint ai algorithm stretch goal
+		
 
 	}
+
+	public Integer getOppMoves() {
+		return oppMoves;
+	}
+
+	public void setOppMoves(Integer oppMoves) {
+		this.oppMoves = oppMoves;
+	}
+	
+	public JTextField getMoves1() {
+		return moves1;
+	}
+
+	public void setMoves1(JTextField moves1) {
+		this.moves1 = moves1;
+	}
+
+	public JTextField getPiecesLeft1() {
+		return piecesLeft1;
+	}
+
+	public void setPiecesLeft1(JTextField piecesLeft1) {
+		this.piecesLeft1 = piecesLeft1;
+	}
+
+	public JTextField getPiecesTaken1() {
+		return piecesTaken1;
+	}
+
+	public void setPiecesTaken1(JTextField piecesTaken1) {
+		this.piecesTaken1 = piecesTaken1;
+	}
+
+	public JTextField getMoves2() {
+		return moves2;
+	}
+
+	public void setMoves2(JTextField moves2) {
+		this.moves2 = moves2;
+	}
+
+	public JTextField getPiecesLeft2() {
+		return piecesLeft2;
+	}
+
+	public void setPiecesLeft2(JTextField piecesLeft2) {
+		this.piecesLeft2 = piecesLeft2;
+	}
+
+	public JTextField getPiecesTaken2() {
+		return piecesTaken2;
+	}
+
+	public void setPiecesTaken2(JTextField piecesTaken2) {
+		this.piecesTaken2 = piecesTaken2;
+	}
+
+	public Integer getMoves() {
+		return moves;
+	}
+
+	public void setMoves(Integer moves) {
+		this.moves = moves;
+	}
+	
+	public Game getGame() {
+		return game;
+	}
+
 }

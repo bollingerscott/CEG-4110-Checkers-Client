@@ -379,6 +379,7 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 	// notice that your opponent has moved from position (fr,fc) to (tr,tc)
 	public void oppMove(int fr, int fc, int tr, int tc) {
 		debugOutput(">> oppMove(" + fr + "," + fc + "," + tr + "," + tc + ")");
+		game.setOppMoves(game.getOppMoves() + 1);
 	}
 
 	// server has updated the board state

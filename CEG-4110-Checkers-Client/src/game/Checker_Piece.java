@@ -2,6 +2,12 @@ package game;
 
 import java.awt.*;
 
+/*
+ * Defines a checker piece
+ * 
+ * @author Scott Bollinger
+ */
+@SuppressWarnings("serial")
 public class Checker_Piece extends Component {
 	
 	private String color;
