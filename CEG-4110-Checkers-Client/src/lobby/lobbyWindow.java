@@ -10,11 +10,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JButton;
+import javax.swing.ListModel;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -39,6 +41,9 @@ import table.Table;
 import Client.CheckersLobby.State;
 import RMIConnection.Interfaces.RMIServerInterface;
 
+import javax.swing.JList;
+import java.awt.Font;
+
 public class lobbyWindow {
 
 	private JFrame frame;
@@ -52,8 +57,7 @@ public class lobbyWindow {
 	private JPanel tableListFlowPanel;
 	private ArrayList<String> usersInMainChat; // List of users in main chat
 	private ArrayList<Integer> listOfTables; // List of table IDS (integers)
-	private JTextArea listOfUsers; // List of users text area, might change to
-									// JList for PMs
+	// JList for PMs
 	private static State curState; // Current state, not altered within here
 									// however important for knowing if clicks
 									// are possible. Sync'd from Checkers Lobby
@@ -63,6 +67,7 @@ public class lobbyWindow {
 												// jlabel rather than making new
 												// class for JPANEL that contain
 												// an ID.
+	private JList<String> jListOfUsers;
 
 	/**
 	 * Starts window, not done in constructor because constructor called
@@ -98,8 +103,10 @@ public class lobbyWindow {
 		newTableCreation = false;
 	}
 
-	/** Test GIT COmment
-	 * Initialize the contents of the frame.
+	/**
+	 * Test GIT COmment Initialize the contents of the frame.
+	 * 
+	 * @wbp.parser.entryPoint
 	 */
 	private void initialize() {
 
@@ -149,20 +156,6 @@ public class lobbyWindow {
 		chatTextArea.setEditable(false);
 		chatTextArea.setBounds(0, 0, 394, 576);
 		chatPlaceHolderPanel.add(chatTextArea);
-
-		JPanel listOfUsersPanel = new JPanel();
-		listOfUsersPanel.setBounds(424, 11, 122, 622);
-		frame.getContentPane().add(listOfUsersPanel);
-		listOfUsersPanel.setLayout(null);
-
-		JScrollPane scrollingUserList = new JScrollPane();
-		scrollingUserList.setBounds(0, 0, 122, 622);
-		listOfUsersPanel.add(scrollingUserList);
-
-		listOfUsers = new JTextArea();
-		listOfUsers.setEditable(false);
-		listOfUsers.setBackground(Color.LIGHT_GRAY);
-		scrollingUserList.setViewportView(listOfUsers);
 
 		JPanel tableControlButtons = new JPanel();
 		tableControlButtons.setBounds(556, 560, 446, 73);
@@ -237,6 +230,14 @@ public class lobbyWindow {
 		scrollPane.setViewportView(tableListFlowPanel);
 		tableListFlowPanel.setLayout(new GridLayout(0, 5, 0, 0));
 
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(424, 11, 123, 622);
+		frame.getContentPane().add(scrollPane_1);
+
+		jListOfUsers = new JList<String>();
+		jListOfUsers.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		scrollPane_1.setViewportView(jListOfUsers);
+
 		frame.setVisible(true);
 
 	}
@@ -296,16 +297,11 @@ public class lobbyWindow {
 
 	// Updates users based on list. Called when window is intialized.
 	public void updateUsers() {
-
-		listOfUsers.setText("");
-		for (int i = 0; i < usersInMainChat.size(); i++) {
-			if (i == usersInMainChat.size() - 1) {
-				listOfUsers.setText(listOfUsers.getText()
-						+ usersInMainChat.get(i));
-			} else
-				listOfUsers.setText(listOfUsers.getText()
-						+ usersInMainChat.get(i) + "\n");
+	    DefaultListModel<String> model = new DefaultListModel<String>();
+	    for (String userName : usersInMainChat) {
+			model.addElement(userName);
 		}
+		jListOfUsers.setModel(model);
 
 	}
 
@@ -316,5 +312,4 @@ public class lobbyWindow {
 	public void syncState(State a) {
 		curState = a;
 	}
-
 }

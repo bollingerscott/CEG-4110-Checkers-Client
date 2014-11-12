@@ -97,11 +97,16 @@ public class Table {
 
 	// Add default close operation of leaving table, probably using
 	// server.leaveTable?
+	
 	// Add a leave table button that does the same action
 
 	// Add a close window function that will be called in
-	// in gameStart() in lobbyWindow, for when both userse have readied up and
+	// in gameStart() in lobbyWindow, for when both users have readied up and
 	// game has started
 
-	// Add more space for each users name, longer names are getting cut off.
+	// Add more space for each users name, longer names are getting cut off
+	
+	// change, so you Don't directly change color of the button, have that done on server Calls
+	
+	//Add colors to each side
 }
