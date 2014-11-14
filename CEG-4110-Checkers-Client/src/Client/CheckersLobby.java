@@ -60,7 +60,7 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 	
 	private final String DEFAULT_SERVER_IP = "::1"; // Usefor For debugging-
 													// Brad local server = ::1,
-													// derekServer 137.99.11.115
+													// derekServer 137.99.11.115	130.108.28.165
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {

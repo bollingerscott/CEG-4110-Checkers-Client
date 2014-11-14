@@ -67,10 +67,6 @@ public class Game extends JPanel implements MouseListener {
 		repaint();
 	}
 	
-	public void draw(){
-		repaint();
-	}
-	
 	private void move(String user, int fr, int fc, int tr, int tc){
 		try {
 			server.move(user, fr, fc, tr, tc);
