@@ -41,7 +41,6 @@ public class Board extends JPanel implements MouseListener{
 	private String oppositeColor = "black";
 
 
-
 	public Board(){
 		super();
 		setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
@@ -146,11 +145,31 @@ public class Board extends JPanel implements MouseListener{
 	}
 
 	private void enable(Tile tile, boolean enable) {
+		if (tile.getPiece().getType().equals("king")){
+			try {
+				if (!board[tile.getCoordY()+1][tile.getCoordX()-1].isOccupied()) {
+					board[tile.getCoordY()+1][tile.getCoordX()-1].setEnable(enable);
+				}
+				else if (board[tile.getCoordY()-1][tile.getCoordX()-1].getPiece().getColor().equals(oppositeColor) && !(board[tile.getCoordY()+2][tile.getCoordX()-2].isOccupied())){
+					board[tile.getCoordY()+2][tile.getCoordX()-2].setEnable(enable);
+				}
+			}
+			catch (IndexOutOfBoundsException ex){}
+			try {
+				if (!board[tile.getCoordY()+1][tile.getCoordX()+1].isOccupied()) {
+					board[tile.getCoordY()+1][tile.getCoordX()+1].setEnable(enable);
+				}
+				else if (board[tile.getCoordY()+1][tile.getCoordX()+1].getPiece().getColor().equals(oppositeColor) && !(board[tile.getCoordY()+2][tile.getCoordX()+2].isOccupied())){
+					board[tile.getCoordY()+2][tile.getCoordX()+2].setEnable(enable);
+				}
+			}
+			catch (IndexOutOfBoundsException ex){}
+		}
 		try {
 			if (!board[tile.getCoordY()-1][tile.getCoordX()-1].isOccupied()) {
 				board[tile.getCoordY()-1][tile.getCoordX()-1].setEnable(enable);
 			}
-			else if (board[tile.getCoordY()-1][tile.getCoordX()-1].getPiece().getColor().equals(oppositeColor)){
+			else if (board[tile.getCoordY()-1][tile.getCoordX()-1].getPiece().getColor().equals(oppositeColor) && !(board[tile.getCoordY()-2][tile.getCoordX()-2].isOccupied())){
 				board[tile.getCoordY()-2][tile.getCoordX()-2].setEnable(enable);
 			}
 		}
@@ -159,11 +178,12 @@ public class Board extends JPanel implements MouseListener{
 			if (!board[tile.getCoordY()-1][tile.getCoordX()+1].isOccupied()) {
 				board[tile.getCoordY()-1][tile.getCoordX()+1].setEnable(enable);
 			}
-			else if (board[tile.getCoordY()-1][tile.getCoordX()+1].getPiece().getColor().equals(oppositeColor)){
+			else if (board[tile.getCoordY()-1][tile.getCoordX()+1].getPiece().getColor().equals(oppositeColor) && !(board[tile.getCoordY()-2][tile.getCoordX()+2].isOccupied())){
 				board[tile.getCoordY()-2][tile.getCoordX()+2].setEnable(enable);
 			}
 		}
 		catch (IndexOutOfBoundsException ex){}
+
 	}
 
 	@Override
@@ -295,11 +315,19 @@ public class Board extends JPanel implements MouseListener{
 					tile.setOccupied(false, null);
 				}
 				else if (state == 1){
-					tile.setOccupied(true, new Checker_Piece("black", x, y));
+					tile.setOccupied(true, new Checker_Piece("black", "regular", x, y));
 					blackLeft++;
 				}
-				else {
-					tile.setOccupied(true, new Checker_Piece("red", x, y));
+				else if (state == 2){
+					tile.setOccupied(true, new Checker_Piece("red", "regular", x, y));
+					redLeft++;
+				}
+				else if (state == 3){
+					tile.setOccupied(true, new Checker_Piece("black", "king", x, y));
+					blackLeft++;
+				}
+				else if (state == 4){
+					tile.setOccupied(true, new Checker_Piece("red", "king", x, y));
 					redLeft++;
 				}
 				x += TILE_LENGTH;
