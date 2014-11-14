@@ -188,11 +188,11 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 	private void inputSubmit() {
 		try {
 			if (curState.equals(State.notConnected)) {
-				String name = Username.getText();
+				this.myName = Username.getText(); //setting class variable
 				Username.setText("");
 				String ip = serverTextField.getText();
 				serverTextField.setText("");
-				if (!serverConnection.connectToServer(ip, name)) {
+				if (!serverConnection.connectToServer(ip, this.myName)) {
 					System.out
 							.println("Connection failed. Check console output of RMI process for information.");
 				} else {
@@ -200,7 +200,7 @@ public class CheckersLobby extends javax.swing.JFrame implements CheckersClient 
 					curState = State.connected;
 					myLobby.syncState(curState);
 					frame.setVisible(false);
-					myLobby.startWindow(serverConnection, name, curState);
+					myLobby.startWindow(serverConnection, this.myName, curState);
 				}
 			}
 

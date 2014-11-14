@@ -112,15 +112,15 @@ public class TableScreen {
 		this.blackSeat = blackSeat;
 		this.redSeat = redSeat;
 		if (blackSeat.equals("-1")) {
-			blackSeat = "Empty";
+			this.blackSeat = "Empty";
 		}
 		if (redSeat.equals("-1")) {
-			redSeat = "Empty";
+			this.redSeat = "Empty";
 		}
 		
 		//update UI
-		redState.setText(redSeat);
-		blackState.setText(blackSeat);
+		redState.setText(this.redSeat);
+		blackState.setText(this.blackSeat);
 		
 		//remove any previous actionListeners
 		for (ActionListener al : redState.getActionListeners()) {
@@ -157,6 +157,7 @@ public class TableScreen {
 		}
 		else {
 			System.out.println("Broken! no player on table with userName");
+			System.out.printf("username: %s, blackSeat: %s, redSeat: %s",userName,  blackSeat, redSeat);
 		}
 		
 	}
