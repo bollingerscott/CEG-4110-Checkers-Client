@@ -26,6 +26,7 @@ public class Game extends JPanel implements MouseListener {
 	private String user = "Scott";
 	private String opponent = "Opponent";
 	private Integer moves = 0;
+	private Integer opponentMoves = 0;
 	private String color = "red";
 	private static RMIServerInterface server;
 	private int tid;
@@ -34,16 +35,16 @@ public class Game extends JPanel implements MouseListener {
 	private Image table;
 	private boolean observer;
 	private Integer left, taken, opponentLeft, opponentTaken;
-	private GameWindow window;
+	private Stats stats;
 	
 	/**
 	 * Create the panel.
 	 */
 	@SuppressWarnings("static-access")
-	public Game(GameWindow window, boolean observer, RMIServerInterface server) {
+	public Game(Stats stats, boolean observer, RMIServerInterface server) {
 		this.server = server;
 		this.setObserver(observer);
-		this.window = window;
+		this.stats = stats;
 
 		setBorder(new BevelBorder(BevelBorder.RAISED, new Color(139, 69, 19), null, null, null));
 		setLayout(null);
@@ -56,26 +57,29 @@ public class Game extends JPanel implements MouseListener {
 		
 		table = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/table.jpg"));
 		setStats();
+		stats.getName1().setText(user);
+		stats.getName2().setText(opponent);
 		addMouseListener(this);
 		
-		
+		setColor("red");//TODO delete after testing
 	}
 	
 	protected void paintComponent(Graphics g){
 		board.paintComponent(g);
 		g.drawImage(table, 0, 0, null);
+		setStats();
 		repaint();
 	}
 	
 	private void move(String user, int fr, int fc, int tr, int tc){
+		setStats();
+		moves += 1;
 		try {
 			server.move(user, fr, fc, tr, tc);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
-		setStats();
-		moves += 1;
-		window.setMoves(moves);
+
 	}
 	
 	public Integer getLeft() {
@@ -123,6 +127,12 @@ public class Game extends JPanel implements MouseListener {
 			setOpponentTaken(board.getBlackTaken());
 			setOpponentLeft(board.getRedLeft());
 		}
+		stats.getMoves1().setText(moves.toString());
+		stats.getMoves2().setText(opponentMoves.toString());
+		stats.getLeft1().setText(left.toString());
+		stats.getLeft2().setText(opponentLeft.toString());
+		stats.getTaken1().setText(taken.toString());
+		stats.getTaken2().setText(opponentTaken.toString());
 	}
 	
 	public byte[][] getBoardState() {
@@ -139,6 +149,7 @@ public class Game extends JPanel implements MouseListener {
 
 	public void setUser(String user) {
 		this.user = user;
+		stats.getName1().setText(user);
 	}
 
 	public String getColor() {
@@ -150,9 +161,14 @@ public class Game extends JPanel implements MouseListener {
 		if (color.equals("black")){
 			board.setFlip(true);
 			board.setOppositeColor("red");
+			ImageIcon icon;
+			stats.getColor1().setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_piece.png"))));
+			stats.getColor2().setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_checker.png"))));
 		}
 		else {
 			board.setOppositeColor("black");
+			stats.getColor1().setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_checker.png"))));
+			stats.getColor2().setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_piece.png"))));
 		}
 		board.setColor(color);
 	}
@@ -226,6 +242,7 @@ public class Game extends JPanel implements MouseListener {
 
 	public void setOpponent(String opponent) {
 		this.opponent = opponent;
+		stats.getName2().setText(opponent);
 	}
 
 	public Integer getMoves() {
@@ -234,5 +251,13 @@ public class Game extends JPanel implements MouseListener {
 
 	public void setMoves(Integer moves) {
 		this.moves = moves;
+	}
+
+	public Integer getOpponentMoves() {
+		return opponentMoves;
+	}
+
+	public void setOpponentMoves(Integer opponentMoves) {
+		this.opponentMoves = opponentMoves;
 	}
 }
