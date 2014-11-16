@@ -67,12 +67,6 @@ public class lobbyWindow extends JFrame {
 		myName = name;
 		lobbyWindow.curState = curState;
 		initialize();
-
-		int[] myIntArray = new int[listOfTables.size()];
-		for (int i = 0; i < listOfTables.size(); i++) {
-			myIntArray[i] = listOfTables.get(i);
-		}
-		addTables(myIntArray);
 		updateUsers();
 	}
 
@@ -160,7 +154,8 @@ public class lobbyWindow extends JFrame {
 							&& currentlyActiveTable != null) {
 						int tid = tidHashTable.get(currentlyActiveTable);
 						serverConnection.joinTable(myName, tid);
-						// Should queue up lobby window server messages to handle
+						// Should queue up lobby window server messages to
+						// handle
 					}
 				} catch (RemoteException e1) {
 					e1.printStackTrace();
@@ -234,13 +229,16 @@ public class lobbyWindow extends JFrame {
 
 	// Adds intial tables to list before lobby window is shown
 	public void addInitialTables(int[] array) {
+		System.out.println("init tables size " + array.length);
 		for (int i : array) {
 			listOfTables.add(i);
 		}
+		addTables(array);
+		System.out.println(listOfTables.size());
 	}
-
 	// Actually adds tables to panel
 	public void addTables(int[] array) {
+		System.out.println("add tables called size : " + array.length);
 		for (int i = 0; i < array.length; i++) {
 			final JLabel table = new JLabel();
 
@@ -287,8 +285,8 @@ public class lobbyWindow extends JFrame {
 
 	// Updates users based on list. Called when window is intialized.
 	public void updateUsers() {
-	    DefaultListModel<String> model = new DefaultListModel<String>();
-	    for (String userName : usersInMainChat) {
+		DefaultListModel<String> model = new DefaultListModel<String>();
+		for (String userName : usersInMainChat) {
 			model.addElement(userName);
 		}
 		jListOfUsers.setModel(model);
