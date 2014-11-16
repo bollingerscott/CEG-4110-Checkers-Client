@@ -39,21 +39,26 @@ public class Game extends JPanel implements MouseListener {
 	private Stats stats;
 	private ImageIcon myIcon;
 	private ImageIcon opponentsIcon;
+	private boolean flip = false;
 	
 	/**
 	 * Create the panel.
 	 */
 
-	public Game(Stats stats, boolean observer, RMIServerInterface server, Table myTable) {
+	public Game(Stats stats, boolean observer, RMIServerInterface server, Table myTable, String color) {
 		Game.server = server;
 		this.setObserver(observer);
 		this.stats = stats;
 		this.myTable = myTable;
+		this.color = color;
+		if (color.equalsIgnoreCase("black")){
+			flip = true;
+		}
 
 		setBorder(new BevelBorder(BevelBorder.RAISED, new Color(139, 69, 19), null, null, null));
 		setLayout(null);
 		
-		board = new Board();
+		board = new Board(flip);
 		board.setBorder(new BevelBorder(BevelBorder.RAISED, Color.LIGHT_GRAY, new Color(128, 128, 128), null, null));
 		board.setBounds(54, 11, 402, 402);
 		add(board);
@@ -61,6 +66,7 @@ public class Game extends JPanel implements MouseListener {
 		
 		wood = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/table.jpg"));
 		setStats();
+		setColor(color);
 		
 		if (myTable.isPlayer1()){
 			user = myTable.getBlackseat();
@@ -187,7 +193,7 @@ public class Game extends JPanel implements MouseListener {
 	public void setColor(String color) {
 		this.color = color;
 		if (color.equals("black")){
-			board.setFlip(true);
+			board.setBoard_state(myTable.getBoardState());
 			board.setOppositeColor("red");
 			this.myIcon = (new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_piece.png"))));
 			this.opponentsIcon = (new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_checker.png"))));

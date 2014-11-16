@@ -67,9 +67,7 @@ public class GameWindow extends JFrame {
 		this.myLobby = myLobby;
 		this.myTable = myTable;
 		this.myColor = myColor;
-		initialize();
-		
-		
+		initialize();	
 	}
 
 	/**
@@ -99,11 +97,10 @@ public class GameWindow extends JFrame {
 		stats.setBounds(526, 6, 220, 553);
 		getContentPane().add(stats);
 		
-		game = new Game(stats, observer, server, myTable);
+		game = new Game(stats, observer, server, myTable, myColor);
 		game.setForeground(Color.ORANGE);
 		game.setBackground(new Color(139, 69, 19));
 		game.setBounds(6, 6, 521, 424);
-		game.setColor(myColor);
 		getContentPane().add(game);
 		
 		JButton buttonHint = new JButton("Hint");

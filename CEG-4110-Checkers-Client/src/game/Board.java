@@ -41,8 +41,9 @@ public class Board extends JPanel implements MouseListener{
 	private String oppositeColor = "black";
 
 
-	public Board(){
+	public Board(boolean flip){
 		super();
+		this.flip = flip;
 		setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		board = new Tile[LENGTH][LENGTH];
 		for (int i = 0; i < LENGTH; i++){
