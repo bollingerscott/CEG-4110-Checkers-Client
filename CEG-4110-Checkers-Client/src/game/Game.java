@@ -106,7 +106,6 @@ public class Game extends JPanel implements MouseListener {
 	}
 	
 	private void move(String user, int fr, int fc, int tr, int tc){
-		System.out.println(fr + " " + fc + " "+ tr + " " + tc);
 		setStats();
 		moves += 1;
 		try {
@@ -162,12 +161,22 @@ public class Game extends JPanel implements MouseListener {
 			setOpponentTaken(board.getBlackTaken());
 			setOpponentLeft(board.getRedLeft());
 		}
-		stats.getMoves1().setText(moves.toString());
-		stats.getMoves2().setText(opponentMoves.toString());
-		stats.getLeft1().setText(left.toString());
-		stats.getLeft2().setText(opponentLeft.toString());
-		stats.getTaken1().setText(taken.toString());
-		stats.getTaken2().setText(opponentTaken.toString());
+		if (myTable.isPlayer1()){
+			stats.getMoves1().setText(moves.toString());
+			stats.getMoves2().setText(opponentMoves.toString());
+			stats.getLeft1().setText(left.toString());
+			stats.getLeft2().setText(opponentLeft.toString());
+			stats.getTaken1().setText(taken.toString());
+			stats.getTaken2().setText(opponentTaken.toString());
+		}
+		else {
+			stats.getMoves2().setText(moves.toString());
+			stats.getMoves1().setText(opponentMoves.toString());
+			stats.getLeft2().setText(left.toString());
+			stats.getLeft1().setText(opponentLeft.toString());
+			stats.getTaken2().setText(taken.toString());
+			stats.getTaken1().setText(opponentTaken.toString());
+		}
 	}
 	
 	public byte[][] getBoardState() {

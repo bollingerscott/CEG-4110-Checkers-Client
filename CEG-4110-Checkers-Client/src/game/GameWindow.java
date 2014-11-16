@@ -47,7 +47,7 @@ public class GameWindow extends JFrame {
 			public void run() {
 				try {
 					@SuppressWarnings("unused")
-					GameWindow window = new GameWindow(false, null, null, new Table(1, "Bob", "Scott"), "black");
+					GameWindow window = new GameWindow(false, null, null, new Table(1, "Bob", "Scott"), "red");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
