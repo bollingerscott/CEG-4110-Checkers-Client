@@ -22,6 +22,7 @@ public class ServerConnection implements TCPServerInterface{
 		rmiInt = clientCon;
 	}
 	
+	@Override
 	public void disconnect(String user){
 		try{
 			rmiInt.outputToConsole("Disconnecting...");
@@ -34,6 +35,7 @@ public class ServerConnection implements TCPServerInterface{
 		}
 	}
 
+	@Override
 	public void joinTable(String user, int tid) {
 		try{
 			streamToServer.write((Integer.toString(TCPMsg.JOIN_TBL)+" "+user+" "+Integer.toString(tid)+TCPMsg.endOfMsg).getBytes());
@@ -42,6 +44,7 @@ public class ServerConnection implements TCPServerInterface{
 		}
 	}
 
+	@Override
 	public void leaveTable(String user) {
 		try{
 			streamToServer.write((Integer.toString(TCPMsg.LEAVE_TBL)+" "+user+TCPMsg.endOfMsg).getBytes());
@@ -50,6 +53,7 @@ public class ServerConnection implements TCPServerInterface{
 		}
 	}
 
+	@Override
 	public void makeTable(String user) {
 		try{
 			streamToServer.write((Integer.toString(TCPMsg.MAKE_TBL)+" "+user+TCPMsg.endOfMsg).getBytes());
@@ -58,6 +62,7 @@ public class ServerConnection implements TCPServerInterface{
 		}	
 	}
 
+	@Override
 	public void move(String user, int fr, int fc, int tr, int tc) {
 		String moveF = Integer.toString(fr)+","+ Integer.toString(fc);
 		String moveT = Integer.toString(tr)+","+Integer.toString(tc);
@@ -69,6 +74,7 @@ public class ServerConnection implements TCPServerInterface{
 		
 	}
 
+	@Override
 	public void msgAll(String user, String msg) {
 		try{
 			streamToServer.write((Integer.toString(TCPMsg.MSG_ALL)+" "+user+" "+msg+TCPMsg.endOfMsg).getBytes());
@@ -78,6 +84,7 @@ public class ServerConnection implements TCPServerInterface{
 		
 	}
 
+	@Override
 	public void msgPlayer(String from, String to, String msg) {
 		try{
 			streamToServer.write((Integer.toString(TCPMsg.MSG_C)+" "+from+" "+to+" "+msg+TCPMsg.endOfMsg).getBytes());
@@ -87,6 +94,7 @@ public class ServerConnection implements TCPServerInterface{
 		
 	}
 
+	@Override
 	public void playerReady(String user) {
 		try{
 			streamToServer.write((Integer.toString(TCPMsg.READY)+" "+user+TCPMsg.endOfMsg).getBytes());
@@ -96,6 +104,7 @@ public class ServerConnection implements TCPServerInterface{
 	}
 
 	//@Override
+	@Override
 	public void getTblStatus(String user, int tid) {
 		try{
 			streamToServer.write((Integer.toString(TCPMsg.ASK_TBL_STATUS)+" "+user+" "+Integer.toString(tid)+TCPMsg.endOfMsg).getBytes());
@@ -124,6 +133,7 @@ public class ServerConnection implements TCPServerInterface{
 	}
 
 	//@Override
+	@Override
 	public void observeTable(String user, int tid) {
 		try{
 			streamToServer.write((Integer.toString(TCPMsg.OBSERVE_TBL)+" "+user+" "+Integer.toString(tid)+TCPMsg.endOfMsg).getBytes());
@@ -144,6 +154,7 @@ public class ServerConnection implements TCPServerInterface{
 	}
 
 	//@Override
+	@Override
 	public void stopObserving(String user, int tid) {
 		try{
 			streamToServer.write((Integer.toString(TCPMsg.STOP_OBSERVING)+" "+user+" "+Integer.toString(tid)+TCPMsg.endOfMsg).getBytes());
@@ -164,6 +175,7 @@ public class ServerConnection implements TCPServerInterface{
 	}
 
 	//@Override
+	@Override
 	public void goMakeTable(String user) {
 		try{
 			streamToServer.write((Integer.toString(TCPMsg.GO_MAKE_TBL)+" "+user+TCPMsg.endOfMsg).getBytes());
@@ -173,6 +185,7 @@ public class ServerConnection implements TCPServerInterface{
 	}	
 	
 	//@Override
+	@Override
 	public void goMove(String user, int tr, int tc) {
 		String moveT = Integer.toString(tr)+","+Integer.toString(tc);
 		try{

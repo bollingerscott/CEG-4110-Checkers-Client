@@ -43,6 +43,7 @@ public class ClientConnection implements RMIServerInterface {
 		listener = null;
 	}
 		
+	@Override
 	public boolean registerPlayer(String registryName, String host) throws RemoteException {
 		/* Need to get the player from the RMI registry
 		 */
@@ -68,6 +69,7 @@ public class ClientConnection implements RMIServerInterface {
 		}
 	}
 
+	@Override
 	public boolean connectToServer(String ip, String userName) {
 		if(client == null){
 			lnOut("Client must be registered before connecting to the server.");
@@ -114,6 +116,7 @@ public class ClientConnection implements RMIServerInterface {
 		}
 	}
 
+	@Override
 	public void disconnect(boolean endProcess) {
 		serverCon.disconnect(userName);	
 		if(endProcess){
@@ -146,52 +149,64 @@ public class ClientConnection implements RMIServerInterface {
 		serverCon.playerReady(userName);		
 	}
 
+	@Override
 	public void sendMsg(String to, String msg) {
 		serverCon.msgPlayer(userName, to, msg);
 	}
 
+	@Override
 	public void sendMsg_All(String msg) {
 		serverCon.msgAll(userName, msg);		
 	}
 	
 	/** Game playing methods **/
+	@Override
 	public void getTblStatus(String user, int tid) throws RemoteException {
 		serverCon.getTblStatus(user, tid);		
 	}
 
+	@Override
 	public void joinTable(String user, int tid) throws RemoteException {
 		serverCon.joinTable(user, tid);	
 	}
 
+	@Override
 	public void leaveTable(String user) throws RemoteException {
 		serverCon.leaveTable(user);
 	}
 
+	@Override
 	public void makeTable(String user) throws RemoteException {
 		serverCon.makeTable(user);
 	}
 
+	@Override
 	public void move(String user, int fr, int fc, int tr, int tc)
 			throws RemoteException {
 		serverCon.move(user, fr, fc, tr, tc);		
 	}
 
+	@Override
 	public void playerReady(String user) throws RemoteException {
 		serverCon.playerReady(user);
 	}
 	
+	@Override
 	public void observeTable(String user, int tid) throws RemoteException {
 		serverCon.observeTable(user, tid);		
 	}
 
+	@Override
 	public void stopObserving(String user, int tid) throws RemoteException {
 		serverCon.stopObserving(user, tid);
 		
 	}
+	@Override
 	public void goMakeTable(String user) throws RemoteException {
 		serverCon.goMakeTable(user);
 	}
 
+	@Override
 	public void goMove(String user, int tr, int tc) throws RemoteException {
 		serverCon.goMove(user, tr, tc);	
 	}

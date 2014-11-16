@@ -3,6 +3,7 @@ package table;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.SwingConstants;
 
 import RMIConnection.Interfaces.RMIServerInterface;
 
@@ -54,8 +55,8 @@ public class TableScreen {
 		frame.add(redState);
 
 		JLabel lblNewLabel = new JLabel(blackSeat);
-		lblNewLabel.setVerticalAlignment(JLabel.BOTTOM);
-		lblNewLabel.setHorizontalAlignment(JLabel.CENTER);
+		lblNewLabel.setVerticalAlignment(SwingConstants.BOTTOM);
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel.setIcon(new ImageIcon("res\\playerIcon.jpg"));
 		lblNewLabel.setBounds(53, 50, 130, 63);
 		frame.add(lblNewLabel);
@@ -133,6 +134,7 @@ public class TableScreen {
 		//add appropriate actionListeners
 		if (redSeat.equals(this.userName)) {
 			redState.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(ActionEvent arg0) {
 					redState.makeReady();
 					try {
@@ -145,6 +147,7 @@ public class TableScreen {
 		}
 		else if (blackSeat.equals(this.userName)) {
 			blackState.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(ActionEvent arg0) {
 					blackState.makeReady();
 					try {

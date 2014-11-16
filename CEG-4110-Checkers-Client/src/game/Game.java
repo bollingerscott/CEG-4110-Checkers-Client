@@ -9,6 +9,7 @@ import java.rmi.RemoteException;
 
 import javax.swing.border.BevelBorder;
 
+import table.Table;
 import RMIConnection.Interfaces.RMIServerInterface;
 
 /*
@@ -29,22 +30,25 @@ public class Game extends JPanel implements MouseListener {
 	private Integer opponentMoves = 0;
 	private String color = "red";
 	private static RMIServerInterface server;
-	private int tid;
+	private Table myTable;
 	private String gameStatus = null;
 	private boolean turn;
-	private Image table;
+	private Image wood;
 	private boolean observer;
 	private Integer left, taken, opponentLeft, opponentTaken;
 	private Stats stats;
+	private ImageIcon myIcon;
+	private ImageIcon opponentsIcon;
 	
 	/**
 	 * Create the panel.
 	 */
-	@SuppressWarnings("static-access")
-	public Game(Stats stats, boolean observer, RMIServerInterface server) {
-		this.server = server;
+
+	public Game(Stats stats, boolean observer, RMIServerInterface server, Table myTable) {
+		Game.server = server;
 		this.setObserver(observer);
 		this.stats = stats;
+		this.myTable = myTable;
 
 		setBorder(new BevelBorder(BevelBorder.RAISED, new Color(139, 69, 19), null, null, null));
 		setLayout(null);
@@ -55,19 +59,40 @@ public class Game extends JPanel implements MouseListener {
 		add(board);
 		board.setLayout(null);
 		
-		table = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/table.jpg"));
+		wood = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/table.jpg"));
 		setStats();
-		stats.getName1().setText(user);
-		stats.getName2().setText(opponent);
-		addMouseListener(this);
 		
-		setColor("red");//TODO delete after testing
+		if (myTable.isPlayer1()){
+			user = myTable.getBlackseat();
+			opponent = myTable.getRedseat();
+			stats.getName1().setText(user);
+			stats.getName2().setText(opponent);
+		}
+		else {
+			user = myTable.getRedseat();
+			opponent = myTable.getBlackseat();
+			stats.getName2().setText(user);
+			stats.getName1().setText(opponent);
+		}
+
+		addMouseListener(this);
+
 	}
 	
+	@Override
 	protected void paintComponent(Graphics g){
+		setBoardState(myTable.getBoardState());
 		board.paintComponent(g);
-		g.drawImage(table, 0, 0, null);
+		g.drawImage(wood, 0, 0, null);
 		setStats();
+		if (isTurn()){
+			stats.getColor1().setIcon(myIcon);
+			stats.getColor2().setIcon(null);
+		}
+		else {
+			stats.getColor1().setIcon(null);
+			stats.getColor2().setIcon(opponentsIcon);
+		}
 		repaint();
 	}
 	
@@ -161,24 +186,15 @@ public class Game extends JPanel implements MouseListener {
 		if (color.equals("black")){
 			board.setFlip(true);
 			board.setOppositeColor("red");
-			ImageIcon icon;
-			stats.getColor1().setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_piece.png"))));
-			stats.getColor2().setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_checker.png"))));
+			this.myIcon = (new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_piece.png"))));
+			this.opponentsIcon = (new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_checker.png"))));
 		}
 		else {
 			board.setOppositeColor("black");
-			stats.getColor1().setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_checker.png"))));
-			stats.getColor2().setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_piece.png"))));
+			this.myIcon = (new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_checker.png"))));
+			this.opponentsIcon = (new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_piece.png"))));
 		}
 		board.setColor(color);
-	}
-
-	public int getTid() {
-		return tid;
-	}
-
-	public void setTid(int tid) {
-		this.tid = tid;
 	}
 
 	public String getGameStatus() {
@@ -187,6 +203,7 @@ public class Game extends JPanel implements MouseListener {
 
 	public void setGameStatus(String gameStatus) {
 		this.gameStatus = gameStatus;
+		//TODO result screen
 	}
 
 	public boolean isTurn() {

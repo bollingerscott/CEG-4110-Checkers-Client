@@ -37,6 +37,7 @@ public class ChatBar extends JPanel {
 		
 		btnNewButton = new JButton("Send!");
 		btnNewButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				//grab text, parse it to figure out if it is public or private, and send it appropriately.
 				String str = textField.getText();

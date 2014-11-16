@@ -1,11 +1,7 @@
 package table;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 
 /*
  * extends JLabel to be able to display images. This class is to be used in a table to display

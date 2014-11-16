@@ -1,32 +1,20 @@
 package lobby;
 
-import game.Game;
-
-import java.awt.EventQueue;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.Toolkit;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.DefaultListModel;
-import javax.swing.Icon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JButton;
-import javax.swing.ListModel;
-
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.Color;
-
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
-
-import java.awt.FlowLayout;
 
 import javax.swing.ImageIcon;
 
@@ -35,16 +23,14 @@ import java.awt.event.MouseEvent;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-import javax.swing.ScrollPaneConstants;
-
-import table.TableScreen;
 import Client.CheckersLobby.State;
 import RMIConnection.Interfaces.RMIServerInterface;
 
 import javax.swing.JList;
+
 import java.awt.Font;
 
-public class lobbyWindow {
+public class lobbyWindow extends JFrame {
 
 	private JFrame frame;
 	private JTextField chatInputField;
@@ -79,7 +65,7 @@ public class lobbyWindow {
 			Client.CheckersLobby.State curState) {
 		serverConnection = server;
 		myName = name;
-		this.curState = curState;
+		lobbyWindow.curState = curState;
 		initialize();
 
 		int[] myIntArray = new int[listOfTables.size()];
@@ -132,6 +118,7 @@ public class lobbyWindow {
 
 		JButton chatSendButton = new JButton("Send");
 		chatSendButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if (chatInputField.getText().length() > 0) {
 					if (curState == State.inLobby) {
@@ -166,13 +153,14 @@ public class lobbyWindow {
 		btnJoinTable.setBounds(10, 11, 145, 43);
 		tableControlButtons.add(btnJoinTable);// TODO Table logic?
 		btnJoinTable.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if (curState.equals(State.inLobby)
 							&& currentlyActiveTable != null) {
 						int tid = tidHashTable.get(currentlyActiveTable);
 						serverConnection.joinTable(myName, tid);
-						// Should que up lobby window server messages to handle
+						// Should queue up lobby window server messages to handle
 					}
 				} catch (RemoteException e1) {
 					e1.printStackTrace();
@@ -185,6 +173,7 @@ public class lobbyWindow {
 		btnCreateTable.setBounds(165, 11, 127, 43);
 		tableControlButtons.add(btnCreateTable);
 		btnCreateTable.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if (curState.equals(State.inLobby)) {
@@ -201,6 +190,7 @@ public class lobbyWindow {
 
 		JButton btnObserveTable = new JButton("Observe Table");
 		btnObserveTable.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (currentlyActiveTable != null) {
 					try {
@@ -305,7 +295,7 @@ public class lobbyWindow {
 
 	}
 
-	public State getState() {
+	public State getCurState() {
 		return curState;
 	}
 

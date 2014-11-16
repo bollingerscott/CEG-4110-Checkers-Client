@@ -60,12 +60,14 @@ public class Checker_Piece extends Component {
 	public void setPiece(Image piece) {
 		this.piece = piece;
 	}
+	@Override
 	public int getX() {
 		return x;
 	}
 	public void setX(int x) {
 		this.x = x;
 	}
+	@Override
 	public int getY() {
 		return y;
 	}

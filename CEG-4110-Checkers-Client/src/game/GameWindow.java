@@ -8,9 +8,12 @@ import java.awt.Color;
 
 import javax.swing.JButton;
 
+import table.Table;
+
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import lobby.lobbyWindow;
 import RMIConnection.Interfaces.RMIServerInterface;
 import Chat.ChatBar;
 
@@ -21,14 +24,17 @@ import Chat.ChatBar;
  * 
  * @author Scott Bollinger
  */
-public class GameWindow {
+@SuppressWarnings("serial")
+public class GameWindow extends JFrame {
 
-	private JFrame frmCheckers;
+	//private JFrame frmCheckers;
 	private static RMIServerInterface server;
 	private boolean observer;
 	private Integer oppMoves = 0;
 	private Game game;
 	private Stats stats;
+	private lobbyWindow myLobby;
+	private Table myTable;
 
 
 	/**
@@ -36,10 +42,11 @@ public class GameWindow {
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				try {
 					@SuppressWarnings("unused")
-					GameWindow window = new GameWindow(false, null);
+					GameWindow window = new GameWindow(false, null, null, null);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -51,10 +58,13 @@ public class GameWindow {
 	/**
 	 * Create the application.
 	 */
-	@SuppressWarnings("static-access")
-	public GameWindow(boolean observer, RMIServerInterface server) {
-		this.server = server;
+
+	public GameWindow(boolean observer, RMIServerInterface server, lobbyWindow myLobby, Table myTable) {
+		super();
+		GameWindow.server = server;
 		this.observer = observer;
+		this.myLobby = myLobby;
+		this.myTable = myTable;
 		initialize();
 		
 		
@@ -64,43 +74,45 @@ public class GameWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frmCheckers = new JFrame();
-		frmCheckers.setTitle("Checkers");
-		frmCheckers.setResizable(false);
-		frmCheckers.setVisible(true);
-		frmCheckers.getContentPane().setBackground(Color.DARK_GRAY);
-		frmCheckers.setBounds(100, 100, 762, 637);
-		frmCheckers.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frmCheckers.getContentPane().setLayout(null);
-		frmCheckers.addWindowListener(new WindowAdapter() {
+		//frmCheckers = new JFrame();
+		setTitle("Checkers");
+		setResizable(false);
+		setVisible(true);
+		getContentPane().setBackground(Color.DARK_GRAY);
+		setBounds(100, 100, 762, 637);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		getContentPane().setLayout(null);
+		addWindowListener(new WindowAdapter() {
 			
+			@Override
 			public void windowClosing(WindowEvent e) {
-				frmCheckers.setVisible(false);
-				frmCheckers.dispose();
+				setVisible(false);
+				dispose();
+				getMyLobby().setVisible(true);
 			}
 		});
 		
 		stats = new Stats();
 		stats.setBackground(Color.WHITE);
 		stats.setBounds(526, 6, 220, 553);
-		frmCheckers.getContentPane().add(stats);
+		getContentPane().add(stats);
 		
-		game = new Game(stats, observer, server);
+		game = new Game(stats, observer, server, myTable);
 		game.setForeground(Color.ORANGE);
 		game.setBackground(new Color(139, 69, 19));
 		game.setBounds(6, 6, 521, 424);
-		frmCheckers.getContentPane().add(game);
+		getContentPane().add(game);
 		
 		JButton buttonHint = new JButton("Hint");
 		buttonHint.setBounds(656, 570, 89, 23);
-		frmCheckers.getContentPane().add(buttonHint);
+		getContentPane().add(buttonHint);
 		
 		ChatBar chatBar = new ChatBar(server);
 		chatBar.setBounds(6, 436, 521, 161);
-		frmCheckers.getContentPane().add(chatBar);
+		getContentPane().add(chatBar);
 		
 
-		//frmCheckers.repaint();
+		//repaint();
 		//TODO hint ai algorithm stretch goal
 		
 
@@ -116,5 +128,9 @@ public class GameWindow {
 	
 	public Game getGame() {
 		return game;
+	}
+	
+	public lobbyWindow getMyLobby(){
+		return myLobby;
 	}
 }
