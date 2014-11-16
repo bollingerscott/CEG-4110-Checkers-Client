@@ -32,7 +32,7 @@ public class Game extends JPanel implements MouseListener {
 	private static RMIServerInterface server;
 	private Table myTable;
 	private String gameStatus = null;
-	private boolean turn;
+	private boolean turn = true;
 	private Image wood;
 	private boolean observer;
 	private Integer left, taken, opponentLeft, opponentTaken;
@@ -81,7 +81,10 @@ public class Game extends JPanel implements MouseListener {
 	
 	@Override
 	protected void paintComponent(Graphics g){
-		setBoardState(myTable.getBoardState());
+		if (myTable.isChanged()){
+			setBoardState(myTable.getBoardState());
+			myTable.setChanged(false);
+		}
 		board.paintComponent(g);
 		g.drawImage(wood, 0, 0, null);
 		setStats();
@@ -216,7 +219,7 @@ public class Game extends JPanel implements MouseListener {
 
 	@Override//TODO sound fx
 	public void mouseClicked(MouseEvent e) {
-		if (!isObserver()){
+		if (!isObserver() && isTurn()){
 			board.mouseClicked(e);
 			if (board.isMoving()){
 				move(user, board.getFr(), board.getFc(), board.getTr(), board.getTc());

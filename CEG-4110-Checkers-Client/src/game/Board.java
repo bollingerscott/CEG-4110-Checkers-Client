@@ -296,6 +296,7 @@ public class Board extends JPanel implements MouseListener{
 	}
 
 	private void readBoardState(){
+		redLeft = blackLeft = 0;
 		int x = 0;
 		int y = -TILE_LENGTH;
 		int length = board_state.length;
@@ -333,6 +334,7 @@ public class Board extends JPanel implements MouseListener{
 				x += TILE_LENGTH;
 			}
 		}
+		redTaken = blackTaken = 0;
 		redTaken = 12 - redLeft;
 		blackTaken = 12 - blackLeft;
 	}

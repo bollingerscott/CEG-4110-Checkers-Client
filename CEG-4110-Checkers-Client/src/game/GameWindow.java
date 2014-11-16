@@ -31,6 +31,7 @@ public class GameWindow extends JFrame {
 	private static RMIServerInterface server;
 	private boolean observer;
 	private Integer oppMoves = 0;
+	private String myColor;
 	private Game game;
 	private Stats stats;
 	private lobbyWindow myLobby;
@@ -46,7 +47,7 @@ public class GameWindow extends JFrame {
 			public void run() {
 				try {
 					@SuppressWarnings("unused")
-					GameWindow window = new GameWindow(false, null, null, null);
+					GameWindow window = new GameWindow(false, null, null, new Table(1, "Bob", "Scott"), "red");
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -59,12 +60,13 @@ public class GameWindow extends JFrame {
 	 * Create the application.
 	 */
 
-	public GameWindow(boolean observer, RMIServerInterface server, lobbyWindow myLobby, Table myTable) {
+	public GameWindow(boolean observer, RMIServerInterface server, lobbyWindow myLobby, Table myTable, String myColor) {
 		super();
 		GameWindow.server = server;
 		this.observer = observer;
 		this.myLobby = myLobby;
 		this.myTable = myTable;
+		this.myColor = myColor;
 		initialize();
 		
 		
@@ -101,6 +103,7 @@ public class GameWindow extends JFrame {
 		game.setForeground(Color.ORANGE);
 		game.setBackground(new Color(139, 69, 19));
 		game.setBounds(6, 6, 521, 424);
+		game.setColor(myColor);
 		getContentPane().add(game);
 		
 		JButton buttonHint = new JButton("Hint");

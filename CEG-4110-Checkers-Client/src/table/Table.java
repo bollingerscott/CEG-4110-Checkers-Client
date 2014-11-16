@@ -5,6 +5,7 @@ public class Table {
 	private Integer tid;
 	private String redseat, blackseat;
 	private boolean player1;
+	private boolean changed = false;
 	private byte[][] boardState = new byte[][]{
 			{0,1,0,1,0,1,0,1},
 			{1,0,1,0,1,0,1,0},
@@ -46,6 +47,7 @@ public class Table {
 
 	public void setBoardState(byte[][] boardState) {
 		this.boardState = boardState;
+		changed = true;
 	}
 
 	public boolean isPlayer1() {
@@ -54,5 +56,13 @@ public class Table {
 
 	public void setPlayer1(boolean player1) {
 		this.player1 = player1;
+	}
+
+	public boolean isChanged() {
+		return changed;
+	}
+
+	public void setChanged(boolean changed) {
+		this.changed = changed;
 	}
 }

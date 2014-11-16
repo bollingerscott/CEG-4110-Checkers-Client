@@ -45,6 +45,7 @@ public class CheckersLobby implements CheckersClient {
 	private static RMIServerInterface serverConnection;
 	private static State curState;
 	private String myName = "";
+	private String myColor;
 
 	private boolean isCheckers;
 	private byte[][] curBoardState;
@@ -433,7 +434,7 @@ public class CheckersLobby implements CheckersClient {
 				for (int x = 0; x < 19; x++)
 					curBoardState[y][x] = 0;
 		}
-		game = new GameWindow(false, serverConnection, myLobby, tables.get(myTid));
+		game = new GameWindow(false, serverConnection, myLobby, tables.get(myTid), myColor);
 		game.getGame().setUser(myName);
 		myTable = null;
 		myLobby.setVisible(false);
@@ -442,13 +443,15 @@ public class CheckersLobby implements CheckersClient {
 	// alert that your color is Black, for the game.
 	@Override
 	public void colorBlack() {
-		game.getGame().setColor("black");
+		this.myColor = "black";
+		//game.getGame().setColor("black");
 	}
 
 	// alert that your color is Red, for the game.
 	@Override
 	public void colorRed() {
-		game.getGame().setColor("red");
+		this.myColor = "red";
+		//game.getGame().setColor("red");
 	}
 
 	// notice that your opponent has moved from position (fr,fc) to (tr,tc)
@@ -493,7 +496,7 @@ public class CheckersLobby implements CheckersClient {
 	@Override
 	public void nowObserving(int tid) {
 		debugOutput(">> nowObserving(" + tid + ")");
-		observeGames.put(tid, new GameWindow(true, serverConnection, myLobby, tables.get(tid)));
+		observeGames.put(tid, new GameWindow(true, serverConnection, myLobby, tables.get(tid), ""));
 	}
 
 	// you stopped observing table tid.
