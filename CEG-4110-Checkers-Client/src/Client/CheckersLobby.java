@@ -49,7 +49,7 @@ public class CheckersLobby implements CheckersClient {
 
 	private boolean isCheckers;
 	private byte[][] curBoardState;
-	private boolean debug = true; // set true for debug mode, which prints more
+	private boolean debug = false; // set true for debug mode, which prints more
 	private static lobbyWindow myLobby;
 	private JFrame frame;
 	private JTextField serverTextField;
@@ -61,12 +61,12 @@ public class CheckersLobby implements CheckersClient {
 	private Map<Integer, GameWindow> observeGames = new HashMap<>();
 	private Map<Integer, Table> tables = new HashMap<>();
 	private TableScreen myTable;
+	//130.108.203.235:45322
 
-
-	private final String DEFAULT_SERVER_IP = "::1"; // Usefor For debugging-
+	private final String DEFAULT_SERVER_IP = "130.108.28.165"; // Usefor For debugging-
 	// Brad local server = ::1,
-	// derekServer 137.99.11.115	130.108.28.165
-
+	// derekServer 137.99.11.115	130.108.28.165 
+	//fe80::250c:975d:58e0:52f4%19
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
