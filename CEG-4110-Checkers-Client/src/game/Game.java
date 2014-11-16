@@ -24,14 +24,14 @@ import RMIConnection.Interfaces.RMIServerInterface;
 public class Game extends JPanel implements MouseListener {
 
 	private Board board;
-	private String user = "Scott";
-	private String opponent = "Opponent";
+	private String user;
+	private String opponent;
 	private Integer moves = 0;
 	private Integer opponentMoves = 0;
-	private String color = "red";
+	private String color;
 	private static RMIServerInterface server;
 	private Table myTable;
-	private String gameStatus = null;
+	private String gameStatus;
 	private boolean turn = true;
 	private Image wood;
 	private boolean observer;

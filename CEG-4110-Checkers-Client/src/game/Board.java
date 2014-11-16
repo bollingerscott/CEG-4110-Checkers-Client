@@ -36,9 +36,9 @@ public class Board extends JPanel implements MouseListener{
 			{0,2,0,2,0,2,0,2},
 			{2,0,2,0,2,0,2,0}};
 	private boolean moving = false;
-	private boolean flip = false;
-	private String color = "red";
-	private String oppositeColor = "black";
+	private boolean flip;
+	private String color;
+	private String oppositeColor;
 
 
 	public Board(boolean flip){
@@ -117,7 +117,12 @@ public class Board extends JPanel implements MouseListener{
 		if (!click && tile.isOccupied() && tile.getPiece().getColor().equals(color)) {
 			click = true;
 			tile.mouseClicked(e);//set tile to clicked
-			fr = coordY;
+			if (isFlip()){
+				fr = 7-coordY;
+			}
+			else {
+				fr = coordY;
+			}
 			fc = coordX;
 			clickedTile = tile;
 			moving = false;
@@ -135,7 +140,12 @@ public class Board extends JPanel implements MouseListener{
 		else if (!tile.isOccupied() && click && tile.isEnable()){
 			clickedTile.reset();
 			click = false;
-			tr = coordY;
+			if (isFlip()){
+				tr = 7-coordY;
+			}
+			else {
+				tr = coordY;
+			}
 			tc = coordX;
 			moving = true;
 			enable(clickedTile, false);
