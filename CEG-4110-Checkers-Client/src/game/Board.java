@@ -49,20 +49,10 @@ public class Board extends JPanel implements MouseListener{
 		for (int i = 0; i < LENGTH; i++){
 			for (int j = 0; j < LENGTH; j++){
 				if (((i % 2 == 0) && (j % 2 == 0)) || ((i % 2 != 0) && (j % 2 != 0))){
-					if (!isFlip()){
-						board[i][j] = new Tile("red");
-					}
-					else {
-						board[i][j] = new Tile("black");
-					}
+					board[i][j] = new Tile("red");
 				}
 				else {
-					if (!isFlip()){
-						board[i][j] = new Tile("black");
-					}
-					else {
-						board[i][j] = new Tile("red");
-					}
+					board[i][j] = new Tile("black");
 				}
 			}
 		}
@@ -119,11 +109,12 @@ public class Board extends JPanel implements MouseListener{
 			tile.mouseClicked(e);//set tile to clicked
 			if (isFlip()){
 				fr = 7-coordY;
+				fc = 7-coordX;
 			}
 			else {
 				fr = coordY;
+				fc = coordX;
 			}
-			fc = coordX;
 			clickedTile = tile;
 			moving = false;
 			enable(tile, true);
@@ -142,11 +133,12 @@ public class Board extends JPanel implements MouseListener{
 			click = false;
 			if (isFlip()){
 				tr = 7-coordY;
+				tc = 7-coordX;
 			}
 			else {
 				tr = coordY;
+				tc = coordX;
 			}
-			tc = coordX;
 			moving = true;
 			enable(clickedTile, false);
 		}
@@ -320,7 +312,7 @@ public class Board extends JPanel implements MouseListener{
 					state = board_state[i][j];
 				}
 				else {
-					state = board_state[(length-1)-i][j];
+					state = board_state[(length-1)-i][(length-1)-j];
 				}
 				Tile tile = board[i][j];
 				if (state == 0){

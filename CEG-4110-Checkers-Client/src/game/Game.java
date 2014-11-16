@@ -106,6 +106,7 @@ public class Game extends JPanel implements MouseListener {
 	}
 	
 	private void move(String user, int fr, int fc, int tr, int tc){
+		System.out.println(fr + " " + fc + " "+ tr + " " + tc);
 		setStats();
 		moves += 1;
 		try {
