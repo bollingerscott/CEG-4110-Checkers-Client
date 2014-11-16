@@ -87,7 +87,7 @@ public class GameWindow extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				setVisible(false);
-				dispose();
+				//dispose();
 				getMyLobby().setVisible(true);
 			}
 		});

@@ -223,6 +223,7 @@ public class Game extends JPanel implements MouseListener {
 	public void setGameStatus(String gameStatus) {
 		this.gameStatus = gameStatus;
 		//TODO result screen
+		//ResultScreen result = new ResultScreen(gameStatus);
 	}
 
 	public boolean isTurn() {
