@@ -103,6 +103,7 @@ public class lobbyWindow extends JFrame {
 			} else
 				table.setIcon(normalTableIcon);
 			tableListFlowPanel.add(table);
+			tableListFlowPanel.updateUI();
 		}
 	}
 
