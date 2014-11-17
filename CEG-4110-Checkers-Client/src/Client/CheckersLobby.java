@@ -368,13 +368,6 @@ public class CheckersLobby implements CheckersClient {
 		tables.put(t, table);
 		this.myTid = t;
 		table.setPlayer1(true);
-		if (myTable == null) {
-			myTable = new TableScreen(serverConnection, myName, t, myName, "-1");
-		}
-		else {
-			myTable.update(myName, tables.get(t).getRedseat());
-		}
-
 	}
 
 	// alert that you have joined the table with id tid.
