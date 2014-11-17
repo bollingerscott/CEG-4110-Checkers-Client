@@ -6,13 +6,13 @@ public class Table {
 	private String redseat, blackseat;
 	private boolean player1;
 	private boolean changed = false;
-	private byte[][] boardState = new byte[][]{
+	private byte[][] boardState  = new byte[][]{
 			{0,1,0,1,0,1,0,1},
-			{1,0,1,0,1,0,1,0},
-			{0,1,0,1,0,1,0,1},
-			{0,0,0,0,0,0,0,0},
-			{0,0,0,0,0,0,0,0},
-			{2,0,2,0,2,0,2,0},
+			{1,0,0,0,1,0,0,0},
+			{0,0,0,1,0,1,0,1},
+			{0,0,0,0,4,0,0,0},
+			{0,1,0,1,0,1,0,0},
+			{2,0,0,0,2,0,0,0},
 			{0,2,0,2,0,2,0,2},
 			{2,0,2,0,2,0,2,0}};
 	

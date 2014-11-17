@@ -43,6 +43,7 @@ public class Game extends JPanel implements MouseListener {
 	private ImageIcon myIcon;
 	private ImageIcon opponentsIcon;
 	private boolean flip = false;
+	private boolean start = true;
 	
 	/**
 	 * Create the panel.
@@ -184,9 +185,10 @@ public class Game extends JPanel implements MouseListener {
 
 	@Override
 	protected void paintComponent(Graphics g){
-		if (myTable.isChanged()){
+		if (myTable.isChanged() || start){
 			setBoardState(myTable.getBoardState());
 			myTable.setChanged(false);
+			start = false;
 		}
 		board.paintComponent(g);
 		g.drawImage(wood, 0, 0, null);

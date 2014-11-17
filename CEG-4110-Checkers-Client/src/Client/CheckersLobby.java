@@ -308,7 +308,7 @@ public class CheckersLobby implements CheckersClient {
 		frame.getContentPane().add(serverTextField);
 		serverTextField.setColumns(10);
 
-		Username = new JTextField("DefaultUserName");
+		Username = new JTextField("Name");
 		Username.setBounds(135, 138, 146, 23);
 		frame.getContentPane().add(Username);
 		Username.setColumns(10);

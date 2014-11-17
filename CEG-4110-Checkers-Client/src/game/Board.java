@@ -32,11 +32,11 @@ public class Board extends JPanel implements MouseListener{
 	private Tile clickedTile;
 	private byte[][] board_state = new byte[][]{
 			{0,1,0,1,0,1,0,1},
-			{1,0,1,0,1,0,1,0},
-			{0,1,0,1,0,1,0,1},
-			{0,0,0,0,0,0,0,0},
-			{0,0,0,0,0,0,0,0},
-			{2,0,2,0,2,0,2,0},
+			{1,0,0,0,1,0,0,0},
+			{0,0,0,1,0,1,0,1},
+			{0,0,0,0,4,0,0,0},
+			{0,1,0,1,0,1,0,0},
+			{2,0,0,0,2,0,0,0},
 			{0,2,0,2,0,2,0,2},
 			{2,0,2,0,2,0,2,0}};
 	private boolean moving = false;
