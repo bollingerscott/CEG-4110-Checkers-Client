@@ -33,6 +33,9 @@ public class TableScreen {
 	private String blackSeat;
 	private String redSeat;
 
+	JLabel redLabel;
+	JLabel blackLabel;
+	
 	/**
 	 * Create the panel.
 	 */
@@ -56,17 +59,17 @@ public class TableScreen {
 		redState.setBounds(300, 167, 64, 63);
 		frame.add(redState);
 
-		JLabel lblNewLabel = new JLabel(blackSeat);
-		lblNewLabel.setVerticalAlignment(SwingConstants.BOTTOM);
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setIcon(new ImageIcon("res\\playerIcon.jpg"));
-		lblNewLabel.setBounds(53, 50, 130, 63);
-		frame.add(lblNewLabel);
+		blackLabel = new JLabel(blackSeat);
+		blackLabel.setVerticalAlignment(SwingConstants.BOTTOM);
+		blackLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		blackLabel.setIcon(new ImageIcon("res\\playerIcon.jpg"));
+		blackLabel.setBounds(53, 50, 130, 63);
+		frame.add(blackLabel);
 
-		JLabel lblNewLabel_1 = new JLabel(redSeat);
-		lblNewLabel_1.setIcon(new ImageIcon("res\\playerIcon.jpg"));
-		lblNewLabel_1.setBounds(300, 50, 130, 63);
-		frame.add(lblNewLabel_1);
+		redLabel = new JLabel(redSeat);
+		redLabel.setIcon(new ImageIcon("res\\playerIcon.jpg"));
+		redLabel.setBounds(300, 50, 130, 63);
+		frame.add(redLabel);
 
 		this.update(blackPlayer, redPlayer);
 		
@@ -133,8 +136,8 @@ public class TableScreen {
 		}
 		
 		//update UI
-		redState.setText(this.redSeat);
-		blackState.setText(this.blackSeat);
+		redLabel.setText(this.redSeat);
+		blackLabel.setText(this.blackSeat);
 		
 		//remove any previous actionListeners
 		for (ActionListener al : redState.getActionListeners()) {
