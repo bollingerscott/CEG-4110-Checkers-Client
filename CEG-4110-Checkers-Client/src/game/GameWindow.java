@@ -96,7 +96,6 @@ public class GameWindow extends JFrame {
 		setVisible(true);
 		getContentPane().setBackground(Color.DARK_GRAY);
 		setBounds(100, 100, 762, 637);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getContentPane().setLayout(null);
 		addWindowListener(new WindowAdapter() {
 			
@@ -104,13 +103,13 @@ public class GameWindow extends JFrame {
 			public void windowClosing(WindowEvent e) {
 				setVisible(false);
 				dispose();
-				getMyLobby().setVisible(true);
 				if (!observer){
 					try {
 						server.leaveTable(user);
 					} catch (RemoteException e1) {
 						e1.printStackTrace();
 					}
+					getMyLobby().setVisible(true);
 				}
 				else {
 					try {
@@ -126,12 +125,14 @@ public class GameWindow extends JFrame {
 		stats.setBackground(Color.WHITE);
 		stats.setBounds(526, 6, 220, 553);
 		getContentPane().add(stats);
+		stats.repaint();
 		
 		game = new Game(stats, observer, server, myTable, myColor);
 		game.setForeground(Color.ORANGE);
 		game.setBackground(new Color(139, 69, 19));
 		game.setBounds(6, 6, 521, 424);
 		getContentPane().add(game);
+		game.repaint();
 		
 		JButton buttonHint = new JButton("Hint");
 		buttonHint.setBounds(656, 570, 89, 23);
@@ -140,7 +141,8 @@ public class GameWindow extends JFrame {
 		ChatBar chatBar = new ChatBar(server);
 		chatBar.setBounds(6, 436, 521, 161);
 		getContentPane().add(chatBar);
-
+		chatBar.repaint();chatBar.setFocusable(true);
+		repaint();repaint();
 		//TODO hint ai algorithm stretch goal		
 	}
 
