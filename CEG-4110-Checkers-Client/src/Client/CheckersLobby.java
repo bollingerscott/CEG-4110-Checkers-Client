@@ -157,8 +157,10 @@ public class CheckersLobby implements CheckersClient {
 	public void alertLeftTable() {
 		curState = State.connected;
 		myLobby.syncState(curState);
+		
+		myTable.close();
 		myTable = null;
-		//myTable.closeWindow(); //TODO add closing window here
+		
 		debugOutput(">> You have left the table");
 		// TODO Table related logic
 	}
@@ -258,7 +260,10 @@ public class CheckersLobby implements CheckersClient {
 		}
 		game = new GameWindow(false, serverConnection, myLobby, tables.get(myTid), myColor);
 		game.setUser(myName);
+		
+		myTable.close();
 		myTable = null;
+		
 		myLobby.setVisible(false);
 	}
 
@@ -363,16 +368,15 @@ public class CheckersLobby implements CheckersClient {
 		myLobby.syncState(curState);
 		debugOutput(">> You have joined table " + Integer.toString(tid));
 
-		//TODO: grab table and make a TableScreen
 		Table table = tables.get(tid);
-		table.setRedseat(myName);
-		table.setPlayer1(false);
+		//table.setRedseat(myName);
+		//table.setPlayer1(false);
 		this.myTid = tid;
 		if (myTable == null) {
-			myTable = new TableScreen(serverConnection, myName, tid, table.getBlackseat(), myName);
+			myTable = new TableScreen(serverConnection, myName, tid, table);
 		}
 		else {
-			myTable.update(table.getBlackseat(), table.getRedseat());
+			myTable.update();
 		}
 	}
 
@@ -478,24 +482,15 @@ public class CheckersLobby implements CheckersClient {
 	}
 
 	// an alert saying that a table state has changed.
-	// this is received whenever anyone joins or leaves a table,
+	// this is received whenever anyone joins or leaves any table,
 	// or if table state is queried by calling getTblStatus()
 	@Override
 	public void onTable(int tid, String blackSeat, String redSeat) {
 		Table table = tables.get(tid);
 		table.setBlackseat(blackSeat);
 		table.setRedseat(redSeat);
-		table.setTid(tid);
-		//TODO: have a list of tables. to check against. This currently assumes one (myTable)
-		/*System.out.println("Should have created table");
-		if (myTable == null) {
-			myTable = new TableScreen(serverConnection,myName,tid,blackSeat,redSeat);
-		}
-		else {
-			myTable.update(blackSeat, redSeat);
-		}*/
-
-		// TODO Table related logic
+		
+		myTable.update(); //call to update in case the corresponding table was changed
 
 	}
 
