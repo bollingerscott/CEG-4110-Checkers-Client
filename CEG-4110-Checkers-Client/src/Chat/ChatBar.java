@@ -84,7 +84,7 @@ public class ChatBar extends JPanel {
 			msg += "\n";
 		}
 		String newLine = user + ": " + msg;
-		textArea.setText(textArea.getText() + msg);
+		textArea.setText(textArea.getText() + newLine);
 	}
 	
 

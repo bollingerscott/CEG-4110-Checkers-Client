@@ -30,8 +30,8 @@ public class TableScreen {
 	private String userName;
 	private JFrame frame;
 	private int tableID;
-	private String blackSeat;
-	private String redSeat;
+	
+	private Table table;
 
 	JLabel redLabel;
 	JLabel blackLabel;
@@ -40,7 +40,8 @@ public class TableScreen {
 	 * Create the panel.
 	 */
 	public TableScreen(final RMIServerInterface rmiServer, String username, int tid,
-			String blackPlayer, String redPlayer) {
+			Table table) {
+		this.table = table;
 		
 		tableID = tid;
 		userName = username;
@@ -59,19 +60,19 @@ public class TableScreen {
 		redState.setBounds(300, 167, 64, 63);
 		frame.add(redState);
 
-		blackLabel = new JLabel(blackSeat);
+		blackLabel = new JLabel(table.getBlackseat());
 		blackLabel.setVerticalAlignment(SwingConstants.BOTTOM);
 		blackLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		blackLabel.setIcon(new ImageIcon("res\\playerIcon.jpg"));
 		blackLabel.setBounds(53, 50, 130, 63);
 		frame.add(blackLabel);
 
-		redLabel = new JLabel(redSeat);
+		redLabel = new JLabel(table.getRedseat());
 		redLabel.setIcon(new ImageIcon("res\\playerIcon.jpg"));
 		redLabel.setBounds(300, 50, 130, 63);
 		frame.add(redLabel);
 
-		this.update(blackPlayer, redPlayer);
+		this.update();
 		
 		frame.setVisible(true);
 		frame.addWindowListener(new WindowAdapter(){
@@ -124,20 +125,24 @@ public class TableScreen {
 	 * properly sets names as well as button listeners
 	 * 
 	 * assumes the ReadyButtons have been initialized
+	 * 
+	 * updates information for UI from the table
 	 */
-	public void update(String blackSeat, String redSeat) {
-		this.blackSeat = blackSeat;
-		this.redSeat = redSeat;
-		if (blackSeat.equals("-1")) {
-			this.blackSeat = "Empty";
+	public void update() {
+		if (table.getBlackseat().equals("-1")) {
+			blackLabel.setText("Empty");
 		}
-		if (redSeat.equals("-1")) {
-			this.redSeat = "Empty";
+		else {
+			blackLabel.setText(table.getBlackseat());
+
 		}
-		
-		//update UI
-		redLabel.setText(this.redSeat);
-		blackLabel.setText(this.blackSeat);
+		if (table.getRedseat().equals("-1")) {
+			redLabel.setText("Empty");
+		}
+		else {
+			redLabel.setText(table.getRedseat());
+		}
+
 		
 		//remove any previous actionListeners
 		for (ActionListener al : redState.getActionListeners()) {
@@ -148,7 +153,7 @@ public class TableScreen {
 		}
 		
 		//add appropriate actionListeners
-		if (redSeat.equals(this.userName)) {
+		if (table.getRedseat().equals(this.userName)) {
 			redState.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
@@ -161,7 +166,7 @@ public class TableScreen {
 				}
 			});
 		}
-		else if (blackSeat.equals(this.userName)) {
+		else if (table.getBlackseat().equals(this.userName)) {
 			blackState.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
@@ -176,9 +181,16 @@ public class TableScreen {
 		}
 		else {
 			System.out.println("Broken! no player on table with userName");
-			System.out.printf("username: %s, blackSeat: %s, redSeat: %s",userName,  blackSeat, redSeat);
+			System.out.printf("username: %s, blackSeat: %s, redSeat: %s",userName,  table.getBlackseat(), table.getRedseat());
 		}
 		
+	}
+	
+	/*
+	 * should be called when a game has started or the user left the table
+	 */
+	public void close() {
+		this.frame.dispose();
 	}
 	// TODO
 
