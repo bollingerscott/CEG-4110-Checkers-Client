@@ -31,6 +31,9 @@ public class GameWindow extends JFrame {
 	private static RMIServerInterface server;
 	private boolean observer;
 	private Integer oppMoves = 0;
+	private String status;
+	private String user;
+	private boolean turn;
 	private String myColor;
 	private Game game;
 	private Stats stats;
@@ -87,7 +90,7 @@ public class GameWindow extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				setVisible(false);
-				//dispose();
+				dispose();
 				getMyLobby().setVisible(true);
 			}
 		});
@@ -124,13 +127,41 @@ public class GameWindow extends JFrame {
 
 	public void setOppMoves(Integer oppMoves) {
 		this.oppMoves = oppMoves;
+		game.setOpponentMoves(oppMoves);
 	}
 	
-	public Game getGame() {
+	/*public Game getGame() {
 		return game;
-	}
+	}*/
 	
 	public lobbyWindow getMyLobby(){
 		return myLobby;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+		game.setGameStatus(status);
+	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
+		game.setUser(user);
+	}
+
+	public boolean isTurn() {
+		return turn;
+	}
+
+	public void setTurn(boolean turn) {
+		this.turn = turn;
+		game.setTurn(turn);
 	}
 }

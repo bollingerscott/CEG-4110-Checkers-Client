@@ -435,7 +435,7 @@ public class CheckersLobby implements CheckersClient {
 					curBoardState[y][x] = 0;
 		}
 		game = new GameWindow(false, serverConnection, myLobby, tables.get(myTid), myColor);
-		game.getGame().setUser(myName);
+		game.setUser(myName);
 		myTable = null;
 		myLobby.setVisible(false);
 	}
@@ -458,7 +458,7 @@ public class CheckersLobby implements CheckersClient {
 	@Override
 	public void oppMove(int fr, int fc, int tr, int tc) {
 		debugOutput(">> oppMove(" + fr + "," + fc + "," + tr + "," + tc + ")");
-		game.getGame().setOpponentMoves((game.getGame().getOpponentMoves())+1);
+		game.setOppMoves((game.getOppMoves())+1);
 	}
 
 	// server has updated the board state
@@ -475,21 +475,21 @@ public class CheckersLobby implements CheckersClient {
 	// notice that for the game you are playing, you win!
 	@Override
 	public void youWin() {
-		game.getGame().setGameStatus("win");
+		game.setStatus("win");
 	}
 
 	// notice that for the game you are playing, you lost.
 	@Override
 	public void youLose() {
 		debugOutput(">> youLose()");
-		game.getGame().setGameStatus("lose");
+		game.setStatus("lose");
 	}
 
 	// its your turn.
 	@Override
 	public void yourTurn() {
 		debugOutput(">> yourTurn()");
-		game.getGame().setTurn(true);
+		game.setTurn(true);
 	}
 
 	// you are now observing table tid.
