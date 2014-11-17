@@ -105,10 +105,19 @@ public class GameWindow extends JFrame {
 				setVisible(false);
 				dispose();
 				getMyLobby().setVisible(true);
-				try {
-					server.leaveTable(user);
-				} catch (RemoteException e1) {
-					e1.printStackTrace();
+				if (!observer){
+					try {
+						server.leaveTable(user);
+					} catch (RemoteException e1) {
+						e1.printStackTrace();
+					}
+				}
+				else {
+					try {
+						server.stopObserving(user, myTable.getTid());
+					} catch (RemoteException e1) {
+						e1.printStackTrace();
+					}
 				}
 			}
 		});
