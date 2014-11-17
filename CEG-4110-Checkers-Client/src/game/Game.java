@@ -9,6 +9,7 @@ import java.rmi.RemoteException;
 
 import javax.swing.border.BevelBorder;
 
+import lobby.lobbyWindow;
 import table.Table;
 import RMIConnection.Interfaces.RMIServerInterface;
 
@@ -40,6 +41,7 @@ public class Game extends JPanel implements MouseListener {
 	private ImageIcon myIcon;
 	private ImageIcon opponentsIcon;
 	private boolean flip = false;
+	private static lobbyWindow myLobby;
 	
 	/**
 	 * Create the panel.
@@ -214,6 +216,7 @@ public class Game extends JPanel implements MouseListener {
 			this.opponentsIcon = (new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_piece.png"))));
 		}
 		board.setColor(color);
+		setGameStatus("win");
 	}
 
 	public String getGameStatus() {
@@ -222,8 +225,7 @@ public class Game extends JPanel implements MouseListener {
 
 	public void setGameStatus(String gameStatus) {
 		this.gameStatus = gameStatus;
-		//TODO result screen
-		//ResultScreen result = new ResultScreen(gameStatus);
+		ResultScreen result = new ResultScreen(gameStatus, myLobby);
 	}
 
 	public boolean isTurn() {
@@ -296,5 +298,13 @@ public class Game extends JPanel implements MouseListener {
 
 	public void setOpponentMoves(Integer opponentMoves) {
 		this.opponentMoves = opponentMoves;
+	}
+
+	public static lobbyWindow getMyLobby() {
+		return myLobby;
+	}
+
+	public static void setMyLobby(lobbyWindow myLobby) {
+		Game.myLobby = myLobby;
 	}
 }

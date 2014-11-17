@@ -105,6 +105,7 @@ public class GameWindow extends JFrame {
 		game.setBackground(new Color(139, 69, 19));
 		game.setBounds(6, 6, 521, 424);
 		getContentPane().add(game);
+		game.setMyLobby(myLobby);
 		
 		JButton buttonHint = new JButton("Hint");
 		buttonHint.setBounds(656, 570, 89, 23);
@@ -129,10 +130,6 @@ public class GameWindow extends JFrame {
 		this.oppMoves = oppMoves;
 		game.setOpponentMoves(oppMoves);
 	}
-	
-	/*public Game getGame() {
-		return game;
-	}*/
 	
 	public lobbyWindow getMyLobby(){
 		return myLobby;
