@@ -157,7 +157,7 @@ public class CheckersLobby implements CheckersClient {
 	public void alertLeftTable() {
 		curState = State.connected;
 		myLobby.syncState(curState);
-
+		myTable = null;
 		//myTable.closeWindow(); //TODO add closing window here
 		debugOutput(">> You have left the table");
 		// TODO Table related logic

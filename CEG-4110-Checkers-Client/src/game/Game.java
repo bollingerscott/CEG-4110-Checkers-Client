@@ -220,7 +220,6 @@ public class Game extends JPanel implements MouseListener {
 			this.opponentsIcon = (new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_piece.png"))));
 		}
 		board.setColor(color);
-		setGameStatus("win");
 	}
 
 	public void setGameStatus(String gameStatus) {
