@@ -525,7 +525,7 @@ public class CheckersLobby implements CheckersClient {
 	}
 
 	// Outputs to main window in lobby window.
-	private void output(String s) {
+	private void output(String s) {//Split String
 		List<String> parts = new ArrayList<String>();
 		int len = s.length();
 		for (int i = 0; i < len; i += 48) {
