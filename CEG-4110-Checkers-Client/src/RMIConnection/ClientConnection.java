@@ -1,6 +1,9 @@
 package RMIConnection;
-import java.io.*;
-import java.net.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -44,32 +47,6 @@ public class ClientConnection implements RMIServerInterface {
 	}
 		
 	@Override
-	public boolean registerPlayer(String registryName, String host) throws RemoteException {
-		/* Need to get the player from the RMI registry
-		 */
-		if (System.getSecurityManager() == null) {
-		    System.setSecurityManager(new SecurityManager());
-		}
-		try {
-		    Registry registry = LocateRegistry.getRegistry(host);
-		    client = (CheckersClient) registry.lookup(registryName);
-		    if(client != null){
-		    	lnOut("Client registered with RMI Server Connection!");
-		    	return true;
-		    }
-		    else {
-		    	lnOut("RMI Server Connection could not find client in registry.");
-		    	return false;
-		    }
-		}
-		catch(Exception ex){
-			lnOut("Exception occured retrieving player from registry. Exception:");
-			lnOut(ex.getMessage());
-			return false;
-		}
-	}
-
-	@Override
 	public boolean connectToServer(String ip, String userName) {
 		if(client == null){
 			lnOut("Client must be registered before connecting to the server.");
@@ -106,15 +83,6 @@ public class ClientConnection implements RMIServerInterface {
 	        }
 		}		
 	}
-	
-	public void killListenThread() throws IOException{
-		if(listener != null){
-			listener.active = false;
-			listener.interrupt();
-			listener = null;
-			socket.close();
-		}
-	}
 
 	@Override
 	public void disconnect(boolean endProcess) {
@@ -122,41 +90,6 @@ public class ClientConnection implements RMIServerInterface {
 		if(endProcess){
 			System.exit(1);
 		}
-	}
-
-	//@Override
-	public void joinTable(int tid) {
-		serverCon.joinTable(userName, tid);		
-	}
-
-	//@Override
-	public void leaveTable() {
-		serverCon.leaveTable(userName);		
-	}
-
-	//@Override
-	public void makeTable() {
-		serverCon.makeTable(userName);
-	}
-
-	//@Override
-	public void move(int fr, int fc, int tr, int tc) {
-		serverCon.move(userName, fr, fc, tr, tc);
-	}
-
-	//@Override
-	public void ready() {
-		serverCon.playerReady(userName);		
-	}
-
-	@Override
-	public void sendMsg(String to, String msg) {
-		serverCon.msgPlayer(userName, to, msg);
-	}
-
-	@Override
-	public void sendMsg_All(String msg) {
-		serverCon.msgAll(userName, msg);		
 	}
 	
 	/** Game playing methods **/
@@ -166,8 +99,37 @@ public class ClientConnection implements RMIServerInterface {
 	}
 
 	@Override
+	public void goMakeTable(String user) throws RemoteException {
+		serverCon.goMakeTable(user);
+	}
+
+	@Override
+	public void goMove(String user, int tr, int tc) throws RemoteException {
+		serverCon.goMove(user, tr, tc);	
+	}
+
+	//@Override
+	public void joinTable(int tid) {
+		serverCon.joinTable(userName, tid);		
+	}
+
+	@Override
 	public void joinTable(String user, int tid) throws RemoteException {
 		serverCon.joinTable(user, tid);	
+	}
+
+	public void killListenThread() throws IOException{
+		if(listener != null){
+			listener.active = false;
+			listener.interrupt();
+			listener = null;
+			socket.close();
+		}
+	}
+
+	//@Override
+	public void leaveTable() {
+		serverCon.leaveTable(userName);		
 	}
 
 	@Override
@@ -175,9 +137,24 @@ public class ClientConnection implements RMIServerInterface {
 		serverCon.leaveTable(user);
 	}
 
+	/**
+	 * Console helper methods
+	 */
+	private void lnOut(String s){System.out.println(s);}
+	
+	//@Override
+	public void makeTable() {
+		serverCon.makeTable(userName);
+	}
+
 	@Override
 	public void makeTable(String user) throws RemoteException {
 		serverCon.makeTable(user);
+	}
+
+	//@Override
+	public void move(int fr, int fc, int tr, int tc) {
+		serverCon.move(userName, fr, fc, tr, tc);
 	}
 
 	@Override
@@ -187,37 +164,63 @@ public class ClientConnection implements RMIServerInterface {
 	}
 
 	@Override
-	public void playerReady(String user) throws RemoteException {
-		serverCon.playerReady(user);
-	}
-	
-	@Override
 	public void observeTable(String user, int tid) throws RemoteException {
 		serverCon.observeTable(user, tid);		
 	}
+
+	public void outputToConsole(String s){
+		lnOut(s);
+	}
+	
+	@Override
+	public void playerReady(String user) throws RemoteException {
+		serverCon.playerReady(user);
+	}
+
+	//@Override
+	public void ready() {
+		serverCon.playerReady(userName);		
+	}
+	@Override
+	public boolean registerPlayer(String registryName, String host) throws RemoteException {
+		/* Need to get the player from the RMI registry
+		 */
+		if (System.getSecurityManager() == null) {
+		    System.setSecurityManager(new SecurityManager());
+		}
+		try {
+		    Registry registry = LocateRegistry.getRegistry(host);
+		    client = (CheckersClient) registry.lookup(registryName);
+		    if(client != null){
+		    	lnOut("Client registered with RMI Server Connection!");
+		    	return true;
+		    }
+		    else {
+		    	lnOut("RMI Server Connection could not find client in registry.");
+		    	return false;
+		    }
+		}
+		catch(Exception ex){
+			lnOut("Exception occured retrieving player from registry. Exception:");
+			lnOut(ex.getMessage());
+			return false;
+		}
+	}
+
+	@Override
+	public void sendMsg(String to, String msg) {
+		serverCon.msgPlayer(userName, to, msg);
+	}
+	
+	@Override
+	public void sendMsg_All(String msg) {
+		serverCon.msgAll(userName, msg);		
+	}			
 
 	@Override
 	public void stopObserving(String user, int tid) throws RemoteException {
 		serverCon.stopObserving(user, tid);
 		
-	}
-	@Override
-	public void goMakeTable(String user) throws RemoteException {
-		serverCon.goMakeTable(user);
-	}
-
-	@Override
-	public void goMove(String user, int tr, int tc) throws RemoteException {
-		serverCon.goMove(user, tr, tc);	
-	}
-	
-	/**
-	 * Console helper methods
-	 */
-	private void lnOut(String s){System.out.println(s);}			
-
-	public void outputToConsole(String s){
-		lnOut(s);
 	}
 
 	/** Disabled messages.

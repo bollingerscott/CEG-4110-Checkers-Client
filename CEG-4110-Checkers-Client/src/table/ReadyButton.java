@@ -17,14 +17,14 @@ public ReadyButton() {
 	this.setIcon(new ImageIcon("res\\xMark.png"));
 }
 
+public boolean getReady() {
+	return this.ready;
+}
+
 public void makeReady() {
 	this.ready = true;
 	this.setIcon(new ImageIcon("res\\checkMark.png"));
 
-}
-
-public boolean getReady() {
-	return this.ready;
 }
 public void setRead(boolean ready) {
 	this.ready = ready;

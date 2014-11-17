@@ -1,6 +1,9 @@
 package game;
 
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Toolkit;
 
 /*
  * Defines a checker piece
@@ -41,45 +44,45 @@ public class Checker_Piece extends Component {
 		}
 	}
 	
-	protected void paintComponent(Graphics g){
-		g.drawImage(piece, x, y, null);
-	}
-	
 	public String getColor() {
 		return color;
 	}
 	
-	public String setColor(String color) {
-		return color;
-	}	
-	
 	public Image getPiece() {
 		return piece;
 	}
-
-	public void setPiece(Image piece) {
-		this.piece = piece;
-	}
+	
+	public String getType() {
+		return type;
+	}	
+	
 	@Override
 	public int getX() {
 		return x;
 	}
-	public void setX(int x) {
-		this.x = x;
-	}
+
 	@Override
 	public int getY() {
 		return y;
 	}
-	public void setY(int y) {
-		this.y = y;
+	protected void paintComponent(Graphics g){
+		g.drawImage(piece, x, y, null);
 	}
-
-	public String getType() {
-		return type;
+	public String setColor(String color) {
+		return color;
 	}
-
+	public void setPiece(Image piece) {
+		this.piece = piece;
+	}
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	public void setY(int y) {
+		this.y = y;
 	}
 }

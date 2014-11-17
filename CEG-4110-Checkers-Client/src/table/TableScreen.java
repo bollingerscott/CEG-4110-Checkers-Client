@@ -1,17 +1,17 @@
 package table;
 
-import javax.swing.JLabel;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.SwingConstants;
-
-import RMIConnection.Interfaces.RMIServerInterface;
-
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.rmi.RemoteException;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+
+import RMIConnection.Interfaces.RMIServerInterface;
 
 /*
  * Displays a table before a match. Each player's ready status is indicated by a picture. Clicking the picture
@@ -72,7 +72,8 @@ public class TableScreen {
 		
 		frame.setVisible(true);
 		frame.addWindowListener(new WindowAdapter(){
-            public void windowClosing(WindowEvent e){
+            @Override
+			public void windowClosing(WindowEvent e){
             	try {
 					server.leaveTable(userName);
 				} catch (RemoteException e1) {
@@ -83,15 +84,18 @@ public class TableScreen {
         });
 	}
 
-	/*
-	 * call to set the opponent ready
-	 */
-	public void opponentReady() {
-		redState.makeReady();
-	}
-
 	public boolean getReady() {
 		return this.blackState.getReady();
+	}
+
+	/*
+	 * the client wants to leave the table. The server is notified
+	 * 
+	 * This should probably be left to the lobby
+	 */
+	public void leave() throws RemoteException {
+		server.leaveTable(userName);
+		
 	}
 	
 	/*
@@ -107,13 +111,10 @@ public class TableScreen {
 	}
 	
 	/*
-	 * the client wants to leave the table. The server is notified
-	 * 
-	 * This should probably be left to the lobby
+	 * call to set the opponent ready
 	 */
-	public void leave() throws RemoteException {
-		server.leaveTable(userName);
-		
+	public void opponentReady() {
+		redState.makeReady();
 	}
 	
 	/*

@@ -30,16 +30,6 @@ public class TCPListenerThread extends Thread {
 		active = true;
 	}
 	
-	//The run method is the method that is threaded off, defined by the Java API. 
-	@Override
-	public void run(){
-		while(active){
-			if(!listenForMessages())
-				//if the connection was severed, terminate the thread.
-				break;
-		}
-	}
-	
 	public boolean listenForMessages(){
 		try{
 			byte[] data = new byte[1024];			
@@ -233,6 +223,16 @@ public class TCPListenerThread extends Thread {
 		}
 		catch(Exception ex){
 			rmiInt.outputToConsole("Invalid msg from server: "+ex.getMessage());
+		}
+	}
+	
+	//The run method is the method that is threaded off, defined by the Java API. 
+	@Override
+	public void run(){
+		while(active){
+			if(!listenForMessages())
+				//if the connection was severed, terminate the thread.
+				break;
 		}
 	}
 }

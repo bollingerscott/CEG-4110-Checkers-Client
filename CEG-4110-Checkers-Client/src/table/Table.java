@@ -22,27 +22,27 @@ public class Table {
 		this.blackseat = blackseat;
 	}
 	
-	public Integer getTid() {
-		return tid;
+	public String getBlackseat() {
+		return blackseat;
 	}
-	public void setTid(Integer tid) {
-		this.tid = tid;
+	public byte[][] getBoardState() {
+		return boardState;
 	}
 	public String getRedseat() {
 		return redseat;
 	}
-	public void setRedseat(String redseat) {
-		this.redseat = redseat;
+	public Integer getTid() {
+		return tid;
 	}
-	public String getBlackseat() {
-		return blackseat;
+	public boolean isChanged() {
+		return changed;
 	}
-	public void setBlackseat(String blackseat) {
-		this.blackseat = blackseat;
+	public boolean isPlayer1() {
+		return player1;
 	}
 
-	public byte[][] getBoardState() {
-		return boardState;
+	public void setBlackseat(String blackseat) {
+		this.blackseat = blackseat;
 	}
 
 	public void setBoardState(byte[][] boardState) {
@@ -50,19 +50,19 @@ public class Table {
 		changed = true;
 	}
 
-	public boolean isPlayer1() {
-		return player1;
+	public void setChanged(boolean changed) {
+		this.changed = changed;
 	}
 
 	public void setPlayer1(boolean player1) {
 		this.player1 = player1;
 	}
 
-	public boolean isChanged() {
-		return changed;
+	public void setRedseat(String redseat) {
+		this.redseat = redseat;
 	}
 
-	public void setChanged(boolean changed) {
-		this.changed = changed;
+	public void setTid(Integer tid) {
+		this.tid = tid;
 	}
 }

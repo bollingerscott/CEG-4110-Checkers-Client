@@ -1,6 +1,8 @@
 package game;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -35,80 +37,42 @@ public class Tile extends JPanel implements MouseListener {
 		addMouseListener(this);
 	}
 	
+	public void clicked(MouseEvent e){
+
+	}
+	
 	public String getColor() {
 		return color;
 	}
 	
-	public String setColor(String color) {
-		return color;
+	public int getCoordX() {
+		return coordX;
 	}
 	
-	public boolean isOccupied(){
-		return occupied;
-	}
-	
-	public void setOccupied(boolean status, Checker_Piece piece){
-		this.occupied = status;
-		this.piece = piece;
-	}
-
-	public Image getTile() {
-		return tile;
-	}
-
-	public void setTile(Image tile) {
-		this.tile = tile;
+	public int getCoordY() {
+		return coordY;
 	}
 
 	public Checker_Piece getPiece() {
 		return piece;
 	}
 
-	public int getCoordX() {
-		return coordX;
+	public Image getTile() {
+		return tile;
 	}
 
-	public void setCoordX(int coordX) {
-		this.coordX = coordX;
+	public boolean isEnable() {
+		return enable;
 	}
 
-	public int getCoordY() {
-		return coordY;
-	}
-
-	public void setCoordY(int coordY) {
-		this.coordY = coordY;
+	public boolean isOccupied(){
+		return occupied;
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		setTile(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/clicked_tile.jpg")));
 		getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/clicked_checker.png")));
-	}
-	
-	public void clicked(MouseEvent e){
-
-	}
-	
-	public void reset(){
-		setTile(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_tile.jpg")));
-		if (getPiece().getColor().equals("red")){
-			if (getPiece().getType().equalsIgnoreCase("regular")){
-				getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_checker.png")));
-			}
-			else {
-				getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_king_checker.png")));
-			}
-		}
-		else {
-			if (getPiece().getType().equalsIgnoreCase("regular")){
-				getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_piece.png")));
-			}
-			else {
-				getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_king_piece.png")));
-			}
-		}
-		
 	}
 
 	@Override
@@ -133,15 +97,44 @@ public class Tile extends JPanel implements MouseListener {
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public void reset(){
+		setTile(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_tile.jpg")));
+		if (getPiece().getColor().equals("red")){
+			if (getPiece().getType().equalsIgnoreCase("regular")){
+				getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_checker.png")));
+			}
+			else {
+				getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_king_checker.png")));
+			}
+		}
+		else {
+			if (getPiece().getType().equalsIgnoreCase("regular")){
+				getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_piece.png")));
+			}
+			else {
+				getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_king_piece.png")));
+			}
+		}
+		
+	}
 
-	public boolean isEnable() {
-		return enable;
+	public String setColor(String color) {
+		return color;
+	}
+
+	public void setCoordX(int coordX) {
+		this.coordX = coordX;
+	}
+
+	public void setCoordY(int coordY) {
+		this.coordY = coordY;
 	}
 
 	public void setEnable(boolean enable) {
@@ -152,6 +145,15 @@ public class Tile extends JPanel implements MouseListener {
 		else {
 			setTile(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_tile.jpg")));
 		}
+	}
+
+	public void setOccupied(boolean status, Checker_Piece piece){
+		this.occupied = status;
+		this.piece = piece;
+	}
+
+	public void setTile(Image tile) {
+		this.tile = tile;
 	}
 
 

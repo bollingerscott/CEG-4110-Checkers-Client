@@ -1,10 +1,14 @@
 package game;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 
 /*
@@ -64,24 +68,102 @@ public class Board extends JPanel implements MouseListener{
 		readBoardState();
 	}
 
-	@Override
-	protected void paintComponent(Graphics g){
-		int x = 0;
-		int y = -TILE_LENGTH;
-		for (int i = 0; i < LENGTH; i++){
-			y += TILE_LENGTH;
-			x = 0;
-			for (int j = 0; j < LENGTH; j++){
-				Tile currentTile = board[i][j];
-				g.drawImage(currentTile.getTile(), x, y, null);
-				if (currentTile.isOccupied()){
-					currentTile.getPiece().paintComponent(g);
+	private void enable(Tile tile, boolean enable) {
+		if (tile.getPiece().getType().equals("king")){
+			try {
+				if (!board[tile.getCoordY()+1][tile.getCoordX()-1].isOccupied()) {
+					board[tile.getCoordY()+1][tile.getCoordX()-1].setEnable(enable);
 				}
-				currentTile.setCoordX(j);
-				currentTile.setCoordY(i);
-				x += TILE_LENGTH;
+				else if (board[tile.getCoordY()-1][tile.getCoordX()-1].getPiece().getColor().equals(oppositeColor) && !(board[tile.getCoordY()+2][tile.getCoordX()-2].isOccupied())){
+					board[tile.getCoordY()+2][tile.getCoordX()-2].setEnable(enable);
+				}
+			}
+			catch (IndexOutOfBoundsException ex){}
+			try {
+				if (!board[tile.getCoordY()+1][tile.getCoordX()+1].isOccupied()) {
+					board[tile.getCoordY()+1][tile.getCoordX()+1].setEnable(enable);
+				}
+				else if (board[tile.getCoordY()+1][tile.getCoordX()+1].getPiece().getColor().equals(oppositeColor) && !(board[tile.getCoordY()+2][tile.getCoordX()+2].isOccupied())){
+					board[tile.getCoordY()+2][tile.getCoordX()+2].setEnable(enable);
+				}
+			}
+			catch (IndexOutOfBoundsException ex){}
+		}
+		try {
+			if (!board[tile.getCoordY()-1][tile.getCoordX()-1].isOccupied()) {
+				board[tile.getCoordY()-1][tile.getCoordX()-1].setEnable(enable);
+			}
+			else if (board[tile.getCoordY()-1][tile.getCoordX()-1].getPiece().getColor().equals(oppositeColor) && !(board[tile.getCoordY()-2][tile.getCoordX()-2].isOccupied())){
+				board[tile.getCoordY()-2][tile.getCoordX()-2].setEnable(enable);
 			}
 		}
+		catch (IndexOutOfBoundsException ex){}
+		try {
+			if (!board[tile.getCoordY()-1][tile.getCoordX()+1].isOccupied()) {
+				board[tile.getCoordY()-1][tile.getCoordX()+1].setEnable(enable);
+			}
+			else if (board[tile.getCoordY()-1][tile.getCoordX()+1].getPiece().getColor().equals(oppositeColor) && !(board[tile.getCoordY()-2][tile.getCoordX()+2].isOccupied())){
+				board[tile.getCoordY()-2][tile.getCoordX()+2].setEnable(enable);
+			}
+		}
+		catch (IndexOutOfBoundsException ex){}
+
+	}
+
+	public Integer getBlackLeft() {
+		return blackLeft;
+	}
+
+	public Integer getBlackTaken() {
+		return blackTaken;
+	}
+
+	public Tile[][] getBoard() {
+		return board;
+	}
+
+	public byte[][] getBoard_state() {
+		return board_state;
+	}
+
+	public String getColor() {
+		return color;
+	}
+
+	public int getFc() {
+		return fc;
+	}
+
+	public int getFr() {
+		return fr;
+	}
+
+	public String getOppositeColor() {
+		return oppositeColor;
+	}
+
+	public Integer getRedLeft() {
+		return redLeft;
+	}
+
+	public Integer getRedTaken() {
+		return redTaken;
+	}
+
+	public int getTc() {
+		return tc;
+	}
+
+	public int getTr() {
+		return tr;
+	}
+
+	public boolean isFlip() {
+		return flip;
+	}
+
+	public boolean isMoving() {
+		return moving;
 	}
 
 	@Override
@@ -147,48 +229,6 @@ public class Board extends JPanel implements MouseListener{
 		}
 	}
 
-	private void enable(Tile tile, boolean enable) {
-		if (tile.getPiece().getType().equals("king")){
-			try {
-				if (!board[tile.getCoordY()+1][tile.getCoordX()-1].isOccupied()) {
-					board[tile.getCoordY()+1][tile.getCoordX()-1].setEnable(enable);
-				}
-				else if (board[tile.getCoordY()-1][tile.getCoordX()-1].getPiece().getColor().equals(oppositeColor) && !(board[tile.getCoordY()+2][tile.getCoordX()-2].isOccupied())){
-					board[tile.getCoordY()+2][tile.getCoordX()-2].setEnable(enable);
-				}
-			}
-			catch (IndexOutOfBoundsException ex){}
-			try {
-				if (!board[tile.getCoordY()+1][tile.getCoordX()+1].isOccupied()) {
-					board[tile.getCoordY()+1][tile.getCoordX()+1].setEnable(enable);
-				}
-				else if (board[tile.getCoordY()+1][tile.getCoordX()+1].getPiece().getColor().equals(oppositeColor) && !(board[tile.getCoordY()+2][tile.getCoordX()+2].isOccupied())){
-					board[tile.getCoordY()+2][tile.getCoordX()+2].setEnable(enable);
-				}
-			}
-			catch (IndexOutOfBoundsException ex){}
-		}
-		try {
-			if (!board[tile.getCoordY()-1][tile.getCoordX()-1].isOccupied()) {
-				board[tile.getCoordY()-1][tile.getCoordX()-1].setEnable(enable);
-			}
-			else if (board[tile.getCoordY()-1][tile.getCoordX()-1].getPiece().getColor().equals(oppositeColor) && !(board[tile.getCoordY()-2][tile.getCoordX()-2].isOccupied())){
-				board[tile.getCoordY()-2][tile.getCoordX()-2].setEnable(enable);
-			}
-		}
-		catch (IndexOutOfBoundsException ex){}
-		try {
-			if (!board[tile.getCoordY()-1][tile.getCoordX()+1].isOccupied()) {
-				board[tile.getCoordY()-1][tile.getCoordX()+1].setEnable(enable);
-			}
-			else if (board[tile.getCoordY()-1][tile.getCoordX()+1].getPiece().getColor().equals(oppositeColor) && !(board[tile.getCoordY()-2][tile.getCoordX()+2].isOccupied())){
-				board[tile.getCoordY()-2][tile.getCoordX()+2].setEnable(enable);
-			}
-		}
-		catch (IndexOutOfBoundsException ex){}
-
-	}
-
 	@Override
 	public void mouseEntered(MouseEvent e) {
 
@@ -209,93 +249,24 @@ public class Board extends JPanel implements MouseListener{
 
 	}
 
-	public Integer getBlackLeft() {
-		return blackLeft;
-	}
-
-	public void setBlackLeft(Integer left) {
-		this.blackLeft = left;
-	}
-
-	public Integer getBlackTaken() {
-		return blackTaken;
-	}
-
-	public void setBlackTaken(Integer taken) {
-		this.blackTaken = taken;
-	}
-
-	public Integer getRedLeft() {
-		return redLeft;
-	}
-
-	public void setRedLeft(Integer opponentLeft) {
-		this.redLeft = opponentLeft;
-	}
-
-	public Integer getRedTaken() {
-		return redTaken;
-	}
-
-	public void setRedTaken(Integer opponentTaken) {
-		this.redTaken = opponentTaken;
-	}
-
-	public int getFr() {
-		return fr;
-	}
-
-	public void setFr(int fr) {
-		this.fr = fr;
-	}
-
-	public int getFc() {
-		return fc;
-	}
-
-	public void setFc(int fc) {
-		this.fc = fc;
-	}
-
-	public int getTr() {
-		return tr;
-	}
-
-	public void setTr(int tr) {
-		this.tr = tr;
-	}
-
-	public int getTc() {
-		return tc;
-	}
-
-	public void setTc(int tc) {
-		this.tc = tc;
-	}
-
-	public boolean isMoving() {
-		return moving;
-	}
-
-	public void setMoving(boolean moving) {
-		this.moving = moving;
-	}
-
-	public Tile[][] getBoard() {
-		return board;
-	}
-
-	public void setBoard(Tile[][] board) {
-		this.board = board;
-	}
-
-	public byte[][] getBoard_state() {
-		return board_state;
-	}
-
-	public void setBoard_state(byte[][] board_state) {
-		this.board_state = board_state;
-		readBoardState();
+	@Override
+	protected void paintComponent(Graphics g){
+		int x = 0;
+		int y = -TILE_LENGTH;
+		for (int i = 0; i < LENGTH; i++){
+			y += TILE_LENGTH;
+			x = 0;
+			for (int j = 0; j < LENGTH; j++){
+				Tile currentTile = board[i][j];
+				g.drawImage(currentTile.getTile(), x, y, null);
+				if (currentTile.isOccupied()){
+					currentTile.getPiece().paintComponent(g);
+				}
+				currentTile.setCoordX(j);
+				currentTile.setCoordY(i);
+				x += TILE_LENGTH;
+			}
+		}
 	}
 
 	private void readBoardState(){
@@ -342,29 +313,62 @@ public class Board extends JPanel implements MouseListener{
 		blackTaken = 12 - blackLeft;
 	}
 
-	public boolean isFlip() {
-		return flip;
+	public void setBlackLeft(Integer left) {
+		this.blackLeft = left;
+	}
+
+	public void setBlackTaken(Integer taken) {
+		this.blackTaken = taken;
+	}
+
+	public void setBoard(Tile[][] board) {
+		this.board = board;
+	}
+
+	public void setBoard_state(byte[][] board_state) {
+		this.board_state = board_state;
+		readBoardState();
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
+
+	public void setFc(int fc) {
+		this.fc = fc;
 	}
 
 	public void setFlip(boolean flip) {
 		this.flip = flip;
 	}
 
-	public String getColor() {
-		return color;
+	public void setFr(int fr) {
+		this.fr = fr;
 	}
 
-	public void setColor(String color) {
-		this.color = color;
-	}
-	
-
-	public String getOppositeColor() {
-		return oppositeColor;
+	public void setMoving(boolean moving) {
+		this.moving = moving;
 	}
 
 	public void setOppositeColor(String oppositeColor) {
 		this.oppositeColor = oppositeColor;
+	}
+
+	public void setRedLeft(Integer opponentLeft) {
+		this.redLeft = opponentLeft;
+	}
+
+	public void setRedTaken(Integer opponentTaken) {
+		this.redTaken = opponentTaken;
+	}
+	
+
+	public void setTc(int tc) {
+		this.tc = tc;
+	}
+
+	public void setTr(int tr) {
+		this.tr = tr;
 	}
 }
 

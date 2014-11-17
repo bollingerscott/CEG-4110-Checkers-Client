@@ -26,39 +26,39 @@ public interface RMIServerInterface extends Remote {
 	  * else false.
 	  * */
 	
+	 //connect to the checkers server at address <ip> using username <userName>.
+	 public boolean connectToServer(String ip, String userName) throws RemoteException;	 
+	 //tell the server you are disconnecting.
+	 public void disconnect(boolean endProcess) throws RemoteException;
+	 //ask the server what the status of table with id tid is.
+	 public void getTblStatus(String user, int tid) throws RemoteException;
+	 //make a table that is playing Go
+	 public void goMakeTable(String user) throws RemoteException;	 
+	 //make a move on a Go game instance
+	 public void goMove(String user, int tr, int tc) throws RemoteException;
+	 
+	 //tell the server you are joining table with id tid.
+	 public void joinTable(String user, int tid) throws RemoteException;
+	 //tell the server you are leaving the table you have joined.
+	 public void leaveTable(String user) throws RemoteException;
+	 //tell the server you want to make a table.
+	 public void makeTable(String user) throws RemoteException;
+	 //tell the server you are moving from (fr,fc) to (tr,tc). See CheckersClient interface.
+	 public void move(String user, int fr, int fc, int tr, int tc) throws RemoteException;
+	 //start observing the table with id tid.
+	 public void observeTable(String user, int tid) throws RemoteException;
+	 //tell the server you are ready to play a game, after sitting on a table.
+	 public void playerReady(String user) throws RemoteException;
 	 /**
 	  * Phase 1 messages.
 	  */
-	 public boolean registerPlayer(String registryName, String host) throws RemoteException;	 
-	 //connect to the checkers server at address <ip> using username <userName>.
-	 public boolean connectToServer(String ip, String userName) throws RemoteException;
+	 public boolean registerPlayer(String registryName, String host) throws RemoteException;
+	 //send the message <msg> o user <user>.
+	 public void sendMsg(String to, String msg) throws RemoteException;
 	 //send the message <msg> to everyone in the lobby.
 	 public void sendMsg_All(String msg) throws RemoteException;
-	 //send the message <msg> o user <user>.
-	 public void sendMsg(String to, String msg) throws RemoteException;	 
-	 //tell the server you are disconnecting.
-	 public void disconnect(boolean endProcess) throws RemoteException;
-	 
-	 //tell the server you want to make a table.
-	 public void makeTable(String user) throws RemoteException;
-	 //tell the server you are joining table with id tid.
-	 public void joinTable(String user, int tid) throws RemoteException;
-	 //tell the server you are ready to play a game, after sitting on a table.
-	 public void playerReady(String user) throws RemoteException;
-	 //tell the server you are moving from (fr,fc) to (tr,tc). See CheckersClient interface.
-	 public void move(String user, int fr, int fc, int tr, int tc) throws RemoteException;
-	 //tell the server you are leaving the table you have joined.
-	 public void leaveTable(String user) throws RemoteException;
-	 //ask the server what the status of table with id tid is.
-	 public void getTblStatus(String user, int tid) throws RemoteException;
-	 //start observing the table with id tid.
-	 public void observeTable(String user, int tid) throws RemoteException;
 	 //stop observing the table with id tid.
 	 public void stopObserving(String user, int tid) throws RemoteException;
-	 //make a table that is playing Go
-	 public void goMakeTable(String user) throws RemoteException;
-	 //make a move on a Go game instance
-	 public void goMove(String user, int tr, int tc) throws RemoteException;
 	 
 	 /*** This functionality is disabled.
 	 //register pwd with your username.

@@ -1,18 +1,16 @@
 package Chat;
 
-import javax.swing.JPanel;
-
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.rmi.RemoteException;
 
 import javax.swing.JButton;
-import javax.swing.JTextField;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import RMIConnection.Interfaces.RMIServerInterface;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.rmi.RemoteException;
 
 /*
  * replaces the ChatContainer. Provides a more solid implementation of chat functionality. Extends JPanel so 

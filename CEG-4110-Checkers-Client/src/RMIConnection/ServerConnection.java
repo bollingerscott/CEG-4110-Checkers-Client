@@ -1,6 +1,7 @@
 package RMIConnection;
 
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 import RMIConnection.Interfaces.TCPMsg;
 import RMIConnection.Interfaces.TCPServerInterface;
@@ -36,6 +37,46 @@ public class ServerConnection implements TCPServerInterface{
 	}
 
 	@Override
+	public void getProfile(String user, String profileFor) {
+		try{
+			streamToServer.write((Integer.toString(TCPMsg.GET_PROFILE)+" "+user+" "+profileFor+TCPMsg.endOfMsg).getBytes());
+		}catch(IOException ex){
+			rmiInt.outputToConsole(ex.getMessage());
+		}	
+	}
+
+	//@Override
+	@Override
+	public void getTblStatus(String user, int tid) {
+		try{
+			streamToServer.write((Integer.toString(TCPMsg.ASK_TBL_STATUS)+" "+user+" "+Integer.toString(tid)+TCPMsg.endOfMsg).getBytes());
+		}catch(IOException ex){
+			rmiInt.outputToConsole(ex.getMessage());
+		}	
+	}
+
+	//@Override
+	@Override
+	public void goMakeTable(String user) {
+		try{
+			streamToServer.write((Integer.toString(TCPMsg.GO_MAKE_TBL)+" "+user+TCPMsg.endOfMsg).getBytes());
+		}catch(IOException ex){
+			rmiInt.outputToConsole(ex.getMessage());
+		}			
+	}
+
+	//@Override
+	@Override
+	public void goMove(String user, int tr, int tc) {
+		String moveT = Integer.toString(tr)+","+Integer.toString(tc);
+		try{
+			streamToServer.write((Integer.toString(TCPMsg.GO_MOVE)+" "+user+" "+moveT+TCPMsg.endOfMsg).getBytes());
+		}catch(IOException ex){
+			rmiInt.outputToConsole(ex.getMessage());
+		}			
+	}
+
+	@Override
 	public void joinTable(String user, int tid) {
 		try{
 			streamToServer.write((Integer.toString(TCPMsg.JOIN_TBL)+" "+user+" "+Integer.toString(tid)+TCPMsg.endOfMsg).getBytes());
@@ -51,6 +92,16 @@ public class ServerConnection implements TCPServerInterface{
 		}catch(IOException ex){
 			rmiInt.outputToConsole(ex.getMessage());
 		}
+	}
+
+	@Override
+	public void login(String user, String pwd) {
+		try{
+			streamToServer.write((Integer.toString(TCPMsg.LOGIN)+" "+user+" "+pwd+TCPMsg.endOfMsg).getBytes());
+		}catch(IOException ex){
+			rmiInt.outputToConsole(ex.getMessage());
+		}	
+		
 	}
 
 	@Override
@@ -94,44 +145,6 @@ public class ServerConnection implements TCPServerInterface{
 		
 	}
 
-	@Override
-	public void playerReady(String user) {
-		try{
-			streamToServer.write((Integer.toString(TCPMsg.READY)+" "+user+TCPMsg.endOfMsg).getBytes());
-		}catch(IOException ex){
-			rmiInt.outputToConsole(ex.getMessage());
-		}	
-	}
-
-	//@Override
-	@Override
-	public void getTblStatus(String user, int tid) {
-		try{
-			streamToServer.write((Integer.toString(TCPMsg.ASK_TBL_STATUS)+" "+user+" "+Integer.toString(tid)+TCPMsg.endOfMsg).getBytes());
-		}catch(IOException ex){
-			rmiInt.outputToConsole(ex.getMessage());
-		}	
-	}
-
-	@Override
-	public void getProfile(String user, String profileFor) {
-		try{
-			streamToServer.write((Integer.toString(TCPMsg.GET_PROFILE)+" "+user+" "+profileFor+TCPMsg.endOfMsg).getBytes());
-		}catch(IOException ex){
-			rmiInt.outputToConsole(ex.getMessage());
-		}	
-	}
-
-	@Override
-	public void login(String user, String pwd) {
-		try{
-			streamToServer.write((Integer.toString(TCPMsg.LOGIN)+" "+user+" "+pwd+TCPMsg.endOfMsg).getBytes());
-		}catch(IOException ex){
-			rmiInt.outputToConsole(ex.getMessage());
-		}	
-		
-	}
-
 	//@Override
 	@Override
 	public void observeTable(String user, int tid) {
@@ -141,6 +154,15 @@ public class ServerConnection implements TCPServerInterface{
 			rmiInt.outputToConsole(ex.getMessage());
 		}	
 		
+	}
+
+	@Override
+	public void playerReady(String user) {
+		try{
+			streamToServer.write((Integer.toString(TCPMsg.READY)+" "+user+TCPMsg.endOfMsg).getBytes());
+		}catch(IOException ex){
+			rmiInt.outputToConsole(ex.getMessage());
+		}	
 	}
 
 	@Override
@@ -162,8 +184,8 @@ public class ServerConnection implements TCPServerInterface{
 			rmiInt.outputToConsole(ex.getMessage());
 		}	
 		
-	}
-
+	}	
+	
 	@Override
 	public void updateProfile(String user, String desc) {
 		try{
@@ -172,27 +194,6 @@ public class ServerConnection implements TCPServerInterface{
 			rmiInt.outputToConsole(ex.getMessage());
 		}	
 		
-	}
-
-	//@Override
-	@Override
-	public void goMakeTable(String user) {
-		try{
-			streamToServer.write((Integer.toString(TCPMsg.GO_MAKE_TBL)+" "+user+TCPMsg.endOfMsg).getBytes());
-		}catch(IOException ex){
-			rmiInt.outputToConsole(ex.getMessage());
-		}			
-	}	
-	
-	//@Override
-	@Override
-	public void goMove(String user, int tr, int tc) {
-		String moveT = Integer.toString(tr)+","+Integer.toString(tc);
-		try{
-			streamToServer.write((Integer.toString(TCPMsg.GO_MOVE)+" "+user+" "+moveT+TCPMsg.endOfMsg).getBytes());
-		}catch(IOException ex){
-			rmiInt.outputToConsole(ex.getMessage());
-		}			
 	}
 
 

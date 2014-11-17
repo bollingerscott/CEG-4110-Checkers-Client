@@ -1,34 +1,30 @@
 package lobby;
 
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.swing.DefaultListModel;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-
-import javax.swing.ImageIcon;
-
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import Client.CheckersLobby.State;
 import RMIConnection.Interfaces.RMIServerInterface;
-
-import javax.swing.JList;
-
-import java.awt.Font;
 
 public class lobbyWindow extends JFrame {
 
@@ -56,21 +52,6 @@ public class lobbyWindow extends JFrame {
 	private JList<String> jListOfUsers;
 
 	/**
-	 * Starts window, not done in constructor because constructor called
-	 * intially. This is because table list and user list were being sent before
-	 * the lobby was made causing issues
-	 * */
-
-	public void startWindow(RMIServerInterface server, String name,
-			Client.CheckersLobby.State curState) {
-		serverConnection = server;
-		myName = name;
-		lobbyWindow.curState = curState;
-		initialize();
-		updateUsers();
-	}
-
-	/**
 	 * Init for lobby. sets table and user list so they can be edited before the
 	 * table window is actually called up
 	 */
@@ -81,6 +62,61 @@ public class lobbyWindow extends JFrame {
 		curState = State.notConnected;
 		tidHashTable = new HashMap<JLabel, Integer>();
 		newTableCreation = false;
+	}
+
+	// Adds intial tables to list before lobby window is shown
+	public void addInitialTables(int[] array) {
+		System.out.println("init tables size " + array.length);
+		for (int i : array) {
+			listOfTables.add(i);
+		}
+		addTables(array);
+		System.out.println(listOfTables.size());
+	}
+
+	// Actually adds tables to panel
+	public void addTables(int[] array) {
+		System.out.println("add tables called size : " + array.length);
+		for (int i = 0; i < array.length; i++) {
+			final JLabel table = new JLabel();
+
+			table.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					if (curState == State.inLobby) {
+						if (currentlyActiveTable != null) {
+							currentlyActiveTable.setIcon(normalTableIcon);
+						}
+						currentlyActiveTable = table;
+						table.setIcon(highlightedTableIcon);
+					}
+				}
+			});
+			tidHashTable.put(table, array[i]);
+			if (newTableCreation) {
+				table.setIcon(highlightedTableIcon);
+				newTableCreation = false;
+				if (currentlyActiveTable != null) {
+					currentlyActiveTable.setIcon(normalTableIcon);
+				}
+				currentlyActiveTable = table;
+			} else
+				table.setIcon(normalTableIcon);
+			tableListFlowPanel.add(table);
+		}
+	}
+
+	// Adds to main table screen
+	public void addTextMainLobbyWindow(String string) {
+		if (chatTextArea != null) {
+			if (chatTextArea.getText().length() == 0) {
+				chatTextArea.setText(string);
+			} else
+				chatTextArea.setText(chatTextArea.getText() + "\n" + string);
+		}
+	}
+	public State getCurState() {
+		return curState;
 	}
 
 	/**
@@ -227,60 +263,28 @@ public class lobbyWindow extends JFrame {
 
 	}
 
-	// Adds intial tables to list before lobby window is shown
-	public void addInitialTables(int[] array) {
-		System.out.println("init tables size " + array.length);
-		for (int i : array) {
-			listOfTables.add(i);
-		}
-		addTables(array);
-		System.out.println(listOfTables.size());
-	}
-	// Actually adds tables to panel
-	public void addTables(int[] array) {
-		System.out.println("add tables called size : " + array.length);
-		for (int i = 0; i < array.length; i++) {
-			final JLabel table = new JLabel();
-
-			table.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					if (curState == State.inLobby) {
-						if (currentlyActiveTable != null) {
-							currentlyActiveTable.setIcon(normalTableIcon);
-						}
-						currentlyActiveTable = table;
-						table.setIcon(highlightedTableIcon);
-					}
-				}
-			});
-			tidHashTable.put(table, array[i]);
-			if (newTableCreation) {
-				table.setIcon(highlightedTableIcon);
-				newTableCreation = false;
-				if (currentlyActiveTable != null) {
-					currentlyActiveTable.setIcon(normalTableIcon);
-				}
-				currentlyActiveTable = table;
-			} else
-				table.setIcon(normalTableIcon);
-			tableListFlowPanel.add(table);
-		}
-	}
-
-	// Adds to main table screen
-	public void addTextMainLobbyWindow(String string) {
-		if (chatTextArea != null) {
-			if (chatTextArea.getText().length() == 0) {
-				chatTextArea.setText(string);
-			} else
-				chatTextArea.setText(chatTextArea.getText() + "\n" + string);
-		}
-	}
-
 	// Sets users before lobby has been intialized.
 	public void setUsers(ArrayList<String> lobbyUserList) {
 		usersInMainChat = lobbyUserList;
+	}
+
+	/**
+	 * Starts window, not done in constructor because constructor called
+	 * intially. This is because table list and user list were being sent before
+	 * the lobby was made causing issues
+	 * */
+
+	public void startWindow(RMIServerInterface server, String name,
+			Client.CheckersLobby.State curState) {
+		serverConnection = server;
+		myName = name;
+		lobbyWindow.curState = curState;
+		initialize();
+		updateUsers();
+	}
+
+	public void syncState(State a) {
+		curState = a;
 	}
 
 	// Updates users based on list. Called when window is intialized.
@@ -291,13 +295,5 @@ public class lobbyWindow extends JFrame {
 		}
 		jListOfUsers.setModel(model);
 
-	}
-
-	public State getCurState() {
-		return curState;
-	}
-
-	public void syncState(State a) {
-		curState = a;
 	}
 }

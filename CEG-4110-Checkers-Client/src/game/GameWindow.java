@@ -1,21 +1,18 @@
 package game;
 
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-
 import java.awt.Color;
-
-import javax.swing.JButton;
-
-import table.Table;
-
+import java.awt.EventQueue;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.rmi.RemoteException;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
 
 import lobby.lobbyWindow;
-import RMIConnection.Interfaces.RMIServerInterface;
+import table.Table;
 import Chat.ChatBar;
+import RMIConnection.Interfaces.RMIServerInterface;
 
 /*
  * The frame for the game
@@ -26,20 +23,6 @@ import Chat.ChatBar;
  */
 @SuppressWarnings("serial")
 public class GameWindow extends JFrame {
-
-	//private JFrame frmCheckers;
-	private static RMIServerInterface server;
-	private boolean observer;
-	private Integer oppMoves = 0;
-	private String status;
-	private String user;
-	private boolean turn;
-	private String myColor;
-	private Game game;
-	private Stats stats;
-	private lobbyWindow myLobby;
-	private Table myTable;
-
 
 	/**
 	 * Launch the application. for testing
@@ -58,6 +41,20 @@ public class GameWindow extends JFrame {
 			}
 		});
 	}
+	//private JFrame frmCheckers;
+	private static RMIServerInterface server;
+	private boolean observer;
+	private Integer oppMoves = 0;
+	private String status;
+	private String user;
+	private boolean turn;
+	private String myColor;
+	private Game game;
+	private Stats stats;
+	private lobbyWindow myLobby;
+
+
+	private Table myTable;
 
 	/**
 	 * Create the application.
@@ -73,12 +70,28 @@ public class GameWindow extends JFrame {
 		initialize();	
 	}
 
+	public lobbyWindow getMyLobby(){
+		return myLobby;
+	}
+
+	public Integer getOppMoves() {
+		return oppMoves;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+	
+	public String getUser() {
+		return user;
+	}
+
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
 		//frmCheckers = new JFrame();
-		setTitle("Checkers");
+		setTitle("Checkers Table: " + myTable.getTid());
 		setResizable(false);
 		setVisible(true);
 		getContentPane().setBackground(Color.DARK_GRAY);
@@ -92,6 +105,11 @@ public class GameWindow extends JFrame {
 				setVisible(false);
 				dispose();
 				getMyLobby().setVisible(true);
+				try {
+					server.leaveTable(user);
+				} catch (RemoteException e1) {
+					e1.printStackTrace();
+				}
 			}
 		});
 		
@@ -105,7 +123,6 @@ public class GameWindow extends JFrame {
 		game.setBackground(new Color(139, 69, 19));
 		game.setBounds(6, 6, 521, 424);
 		getContentPane().add(game);
-		game.setMyLobby(myLobby);
 		
 		JButton buttonHint = new JButton("Hint");
 		buttonHint.setBounds(656, 570, 89, 23);
@@ -114,29 +131,17 @@ public class GameWindow extends JFrame {
 		ChatBar chatBar = new ChatBar(server);
 		chatBar.setBounds(6, 436, 521, 161);
 		getContentPane().add(chatBar);
-		
 
-		//repaint();
-		//TODO hint ai algorithm stretch goal
-		
-
+		//TODO hint ai algorithm stretch goal		
 	}
 
-	public Integer getOppMoves() {
-		return oppMoves;
+	public boolean isTurn() {
+		return turn;
 	}
 
 	public void setOppMoves(Integer oppMoves) {
 		this.oppMoves = oppMoves;
 		game.setOpponentMoves(oppMoves);
-	}
-	
-	public lobbyWindow getMyLobby(){
-		return myLobby;
-	}
-
-	public String getStatus() {
-		return status;
 	}
 
 	public void setStatus(String status) {
@@ -144,21 +149,13 @@ public class GameWindow extends JFrame {
 		game.setGameStatus(status);
 	}
 
-	public String getUser() {
-		return user;
+	public void setTurn(boolean turn) {
+		this.turn = turn;
+		game.setTurn(turn);
 	}
 
 	public void setUser(String user) {
 		this.user = user;
 		game.setUser(user);
-	}
-
-	public boolean isTurn() {
-		return turn;
-	}
-
-	public void setTurn(boolean turn) {
-		this.turn = turn;
-		game.setTurn(turn);
 	}
 }

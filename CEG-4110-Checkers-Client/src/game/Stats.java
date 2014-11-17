@@ -1,14 +1,12 @@
 package game;
 
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
-
-import java.awt.Color;
 
 @SuppressWarnings("serial")
 public class Stats extends JPanel {
@@ -168,48 +166,48 @@ public class Stats extends JPanel {
 
 	}
 	
-	@Override
-	protected void paintComponent(Graphics g){
-		
-	}
-
-	public JTextField getName1() {
-		return name1;
-	}
-
-	public JTextField getMoves1() {
-		return moves1;
-	}
-
-	public JTextField getTaken1() {
-		return taken1;
-	}
-
-	public JTextField getLeft1() {
-		return left1;
-	}
-
-	public JTextField getName2() {
-		return name2;
-	}
-
-	public JTextField getMoves2() {
-		return moves2;
-	}
-
-	public JTextField getTaken2() {
-		return taken2;
-	}
-
-	public JTextField getLeft2() {
-		return left2;
+	public JLabel getColor1() {
+		return color1;
 	}
 
 	public JLabel getColor2() {
 		return color2;
 	}
 
-	public JLabel getColor1() {
-		return color1;
+	public JTextField getLeft1() {
+		return left1;
+	}
+
+	public JTextField getLeft2() {
+		return left2;
+	}
+
+	public JTextField getMoves1() {
+		return moves1;
+	}
+
+	public JTextField getMoves2() {
+		return moves2;
+	}
+
+	public JTextField getName1() {
+		return name1;
+	}
+
+	public JTextField getName2() {
+		return name2;
+	}
+
+	public JTextField getTaken1() {
+		return taken1;
+	}
+
+	public JTextField getTaken2() {
+		return taken2;
+	}
+
+	@Override
+	protected void paintComponent(Graphics g){
+		
 	}
 }
