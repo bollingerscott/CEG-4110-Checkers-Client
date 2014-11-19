@@ -70,8 +70,7 @@ public class lobbyWindow extends JFrame {
 		for (int i : array) {
 			listOfTables.add(i);
 		}
-		addTables(array);
-		System.out.println(listOfTables.size());
+
 	}
 
 	// Actually adds tables to panel
@@ -91,7 +90,7 @@ public class lobbyWindow extends JFrame {
 						table.setIcon(highlightedTableIcon);
 					}
 				}
-			});//
+			});
 			tidHashTable.put(table, array[i]);
 			if (newTableCreation) {
 				table.setIcon(highlightedTableIcon);
@@ -116,6 +115,7 @@ public class lobbyWindow extends JFrame {
 				chatTextArea.setText(chatTextArea.getText() + "\n" + string);
 		}
 	}
+
 	public State getCurState() {
 		return curState;
 	}
@@ -146,7 +146,7 @@ public class lobbyWindow extends JFrame {
 		chatInputField.setBounds(0, 579, 266, 32);
 		chatPlaceHolderPanel.add(chatInputField);
 		chatInputField.setColumns(10);
-
+		
 		JButton chatSendButton = new JButton("Send");
 		chatSendButton.addActionListener(new ActionListener() {
 			@Override
@@ -174,7 +174,7 @@ public class lobbyWindow extends JFrame {
 		chatTextArea.setEditable(false);
 		chatTextArea.setBounds(0, 0, 394, 576);
 		chatPlaceHolderPanel.add(chatTextArea);
-
+		chatTextArea.setText("Welcome to the Lobby " + myName);
 		JPanel tableControlButtons = new JPanel();
 		tableControlButtons.setBounds(556, 560, 446, 73);
 		frame.getContentPane().add(tableControlButtons);
@@ -281,6 +281,12 @@ public class lobbyWindow extends JFrame {
 		myName = name;
 		lobbyWindow.curState = curState;
 		initialize();
+		int[] array = new int[listOfTables.size()];
+
+		for (int i = 0; i < array.length; i++) {
+			array[i] = listOfTables.get(i);
+		}
+		addTables(array);
 		updateUsers();
 	}
 
