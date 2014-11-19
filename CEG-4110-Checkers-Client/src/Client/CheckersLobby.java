@@ -138,8 +138,8 @@ public class CheckersLobby implements CheckersClient {
 	private JButton btnStartClient;
 	private GameWindow game;
 	private Integer myTid;
-	private Map<Integer, GameWindow> observeGames = new HashMap<>();
-	private Map<Integer, Table> tables = new HashMap<>();
+	private Map<Integer, GameWindow> observeGamesMap = new HashMap<>();
+	private Map<Integer, Table> tablesHashMap = new HashMap<>();
 
 	private TableScreen myTable;
 	// 130.108.203.235:45322
@@ -210,7 +210,7 @@ public class CheckersLobby implements CheckersClient {
 	 */
 	@Override
 	public void curBoardState(int t, byte[][] boardState) {
-		Table table = tables.get(t);
+		Table table = tablesHashMap.get(t);
 		table.setBoardState(boardState);
 		// game.getGame().setBoardState(boardState);
 	}
@@ -262,7 +262,7 @@ public class CheckersLobby implements CheckersClient {
 					curBoardState[y][x] = 0;
 		}
 		game = new GameWindow(false, serverConnection, myLobby,
-				tables.get(myTid), myColor);
+				tablesHashMap.get(myTid), myColor);
 		game.setUser(myName);
 
 		myTable.close();
@@ -372,7 +372,7 @@ public class CheckersLobby implements CheckersClient {
 		myLobby.syncState(curState);
 		debugOutput(">> You have joined table " + Integer.toString(tid));
 
-		Table table = tables.get(tid);
+		Table table = tablesHashMap.get(tid);
 		// table.setRedseat(myName);
 		// table.setPlayer1(false);
 		this.myTid = tid;
@@ -434,7 +434,7 @@ public class CheckersLobby implements CheckersClient {
 		int[] myIntArray = { t };
 		myLobby.addTables(myIntArray);
 		Table table = new Table(t, myName, "-1");
-		tables.put(t, table);
+		tablesHashMap.put(t, table);
 		this.myTid = t;
 		table.setPlayer1(true);
 	}
@@ -481,8 +481,8 @@ public class CheckersLobby implements CheckersClient {
 	@Override
 	public void nowObserving(int tid) {
 		debugOutput(">> nowObserving(" + tid + ")");
-		observeGames.put(tid, new GameWindow(true, serverConnection, myLobby,
-				tables.get(tid), ""));
+		observeGamesMap.put(tid, new GameWindow(true, serverConnection, myLobby,
+				tablesHashMap.get(tid), ""));
 	}
 
 	// an alert saying that a table state has changed.
@@ -490,7 +490,7 @@ public class CheckersLobby implements CheckersClient {
 	// or if table state is queried by calling getTblStatus()
 	@Override
 	public void onTable(int tid, String blackSeat, String redSeat) {
-		Table table = tables.get(tid);
+		Table table = tablesHashMap.get(tid);
 		table.setBlackseat(blackSeat);
 		table.setRedseat(redSeat);
 
@@ -542,7 +542,7 @@ public class CheckersLobby implements CheckersClient {
 	@Override
 	public void stoppedObserving(int tid) {
 		debugOutput(">> stoppedObserving(" + tid + ")");
-		observeGames.remove(tid);
+		observeGamesMap.remove(tid);
 	}
 
 	// the table your trying to join is full.
@@ -564,15 +564,16 @@ public class CheckersLobby implements CheckersClient {
 	// initial listing of tables
 	@Override
 	public void tableList(int[] tids) {
-		myLobby.addInitialTables(tids);
 		for (int tid : tids) {
-			tables.put(tid, new Table(tid, "-1", "-1"));
+			tablesHashMap.put(tid, new Table(tid, "-1", "-1"));
 			try {
 				serverConnection.getTblStatus(myName, tid);
 			} catch (RemoteException e) {
 				e.printStackTrace();
 			}
 		}
+		myLobby.addInitialTables(tablesHashMap);
+
 	}
 
 	// the table queried does not exist.
