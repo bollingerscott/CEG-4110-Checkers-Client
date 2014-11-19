@@ -109,7 +109,7 @@ public class GameWindow extends JFrame {
 					} catch (RemoteException e1) {
 						e1.printStackTrace();
 					}
-					getMyLobby().setVisible(true);
+					//getMyLobby().setVisible(true);
 				}
 				else {
 					try {
@@ -142,7 +142,7 @@ public class GameWindow extends JFrame {
 		chatBar.setBounds(6, 436, 521, 161);
 		getContentPane().add(chatBar);
 		chatBar.repaint();chatBar.setFocusable(true);
-		repaint();repaint();
+		
 		//TODO hint ai algorithm stretch goal		
 	}
 

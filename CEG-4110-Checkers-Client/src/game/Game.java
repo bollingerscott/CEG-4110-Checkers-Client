@@ -34,8 +34,8 @@ public class Game extends JPanel implements MouseListener {
 	private String color;
 	private static RMIServerInterface server;
 	private Table myTable;
-	private String gameStatus;
-	private boolean turn = true;
+	private String gameStatus = "tie";
+	private boolean turn;
 	private Image wood;
 	private boolean observer;
 	private Integer left, taken, opponentLeft, opponentTaken;
@@ -143,7 +143,7 @@ public class Game extends JPanel implements MouseListener {
 
 	@Override//TODO sound fx
 	public void mouseClicked(MouseEvent e) {
-		if (!isObserver() && isTurn()){
+		if (!isObserver() && isTurn() && !((gameStatus.equalsIgnoreCase("win")) || (gameStatus.equalsIgnoreCase("lose")))){
 			board.mouseClicked(e);
 			if (board.isMoving()){
 				move(user, board.getFr(), board.getFc(), board.getTr(), board.getTc());
@@ -180,7 +180,7 @@ public class Game extends JPanel implements MouseListener {
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
-
+		turn = false;
 	}
 
 	@Override
@@ -194,14 +194,14 @@ public class Game extends JPanel implements MouseListener {
 		g.drawImage(wood, 0, 0, null);
 		setStats();
 		if (isTurn()){
-			stats.getColor1().setIcon(myIcon);
-			stats.getColor2().setIcon(null);
+			stats.setColor1Icon(myIcon);
+			stats.setColor2Icon(null);
 		}
 		else {
-			stats.getColor1().setIcon(null);
-			stats.getColor2().setIcon(opponentsIcon);
+			stats.setColor1Icon(null);
+			stats.setColor2Icon(opponentsIcon);
 		}
-		repaint();
+		repaint();repaint();
 	}
 
 	public void setBoardState(byte[][] boardState) {
@@ -227,7 +227,7 @@ public class Game extends JPanel implements MouseListener {
 	public void setGameStatus(String gameStatus) {
 		this.gameStatus = gameStatus;
 		ResultScreen result = new ResultScreen(gameStatus);
-		setObserver(true);//Disable further interaction with game but users can still chat
+		//setObserver(true);//Disable further interaction with game but users can still chat
 	}
 
 	public void setLeft(Integer left) {

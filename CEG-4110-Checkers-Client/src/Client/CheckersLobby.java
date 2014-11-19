@@ -12,6 +12,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JButton;
@@ -521,7 +522,16 @@ public class CheckersLobby implements CheckersClient {
 
 	// Outputs to main window in lobby window.
 	private void output(String s) {
-		myLobby.addTextMainLobbyWindow(s);
+       List<String> parts = new ArrayList<String>();
+       int len = s.length();
+       for (int i = 0; i < len; i += 48) {
+           parts.add(s.substring(i, Math.min(len, i + 48)));
+       }
+
+       for (String string : parts) {
+           myLobby.addTextMainLobbyWindow(string);
+
+       }
 	}
 
 	// you stopped observing table tid.

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -204,6 +205,16 @@ public class Stats extends JPanel {
 
 	public JTextField getTaken2() {
 		return taken2;
+	}
+	
+	public void setColor1Icon(ImageIcon i){
+		color1.setIcon(i);
+		//repaint();
+	}
+	
+	public void setColor2Icon(ImageIcon i){
+		color2.setIcon(i);
+		//repaint();
 	}
 
 	@Override

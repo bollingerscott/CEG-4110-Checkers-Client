@@ -32,11 +32,11 @@ public class Board extends JPanel implements MouseListener{
 	private Tile clickedTile;
 	private byte[][] board_state = new byte[][]{
 			{0,1,0,1,0,1,0,1},
-			{1,0,0,0,1,0,0,0},
-			{0,0,0,1,0,1,0,1},
-			{0,0,0,0,4,0,0,0},
-			{0,1,0,1,0,1,0,0},
-			{2,0,0,0,2,0,0,0},
+			{1,0,1,0,1,0,1,0},
+			{0,1,0,1,0,1,0,1},
+			{0,0,0,0,0,0,0,0},
+			{0,0,0,0,0,0,0,0},
+			{2,0,2,0,2,0,2,0},
 			{0,2,0,2,0,2,0,2},
 			{2,0,2,0,2,0,2,0}};
 	private boolean moving = false;
@@ -74,7 +74,7 @@ public class Board extends JPanel implements MouseListener{
 				if (!board[tile.getCoordY()+1][tile.getCoordX()-1].isOccupied()) {
 					board[tile.getCoordY()+1][tile.getCoordX()-1].setEnable(enable);
 				}
-				else if (board[tile.getCoordY()-1][tile.getCoordX()-1].getPiece().getColor().equals(oppositeColor) && !(board[tile.getCoordY()+2][tile.getCoordX()-2].isOccupied())){
+				else if (board[tile.getCoordY()+1][tile.getCoordX()-1].getPiece().getColor().equals(oppositeColor) && !(board[tile.getCoordY()+2][tile.getCoordX()-2].isOccupied())){
 					board[tile.getCoordY()+2][tile.getCoordX()-2].setEnable(enable);
 				}
 			}
