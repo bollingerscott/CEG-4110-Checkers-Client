@@ -91,7 +91,7 @@ public class lobbyWindow extends JFrame {
 						table.setIcon(highlightedTableIcon);
 					}
 				}
-			});
+			});//
 			tidHashTable.put(table, array[i]);
 			if (newTableCreation) {
 				table.setIcon(highlightedTableIcon);
