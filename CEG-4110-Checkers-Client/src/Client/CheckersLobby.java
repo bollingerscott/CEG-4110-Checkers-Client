@@ -143,7 +143,7 @@ public class CheckersLobby implements CheckersClient {
 
 	private TableScreen myTable;
 	// 130.108.203.235:45322
-	private final String DEFAULT_SERVER_IP = "130.108.28.165"; // Usefor For
+	private final String DEFAULT_SERVER_IP = "::1"; // Usefor For
 																// debugging-
 
 	public CheckersLobby() {
