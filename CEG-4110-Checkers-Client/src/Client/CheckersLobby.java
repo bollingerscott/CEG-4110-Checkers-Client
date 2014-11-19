@@ -42,18 +42,18 @@ public class CheckersLobby implements CheckersClient {
 	}
 
 	// Brad local server = ::1,
-	// derekServer 137.99.11.115	130.108.28.165 
-	//fe80::250c:975d:58e0:52f4%19
+	// derekServer 137.99.11.115 130.108.28.165
+	// fe80::250c:975d:58e0:52f4%19
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				myLobby = new lobbyWindow();
-				myLobby.addWindowListener(new WindowAdapter(){
+				myLobby.addWindowListener(new WindowAdapter() {
 					@Override
 					public void windowClosing(WindowEvent e) {
 						try {
-							if (curState != State.notConnected){
+							if (curState != State.notConnected) {
 								serverConnection.disconnect(true);
 							}
 						} catch (RemoteException e1) {
@@ -138,12 +138,13 @@ public class CheckersLobby implements CheckersClient {
 	private JButton btnStartClient;
 	private GameWindow game;
 	private Integer myTid;
-	private Map<Integer, GameWindow> observeGames = new HashMap<>();
-	private Map<Integer, Table> tables = new HashMap<>();
+	private Map<Integer, GameWindow> observeGamesMap = new HashMap<>();
+	private Map<Integer, Table> tablesHashMap = new HashMap<>();
 
 	private TableScreen myTable;
-	//130.108.203.235:45322
-	private final String DEFAULT_SERVER_IP = "130.108.28.165"; // Usefor For debugging-
+	// 130.108.203.235:45322
+	private final String DEFAULT_SERVER_IP = "::1"; // Usefor For
+																// debugging-
 
 	public CheckersLobby() {
 		super();
@@ -158,10 +159,10 @@ public class CheckersLobby implements CheckersClient {
 	public void alertLeftTable() {
 		curState = State.connected;
 		myLobby.syncState(curState);
-		
+
 		myTable.close();
 		myTable = null;
-		
+
 		debugOutput(">> You have left the table");
 		// TODO Table related logic
 	}
@@ -177,7 +178,7 @@ public class CheckersLobby implements CheckersClient {
 	@Override
 	public void colorBlack() {
 		this.myColor = "black";
-		//game.getGame().setColor("black");
+		// game.getGame().setColor("black");
 	}
 
 	// ///////////////////////////////////////////////////////////////////////////
@@ -188,7 +189,7 @@ public class CheckersLobby implements CheckersClient {
 	@Override
 	public void colorRed() {
 		this.myColor = "red";
-		//game.getGame().setColor("red");
+		// game.getGame().setColor("red");
 	}
 
 	// ///////////////////////////////////////////////////////////////////////////
@@ -204,13 +205,14 @@ public class CheckersLobby implements CheckersClient {
 
 	// server has updated the board state
 	/*
-	 * TODO Need to move board state to table and get board state from table in game.
+	 * TODO Need to move board state to table and get board state from table in
+	 * game.
 	 */
 	@Override
 	public void curBoardState(int t, byte[][] boardState) {
-		Table table = tables.get(t);
+		Table table = tablesHashMap.get(t);
 		table.setBoardState(boardState);
-		//game.getGame().setBoardState(boardState);
+		// game.getGame().setBoardState(boardState);
 	}
 
 	// Only works if debug is true, prints to console
@@ -259,12 +261,13 @@ public class CheckersLobby implements CheckersClient {
 				for (int x = 0; x < 19; x++)
 					curBoardState[y][x] = 0;
 		}
-		game = new GameWindow(false, serverConnection, myLobby, tables.get(myTid), myColor);
+		game = new GameWindow(false, serverConnection, myLobby,
+				tablesHashMap.get(myTid), myColor);
 		game.setUser(myName);
-		
+
 		myTable.close();
 		myTable = null;
-		
+
 		myLobby.setVisible(false);
 	}
 
@@ -339,13 +342,13 @@ public class CheckersLobby implements CheckersClient {
 	private void inputSubmit() {
 		try {
 			if (curState.equals(State.notConnected)) {
-				this.myName = Username.getText(); //setting class variable
+				this.myName = Username.getText(); // setting class variable
 				Username.setText("");
 				String ip = serverTextField.getText();
 				serverTextField.setText("");
 				if (!serverConnection.connectToServer(ip, this.myName)) {
 					System.out
-					.println("Connection failed. Check console output of RMI process for information.");
+							.println("Connection failed. Check console output of RMI process for information.");
 				} else {
 					System.out.println("Connection success");
 					curState = State.connected;
@@ -369,14 +372,13 @@ public class CheckersLobby implements CheckersClient {
 		myLobby.syncState(curState);
 		debugOutput(">> You have joined table " + Integer.toString(tid));
 
-		Table table = tables.get(tid);
-		//table.setRedseat(myName);
-		//table.setPlayer1(false);
+		Table table = tablesHashMap.get(tid);
+		// table.setRedseat(myName);
+		// table.setPlayer1(false);
 		this.myTid = tid;
 		if (myTable == null) {
 			myTable = new TableScreen(serverConnection, myName, tid, table);
-		}
-		else {
+		} else {
 			myTable.update();
 		}
 	}
@@ -432,7 +434,7 @@ public class CheckersLobby implements CheckersClient {
 		int[] myIntArray = { t };
 		myLobby.addTables(myIntArray);
 		Table table = new Table(t, myName, "-1");
-		tables.put(t, table);
+		tablesHashMap.put(t, table);
 		this.myTid = t;
 		table.setPlayer1(true);
 	}
@@ -479,7 +481,8 @@ public class CheckersLobby implements CheckersClient {
 	@Override
 	public void nowObserving(int tid) {
 		debugOutput(">> nowObserving(" + tid + ")");
-		observeGames.put(tid, new GameWindow(true, serverConnection, myLobby, tables.get(tid), ""));
+		observeGamesMap.put(tid, new GameWindow(true, serverConnection, myLobby,
+				tablesHashMap.get(tid), ""));
 	}
 
 	// an alert saying that a table state has changed.
@@ -487,11 +490,12 @@ public class CheckersLobby implements CheckersClient {
 	// or if table state is queried by calling getTblStatus()
 	@Override
 	public void onTable(int tid, String blackSeat, String redSeat) {
-		Table table = tables.get(tid);
+		Table table = tablesHashMap.get(tid);
 		table.setBlackseat(blackSeat);
 		table.setRedseat(redSeat);
-		
-		myTable.update(); //call to update in case the corresponding table was changed
+
+		myTable.update(); // call to update in case the corresponding table was
+							// changed
 
 	}
 
@@ -510,7 +514,7 @@ public class CheckersLobby implements CheckersClient {
 	@Override
 	public void oppMove(int fr, int fc, int tr, int tc) {
 		debugOutput(">> oppMove(" + fr + "," + fc + "," + tr + "," + tc + ")");
-		game.setOppMoves((game.getOppMoves())+1);
+		game.setOppMoves((game.getOppMoves()) + 1);
 	}
 
 	// called if you send a game command but your opponent is not ready
@@ -521,24 +525,23 @@ public class CheckersLobby implements CheckersClient {
 	}
 
 	// Outputs to main window in lobby window.
-	private void output(String s) {
-       List<String> parts = new ArrayList<String>();
-       int len = s.length();
-       for (int i = 0; i < len; i += 48) {
-           parts.add(s.substring(i, Math.min(len, i + 48)));
-       }
+	private void output(String s) {//Split String
+		List<String> parts = new ArrayList<String>();
+		int len = s.length();
+		for (int i = 0; i < len; i += 48) {
+			parts.add(s.substring(i, Math.min(len, i + 48)));
+		}
 
-       for (String string : parts) {
-           myLobby.addTextMainLobbyWindow(string);
-
-       }
+		for (String string : parts) {
+			myLobby.addTextMainLobbyWindow(string);
+		}
 	}
 
 	// you stopped observing table tid.
 	@Override
 	public void stoppedObserving(int tid) {
 		debugOutput(">> stoppedObserving(" + tid + ")");
-		observeGames.remove(tid);
+		observeGamesMap.remove(tid);
 	}
 
 	// the table your trying to join is full.
@@ -560,15 +563,16 @@ public class CheckersLobby implements CheckersClient {
 	// initial listing of tables
 	@Override
 	public void tableList(int[] tids) {
-		myLobby.addInitialTables(tids);
-		for (int tid : tids){
-			tables.put(tid, new Table(tid, "-1", "-1"));
+		for (int tid : tids) {
+			tablesHashMap.put(tid, new Table(tid, "-1", "-1"));
 			try {
 				serverConnection.getTblStatus(myName, tid);
 			} catch (RemoteException e) {
 				e.printStackTrace();
 			}
 		}
+		myLobby.addInitialTables(tablesHashMap);
+
 	}
 
 	// the table queried does not exist.

@@ -21,7 +21,7 @@ import javax.swing.border.BevelBorder;
  * @author Scott Bollinger
  */
 @SuppressWarnings("serial")
-public class Board extends JPanel implements MouseListener{
+public class Board extends JPanel implements MouseListener {
 
 	private final int LENGTH = 8;
 	private Tile[][] board;
@@ -39,23 +39,23 @@ public class Board extends JPanel implements MouseListener{
 			{2,0,2,0,2,0,2,0},
 			{0,2,0,2,0,2,0,2},
 			{2,0,2,0,2,0,2,0}};
+
 	private boolean moving = false;
 	private boolean flip;
 	private String color;
 	private String oppositeColor;
 
-
-	public Board(boolean flip){
+	public Board(boolean flip) {
 		super();
 		this.flip = flip;
 		setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
 		board = new Tile[LENGTH][LENGTH];
-		for (int i = 0; i < LENGTH; i++){
-			for (int j = 0; j < LENGTH; j++){
-				if (((i % 2 == 0) && (j % 2 == 0)) || ((i % 2 != 0) && (j % 2 != 0))){
+		for (int i = 0; i < LENGTH; i++) {
+			for (int j = 0; j < LENGTH; j++) {
+				if (((i % 2 == 0) && (j % 2 == 0))
+						|| ((i % 2 != 0) && (j % 2 != 0))) {
 					board[i][j] = new Tile("red");
-				}
-				else {
+				} else {
 					board[i][j] = new Tile("black");
 				}
 			}
@@ -69,44 +69,58 @@ public class Board extends JPanel implements MouseListener{
 	}
 
 	private void enable(Tile tile, boolean enable) {
-		if (tile.getPiece().getType().equals("king")){
+		if (tile.getPiece().getType().equals("king")) {
 			try {
-				if (!board[tile.getCoordY()+1][tile.getCoordX()-1].isOccupied()) {
-					board[tile.getCoordY()+1][tile.getCoordX()-1].setEnable(enable);
-				}
+				if (!board[tile.getCoordY() + 1][tile.getCoordX() - 1]
+						.isOccupied()) {
+					board[tile.getCoordY() + 1][tile.getCoordX() - 1]
+							.setEnable(enable);
+				} 
 				else if (board[tile.getCoordY()+1][tile.getCoordX()-1].getPiece().getColor().equals(oppositeColor) && !(board[tile.getCoordY()+2][tile.getCoordX()-2].isOccupied())){
 					board[tile.getCoordY()+2][tile.getCoordX()-2].setEnable(enable);
 				}
-			}
-			catch (IndexOutOfBoundsException ex){}
+			} catch (IndexOutOfBoundsException ex) {}
 			try {
-				if (!board[tile.getCoordY()+1][tile.getCoordX()+1].isOccupied()) {
-					board[tile.getCoordY()+1][tile.getCoordX()+1].setEnable(enable);
+				if (!board[tile.getCoordY() + 1][tile.getCoordX() + 1]
+						.isOccupied()) {
+					board[tile.getCoordY() + 1][tile.getCoordX() + 1]
+							.setEnable(enable);
+				} else if (board[tile.getCoordY() + 1][tile.getCoordX() + 1]
+						.getPiece().getColor().equals(oppositeColor)
+						&& !(board[tile.getCoordY() + 2][tile.getCoordX() + 2]
+								.isOccupied())) {
+					board[tile.getCoordY() + 2][tile.getCoordX() + 2]
+							.setEnable(enable);
 				}
-				else if (board[tile.getCoordY()+1][tile.getCoordX()+1].getPiece().getColor().equals(oppositeColor) && !(board[tile.getCoordY()+2][tile.getCoordX()+2].isOccupied())){
-					board[tile.getCoordY()+2][tile.getCoordX()+2].setEnable(enable);
-				}
+			} catch (IndexOutOfBoundsException ex) {
 			}
-			catch (IndexOutOfBoundsException ex){}
 		}
 		try {
-			if (!board[tile.getCoordY()-1][tile.getCoordX()-1].isOccupied()) {
-				board[tile.getCoordY()-1][tile.getCoordX()-1].setEnable(enable);
+			if (!board[tile.getCoordY() - 1][tile.getCoordX() - 1].isOccupied()) {
+				board[tile.getCoordY() - 1][tile.getCoordX() - 1]
+						.setEnable(enable);
+			} else if (board[tile.getCoordY() - 1][tile.getCoordX() - 1]
+					.getPiece().getColor().equals(oppositeColor)
+					&& !(board[tile.getCoordY() - 2][tile.getCoordX() - 2]
+							.isOccupied())) {
+				board[tile.getCoordY() - 2][tile.getCoordX() - 2]
+						.setEnable(enable);
 			}
-			else if (board[tile.getCoordY()-1][tile.getCoordX()-1].getPiece().getColor().equals(oppositeColor) && !(board[tile.getCoordY()-2][tile.getCoordX()-2].isOccupied())){
-				board[tile.getCoordY()-2][tile.getCoordX()-2].setEnable(enable);
-			}
+		} catch (IndexOutOfBoundsException ex) {
 		}
-		catch (IndexOutOfBoundsException ex){}
 		try {
-			if (!board[tile.getCoordY()-1][tile.getCoordX()+1].isOccupied()) {
-				board[tile.getCoordY()-1][tile.getCoordX()+1].setEnable(enable);
+			if (!board[tile.getCoordY() - 1][tile.getCoordX() + 1].isOccupied()) {
+				board[tile.getCoordY() - 1][tile.getCoordX() + 1]
+						.setEnable(enable);
+			} else if (board[tile.getCoordY() - 1][tile.getCoordX() + 1]
+					.getPiece().getColor().equals(oppositeColor)
+					&& !(board[tile.getCoordY() - 2][tile.getCoordX() + 2]
+							.isOccupied())) {
+				board[tile.getCoordY() - 2][tile.getCoordX() + 2]
+						.setEnable(enable);
 			}
-			else if (board[tile.getCoordY()-1][tile.getCoordX()+1].getPiece().getColor().equals(oppositeColor) && !(board[tile.getCoordY()-2][tile.getCoordX()+2].isOccupied())){
-				board[tile.getCoordY()-2][tile.getCoordX()+2].setEnable(enable);
-			}
+		} catch (IndexOutOfBoundsException ex) {
 		}
-		catch (IndexOutOfBoundsException ex){}
 
 	}
 
@@ -168,32 +182,32 @@ public class Board extends JPanel implements MouseListener{
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		//Find tile clicked
+		// Find tile clicked
 		int x = e.getX() - getLocation().x;
 		int y = e.getY() - getLocation().y;
 		int i = 0;
 		int j = 0;
 		int coordX = 0;
 		int coordY = 0;
-		while (i+TILE_LENGTH < x){
+		while (i + TILE_LENGTH < x) {
 			coordX++;
 			i += TILE_LENGTH;
 		}
-		while (j+TILE_LENGTH < y){
+		while (j + TILE_LENGTH < y) {
 			coordY++;
 			j += TILE_LENGTH;
 		}
 		Tile tile = board[coordY][coordX];
-		assert(!moving);
-		//if first click on tile with your piece on it
-		if (!click && tile.isOccupied() && tile.getPiece().getColor().equals(color)) {
+		assert (!moving);
+		// if first click on tile with your piece on it
+		if (!click && tile.isOccupied()
+				&& tile.getPiece().getColor().equals(color)) {
 			click = true;
-			tile.mouseClicked(e);//set tile to clicked
-			if (isFlip()){
-				fr = 7-coordY;
-				fc = 7-coordX;
-			}
-			else {
+			tile.mouseClicked(e);// set tile to clicked
+			if (isFlip()) {
+				fr = 7 - coordY;
+				fc = 7 - coordX;
+			} else {
 				fr = coordY;
 				fc = coordX;
 			}
@@ -201,30 +215,28 @@ public class Board extends JPanel implements MouseListener{
 			moving = false;
 			enable(tile, true);
 		}
-		//if clicked on same tile reset it
-		else if (clickedTile == tile){
+		// if clicked on same tile reset it
+		else if (clickedTile == tile) {
 			click = false;
 			tile.reset();
 			moving = false;
 			fc = fr = -1;
 			enable(tile, false);
 		}
-		//if clicked for second time and tile is not occupied
-		else if (!tile.isOccupied() && click && tile.isEnable()){
+		// if clicked for second time and tile is not occupied
+		else if (!tile.isOccupied() && click && tile.isEnable()) {
 			clickedTile.reset();
 			click = false;
-			if (isFlip()){
-				tr = 7-coordY;
-				tc = 7-coordX;
-			}
-			else {
+			if (isFlip()) {
+				tr = 7 - coordY;
+				tc = 7 - coordX;
+			} else {
 				tr = coordY;
 				tc = coordX;
 			}
 			moving = true;
 			enable(clickedTile, false);
-		}
-		else {
+		} else {
 			moving = false;
 		}
 	}
@@ -250,16 +262,16 @@ public class Board extends JPanel implements MouseListener{
 	}
 
 	@Override
-	protected void paintComponent(Graphics g){
+	protected void paintComponent(Graphics g) {
 		int x = 0;
 		int y = -TILE_LENGTH;
-		for (int i = 0; i < LENGTH; i++){
+		for (int i = 0; i < LENGTH; i++) {
 			y += TILE_LENGTH;
 			x = 0;
-			for (int j = 0; j < LENGTH; j++){
+			for (int j = 0; j < LENGTH; j++) {
 				Tile currentTile = board[i][j];
 				g.drawImage(currentTile.getTile(), x, y, null);
-				if (currentTile.isOccupied()){
+				if (currentTile.isOccupied()) {
 					currentTile.getPiece().paintComponent(g);
 				}
 				currentTile.setCoordX(j);
@@ -269,40 +281,39 @@ public class Board extends JPanel implements MouseListener{
 		}
 	}
 
-	private void readBoardState(){
+	private void readBoardState() {
 		redLeft = blackLeft = 0;
 		int x = 0;
 		int y = -TILE_LENGTH;
 		int length = board_state.length;
-		for (int i = 0; i < length; i++){
+		for (int i = 0; i < length; i++) {
 			y += TILE_LENGTH;
 			x = 0;
-			for (int j = 0; j < length; j++){
+			for (int j = 0; j < length; j++) {
 				byte state;
-				if (!isFlip()){
+				if (!isFlip()) {
 					state = board_state[i][j];
-				}
-				else {
-					state = board_state[(length-1)-i][(length-1)-j];
+				} else {
+					state = board_state[(length - 1) - i][(length - 1) - j];
 				}
 				Tile tile = board[i][j];
-				if (state == 0){
+				if (state == 0) {
 					tile.setOccupied(false, null);
-				}
-				else if (state == 1){
-					tile.setOccupied(true, new Checker_Piece("black", "regular", x, y));
+				} else if (state == 1) {
+					tile.setOccupied(true, new Checker_Piece("black",
+							"regular", x, y));
 					blackLeft++;
-				}
-				else if (state == 2){
-					tile.setOccupied(true, new Checker_Piece("red", "regular", x, y));
+				} else if (state == 2) {
+					tile.setOccupied(true, new Checker_Piece("red", "regular",
+							x, y));
 					redLeft++;
-				}
-				else if (state == 3){
-					tile.setOccupied(true, new Checker_Piece("black", "king", x, y));
+				} else if (state == 3) {
+					tile.setOccupied(true, new Checker_Piece("black", "king",
+							x, y));
 					blackLeft++;
-				}
-				else if (state == 4){
-					tile.setOccupied(true, new Checker_Piece("red", "king", x, y));
+				} else if (state == 4) {
+					tile.setOccupied(true, new Checker_Piece("red", "king", x,
+							y));
 					redLeft++;
 				}
 				x += TILE_LENGTH;
@@ -361,7 +372,6 @@ public class Board extends JPanel implements MouseListener{
 	public void setRedTaken(Integer opponentTaken) {
 		this.redTaken = opponentTaken;
 	}
-	
 
 	public void setTc(int tc) {
 		this.tc = tc;
@@ -371,4 +381,3 @@ public class Board extends JPanel implements MouseListener{
 		this.tr = tr;
 	}
 }
-

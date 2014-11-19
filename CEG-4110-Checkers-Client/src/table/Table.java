@@ -15,28 +15,34 @@ public class Table {
 			{2,0,2,0,2,0,2,0},
 			{0,2,0,2,0,2,0,2},
 			{2,0,2,0,2,0,2,0}};
-	
-	public Table(Integer tid, String redseat, String blackseat){
+
+
+	public Table(Integer tid, String redseat, String blackseat) {
 		this.tid = tid;
 		this.redseat = redseat;
 		this.blackseat = blackseat;
 	}
-	
+
 	public String getBlackseat() {
 		return blackseat;
 	}
+
 	public byte[][] getBoardState() {
 		return boardState;
 	}
+
 	public String getRedseat() {
 		return redseat;
 	}
+
 	public Integer getTid() {
 		return tid;
 	}
+
 	public boolean isChanged() {
 		return changed;
 	}
+
 	public boolean isPlayer1() {
 		return player1;
 	}
