@@ -6,37 +6,38 @@ public class Table {
 	private String redseat, blackseat;
 	private boolean player1;
 	private boolean changed = false;
-	private byte[][] boardState  = new byte[][]{
-			{0,1,0,1,0,1,0,1},
-			{1,0,0,0,1,0,0,0},
-			{0,0,0,1,0,1,0,1},
-			{0,0,0,0,4,0,0,0},
-			{0,1,0,1,0,1,0,0},
-			{2,0,0,0,2,0,0,0},
-			{0,2,0,2,0,2,0,2},
-			{2,0,2,0,2,0,2,0}};
-	
-	public Table(Integer tid, String redseat, String blackseat){
+	private byte[][] boardState = new byte[][] { { 0, 1, 0, 1, 0, 1, 0, 1 },
+			{ 1, 0, 1, 0, 1, 0, 1, 0 }, { 0, 1, 0, 1, 0, 1, 0, 1 },
+			{ 0, 0, 0, 0, 0, 0, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0 },
+			{ 2, 0, 2, 0, 2, 0, 2, 0 }, { 0, 2, 0, 2, 0, 2, 0, 2 },
+			{ 2, 0, 2, 0, 2, 0, 2, 0 } };
+
+	public Table(Integer tid, String redseat, String blackseat) {
 		this.tid = tid;
 		this.redseat = redseat;
 		this.blackseat = blackseat;
 	}
-	
+
 	public String getBlackseat() {
 		return blackseat;
 	}
+
 	public byte[][] getBoardState() {
 		return boardState;
 	}
+
 	public String getRedseat() {
 		return redseat;
 	}
+
 	public Integer getTid() {
 		return tid;
 	}
+
 	public boolean isChanged() {
 		return changed;
 	}
+
 	public boolean isPlayer1() {
 		return player1;
 	}
