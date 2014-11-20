@@ -8,6 +8,7 @@ import java.rmi.RemoteException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import lobby.lobbyWindow;
 import table.Table;
@@ -41,7 +42,7 @@ public class GameWindow extends JFrame {
 			}
 		});
 	}
-	//private JFrame frmCheckers;
+	
 	private static RMIServerInterface server;
 	private boolean observer;
 	private Integer oppMoves = 0;
@@ -90,7 +91,6 @@ public class GameWindow extends JFrame {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		//frmCheckers = new JFrame();
 		setTitle("Checkers Table: " + myTable.getTid());
 		setResizable(false);
 		setVisible(true);

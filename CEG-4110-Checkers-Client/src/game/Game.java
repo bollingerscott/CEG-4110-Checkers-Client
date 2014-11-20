@@ -6,13 +6,21 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 
 import table.Table;
+import replay.replayFile;
 import RMIConnection.Interfaces.RMIServerInterface;
 
 /*
@@ -35,7 +43,7 @@ public class Game extends JPanel implements MouseListener {
 	private static RMIServerInterface server;
 	private Table myTable;
 	private String gameStatus = "tie";
-	private boolean turn;
+	private boolean turn = true;
 	private Image wood;
 	private boolean observer;
 	private Integer left, taken, opponentLeft, opponentTaken;
@@ -44,7 +52,10 @@ public class Game extends JPanel implements MouseListener {
 	private ImageIcon opponentsIcon;
 	private boolean flip = false;
 	private boolean start = true;
-	
+	private Clip moveChecker;
+	private replayFile replayFile;
+	private List<byte[][]> states;
+
 	/**
 	 * Create the panel.
 	 */
@@ -55,23 +66,24 @@ public class Game extends JPanel implements MouseListener {
 		this.stats = stats;
 		this.myTable = myTable;
 		this.color = color;
+		this.states = new ArrayList<byte[][]>();
 		if (color.equalsIgnoreCase("black")){
 			flip = true;
 		}
 
 		setBorder(new BevelBorder(BevelBorder.RAISED, new Color(139, 69, 19), null, null, null));
 		setLayout(null);
-		
+
 		board = new Board(flip);
 		board.setBorder(new BevelBorder(BevelBorder.RAISED, Color.LIGHT_GRAY, new Color(128, 128, 128), null, null));
 		board.setBounds(54, 11, 402, 402);
 		add(board);
 		board.setLayout(null);
-		
+
 		wood = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/table.jpg"));
 		setStats();
 		setColor(color);
-		
+
 		if (myTable.isPlayer1()){
 			user = myTable.getBlackseat();
 			opponent = myTable.getRedseat();
@@ -87,16 +99,28 @@ public class Game extends JPanel implements MouseListener {
 
 		addMouseListener(this);
 
+		
+	}
+
+	private void playMoveSound(){
+		try {
+			moveChecker = AudioSystem.getClip();
+			AudioInputStream inputStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("/move_checker.wav"));
+			moveChecker.open(inputStream);
+			moveChecker.start();
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
 	}
 	
 	public byte[][] getBoardState() {
 		return board.getBoard_state();
 	}
-	
+
 	public String getColor() {
 		return color;
 	}
-	
+
 	public String getGameStatus() {
 		return gameStatus;
 	}
@@ -132,7 +156,7 @@ public class Game extends JPanel implements MouseListener {
 	public String getUser() {
 		return user;
 	}
-	
+
 	public boolean isObserver() {
 		return observer;
 	}
@@ -154,27 +178,28 @@ public class Game extends JPanel implements MouseListener {
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		
+
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		
+
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		
+
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		
+
 	}
 
 	private void move(String user, int fr, int fc, int tr, int tc){
 		setStats();
 		moves += 1;
+		playMoveSound();
 		try {
 			server.move(user, fr, fc, tr, tc);
 		} catch (RemoteException e) {
@@ -201,11 +226,12 @@ public class Game extends JPanel implements MouseListener {
 			stats.setColor1Icon(null);
 			stats.setColor2Icon(opponentsIcon);
 		}
-		repaint();repaint();
+		repaint();repaint();//TODO do i need these repaints??
 	}
 
 	public void setBoardState(byte[][] boardState) {
 		board.setBoard_state(boardState);
+		states.add(boardState);
 	}
 
 	public void setColor(String color) {
@@ -227,7 +253,16 @@ public class Game extends JPanel implements MouseListener {
 	public void setGameStatus(String gameStatus) {
 		this.gameStatus = gameStatus;
 		ResultScreen result = new ResultScreen(gameStatus);
-		//setObserver(true);//Disable further interaction with game but users can still chat
+	    int reply = JOptionPane.showConfirmDialog(this, "Would you like to save a replay of this game?", "Replay?", JOptionPane.YES_NO_OPTION);
+        if (reply == JOptionPane.YES_OPTION) {
+        	replayFile = new replayFile();
+        	String fileName = JOptionPane.showInputDialog("What would you like to name the replay: "); 
+        	try {
+				replayFile.writeFile(fileName, states);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+        }
 	}
 
 	public void setLeft(Integer left) {

@@ -3,24 +3,18 @@ package replay;
 import game.Board;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import java.awt.GridBagLayout;
-import java.rmi.RemoteException;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.BoxLayout;
-import javax.swing.AbstractAction;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.Action;
 
 /*
  * takes a list of states and displays a board with the states. The state can be 

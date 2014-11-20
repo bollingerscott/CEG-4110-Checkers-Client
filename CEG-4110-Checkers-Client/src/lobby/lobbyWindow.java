@@ -216,7 +216,7 @@ public class lobbyWindow extends JFrame {
 				.getImage(getClass().getResource("/selectedTableHalfFill.jpg")));
 
 		normalTableIconF = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				getClass().getResource("/unselectedTableFull.jpg")));
+				getClass().getResource("/unselectedFull.jpg")));
 		highlightedTableIconF = new ImageIcon(Toolkit.getDefaultToolkit()
 				.getImage(getClass().getResource("/selectedTableFull.jpg")));
 

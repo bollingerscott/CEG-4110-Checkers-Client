@@ -41,9 +41,6 @@ public class CheckersLobby implements CheckersClient {
 		notConnected, connected, inLobby, onTable, inGame
 	}
 
-	// Brad local server = ::1,
-	// derekServer 137.99.11.115 130.108.28.165
-	// fe80::250c:975d:58e0:52f4%19
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -142,9 +139,7 @@ public class CheckersLobby implements CheckersClient {
 	private Map<Integer, Table> tablesHashMap = new HashMap<>();
 
 	private TableScreen myTable;
-	// 130.108.203.235:45322
-	private final String DEFAULT_SERVER_IP = "::1"; // Usefor For
-																// debugging-
+	private final String DEFAULT_SERVER_IP = "::1"; //130.108.28.165 //Derek's server
 
 	public CheckersLobby() {
 		super();
@@ -164,21 +159,20 @@ public class CheckersLobby implements CheckersClient {
 		myTable = null;
 
 		debugOutput(">> You have left the table");
-		// TODO Table related logic
 	}
 
 	// called if the client sends an ill-formated TCP message
 	@Override
 	public void badMessage() {
-		// TODO Lobby logic?
 		debugOutput(">> badMessage()");
+		JOptionPane.showMessageDialog(myLobby, "Bad TCP message", "Alert!", JOptionPane.ERROR_MESSAGE);
+
 	}
 
 	// alert that your color is Black, for the game.
 	@Override
 	public void colorBlack() {
 		this.myColor = "black";
-		// game.getGame().setColor("black");
 	}
 
 	// ///////////////////////////////////////////////////////////////////////////
@@ -189,12 +183,10 @@ public class CheckersLobby implements CheckersClient {
 	@Override
 	public void colorRed() {
 		this.myColor = "red";
-		// game.getGame().setColor("red");
 	}
 
 	// ///////////////////////////////////////////////////////////////////////////
-	// //////////////Server interaction functions, needed for satisfying
-	// interface
+	// //////////////Server interaction functions
 	// ///////////////////////////////////////////////////////////////////////////
 	@Override
 	public void connectionOK() {
@@ -204,15 +196,10 @@ public class CheckersLobby implements CheckersClient {
 	}
 
 	// server has updated the board state
-	/*
-	 * TODO Need to move board state to table and get board state from table in
-	 * game.
-	 */
 	@Override
 	public void curBoardState(int t, byte[][] boardState) {
 		Table table = tablesHashMap.get(t);
 		table.setBoardState(boardState);
-		// game.getGame().setBoardState(boardState);
 	}
 
 	// Only works if debug is true, prints to console
@@ -224,15 +211,15 @@ public class CheckersLobby implements CheckersClient {
 	// you cannot perform the requested operation because you are in the lobby.
 	@Override
 	public void errorInLobby() {
-		// TODO Lobby logic
 		output(">> You cannot perform that action from within the lobby.");
+		JOptionPane.showMessageDialog(myLobby, "You cannot perform that action from within the lobby.", "Alert!", JOptionPane.ERROR_MESSAGE);
 	}
 
 	// called if you say you are ready on a table with no current game.
 	@Override
 	public void gameNotCreatedYet() {
-		// TODO TABLE LOGIC/GAME LOGIC?
 		output(">> Please wait for an opponent before starting the game.");
+		JOptionPane.showMessageDialog(myLobby, "Please wait for an opponent before starting the game.", "Alert!", JOptionPane.ERROR_MESSAGE);
 	}
 
 	// alert that at the table you are sitting at, a game is starting.
@@ -295,8 +282,8 @@ public class CheckersLobby implements CheckersClient {
 	// the requested move is illegal.
 	@Override
 	public void illegalMove() {
-		// TODO GAMELOGIC?
 		output(">> That move is illegal!");
+		JOptionPane.showMessageDialog(myLobby, "That move is illegal!", "Alert!", JOptionPane.ERROR_MESSAGE);
 	}
 
 	private void initialize() {
@@ -308,11 +295,7 @@ public class CheckersLobby implements CheckersClient {
 		btnStartClient.setBounds(299, 104, 125, 23);
 		frame.getContentPane().add(btnStartClient);
 
-		serverTextField = new JTextField(DEFAULT_SERVER_IP); // My default
-		// server ip,
-		// set
-		// for easier testing. Feel
-		// free to change
+		serverTextField = new JTextField(DEFAULT_SERVER_IP);
 		serverTextField.setBounds(135, 81, 146, 23);
 		frame.getContentPane().add(serverTextField);
 		serverTextField.setColumns(10);
@@ -385,9 +368,7 @@ public class CheckersLobby implements CheckersClient {
 
 	@Override
 	public void nameIllegal() throws RemoteException {
-		JOptionPane.showMessageDialog(null,
-				"The name requested is in illegal. Please choose another.",
-				"Error", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(null, "The name requested is in illegal. Please choose another.", "Error", JOptionPane.ERROR_MESSAGE);
 		curState = State.notConnected;
 		myLobby.syncState(curState);
 
@@ -397,9 +378,7 @@ public class CheckersLobby implements CheckersClient {
 	@Override
 	public void nameInUseError() {
 		Username.setText("");
-		JOptionPane.showMessageDialog(null,
-				"The name requested is in use. Please choose another.",
-				"Error", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(null, "The name requested is in use. Please choose another.", "Error", JOptionPane.ERROR_MESSAGE);
 		curState = State.notConnected;
 		myLobby.syncState(curState);
 
@@ -411,9 +390,7 @@ public class CheckersLobby implements CheckersClient {
 	// ///////////////////////////////////////////////////////////////
 	@Override
 	public void networkException(String msg) {
-		JOptionPane.showMessageDialog(null,
-				"A network exception has occured. Connection lost.", "Error",
-				JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(null, "A network exception has occured. Connection lost.", "Error", JOptionPane.ERROR_MESSAGE);
 		curState = State.notConnected;
 		myLobby.syncState(curState);
 
@@ -442,23 +419,23 @@ public class CheckersLobby implements CheckersClient {
 	// you cannot perform the requested op because you are not in the lobby.
 	@Override
 	public void notInLobby() {
-		// TODO lobby logic
 		output(">> You cannot perform that action from outside of the lobby.");
+		JOptionPane.showMessageDialog(myLobby, "You cannot perform that action from outside the lobby", "Alert!", JOptionPane.ERROR_MESSAGE);
 	}
 
 	// called if you send a stop observing command but you are not observing a
 	// table.
 	@Override
 	public void notObserving() {
-		// TODO OBserver logic
 		debugOutput(">> notObserving()");
+		JOptionPane.showMessageDialog(myLobby, "You are not observing any tables", "Alert!", JOptionPane.ERROR_MESSAGE);
 	}
 
 	// called if it is not your turn but you make a move.
 	@Override
 	public void notYourTurn() {
-		// TODO GAME LOGIc
 		output(">> It is not your turn!");
+		JOptionPane.showMessageDialog(myLobby, "It is not your turn!", "Alert!", JOptionPane.ERROR_MESSAGE);
 	}
 
 	@Override
@@ -506,7 +483,6 @@ public class CheckersLobby implements CheckersClient {
 			myTable.oppLeft();
 		}
 		CheckersLobby.curState = State.inLobby;
-		// TODO Table logic
 		debugOutput(">> oppLeftTable()");
 	}
 
@@ -520,8 +496,8 @@ public class CheckersLobby implements CheckersClient {
 	// called if you send a game command but your opponent is not ready
 	@Override
 	public void oppNotReady() {
-		// TODO Table logic/Game logic?
 		output(">> Please wait for your opponent to start the game.");
+		JOptionPane.showMessageDialog(myLobby, "Please wait for your opponent to start the game.", "Alert!", JOptionPane.ERROR_MESSAGE);
 	}
 
 	// Outputs to main window in lobby window.
@@ -547,15 +523,14 @@ public class CheckersLobby implements CheckersClient {
 	// the table your trying to join is full.
 	@Override
 	public void tableFull() {
-		// TODO TABLE LOGIC
 		output(">> The table you are trying to join is full. Please choose another one.");
+		JOptionPane.showMessageDialog(myLobby, "The table you are trying to join is full. Please choose another one.", "Alert!", JOptionPane.ERROR_MESSAGE);
 	}
 
 	// same preconditions as onTable()
 	// called immediately after onTable()
 	public void tableGame(int tid) throws RemoteException {
 		System.out.println("outputmethod tablegame");
-		// TODO Table related logic
 		output(">> tableGame called");
 		newTable(tid);
 	}
@@ -578,8 +553,8 @@ public class CheckersLobby implements CheckersClient {
 	// the table queried does not exist.
 	@Override
 	public void tblNotExists() {
-		// TODO TABLE LOGIC
 		debugOutput(">> tblNotExists()");
+		JOptionPane.showMessageDialog(myLobby, "The table queried does not exist", "Alert!", JOptionPane.ERROR_MESSAGE);
 	}
 
 	// Updates user list, common funciton used by add/remove user as well as
