@@ -38,11 +38,11 @@ public class GameWindow extends JFrame {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				
+
 			}
 		});
 	}
-	
+
 	private static RMIServerInterface server;
 	private boolean observer;
 	private Integer oppMoves = 0;
@@ -53,9 +53,9 @@ public class GameWindow extends JFrame {
 	private Game game;
 	private Stats stats;
 	private lobbyWindow myLobby;
-
-
 	private Table myTable;
+	private ForfeitButton forfeitButton;
+	private HintButton hntbtnHint;
 
 	/**
 	 * Create the application.
@@ -82,7 +82,7 @@ public class GameWindow extends JFrame {
 	public String getStatus() {
 		return status;
 	}
-	
+
 	public String getUser() {
 		return user;
 	}
@@ -98,7 +98,7 @@ public class GameWindow extends JFrame {
 		setBounds(100, 100, 762, 637);
 		getContentPane().setLayout(null);
 		addWindowListener(new WindowAdapter() {
-			
+
 			@Override
 			public void windowClosing(WindowEvent e) {
 				setVisible(false);
@@ -120,28 +120,37 @@ public class GameWindow extends JFrame {
 				}
 			}
 		});
-		
+
 		stats = new Stats();
 		stats.setBackground(Color.WHITE);
 		stats.setBounds(526, 6, 220, 553);
 		getContentPane().add(stats);
 		stats.repaint();
-		
+
 		game = new Game(stats, observer, server, myTable, myColor);
 		game.setForeground(Color.ORANGE);
 		game.setBackground(new Color(139, 69, 19));
 		game.setBounds(6, 6, 521, 424);
 		getContentPane().add(game);
 		game.repaint();
-		
-		JButton buttonHint = new JButton("Hint");
-		buttonHint.setBounds(656, 570, 89, 23);
-		getContentPane().add(buttonHint);
-		
+
 		ChatBar chatBar = new ChatBar(server);
 		chatBar.setBounds(6, 436, 521, 161);
 		getContentPane().add(chatBar);
-		chatBar.repaint();chatBar.setFocusable(true);
+		chatBar.repaint();
+		
+		forfeitButton = new ForfeitButton(server, user, game.getOpponent());
+		forfeitButton.setBounds(536, 558, 96, 35);
+		getContentPane().add(forfeitButton);
+		
+		hntbtnHint = new HintButton(myColor, game);
+		hntbtnHint.setBounds(650, 558, 96, 32);
+		getContentPane().add(hntbtnHint);
+
+		if (observer){
+			hntbtnHint.setEnabled(false);
+			forfeitButton.setEnabled(false);
+		}
 		
 		//TODO hint ai algorithm stretch goal		
 	}

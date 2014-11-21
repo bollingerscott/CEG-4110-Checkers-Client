@@ -71,6 +71,10 @@ public class Tile extends JPanel implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		clicked();
+	}
+	
+	public void clicked(){
 		setTile(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/clicked_tile.jpg")));
 		getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/clicked_checker.png")));
 	}

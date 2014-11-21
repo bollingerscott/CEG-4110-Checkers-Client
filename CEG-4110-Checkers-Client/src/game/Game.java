@@ -55,6 +55,7 @@ public class Game extends JPanel implements MouseListener {
 	private Clip moveChecker;
 	private replayFile replayFile;
 	private List<byte[][]> states;
+	private Tile hintedTile;
 
 	/**
 	 * Create the panel.
@@ -165,9 +166,14 @@ public class Game extends JPanel implements MouseListener {
 		return turn;
 	}
 
-	@Override//TODO sound fx
+	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (!isObserver() && isTurn() && !((gameStatus.equalsIgnoreCase("win")) || (gameStatus.equalsIgnoreCase("lose")))){
+			if (hintedTile != null){
+				hintedTile.reset();
+				board.enable(hintedTile, false);
+				hintedTile = null;
+			}
 			board.mouseClicked(e);
 			if (board.isMoving()){
 				move(user, board.getFr(), board.getFc(), board.getTr(), board.getTc());
@@ -256,7 +262,7 @@ public class Game extends JPanel implements MouseListener {
 	    int reply = JOptionPane.showConfirmDialog(this, "Would you like to save a replay of this game?", "Replay?", JOptionPane.YES_NO_OPTION);
         if (reply == JOptionPane.YES_OPTION) {
         	replayFile = new replayFile();
-        	String fileName = JOptionPane.showInputDialog("What would you like to name the replay: "); 
+        	String fileName = JOptionPane.showInputDialog(this, "What would you like to name the replay: ", "Name?"); 
         	try {
 				replayFile.writeFile(fileName, states);
 			} catch (FileNotFoundException e) {
@@ -336,5 +342,13 @@ public class Game extends JPanel implements MouseListener {
 	public void setUser(String user) {
 		this.user = user;
 		stats.getName1().setText(user);
+	}
+
+	public Board getBoard() {
+		return board;
+	}
+	
+	public void setHintedTile(Tile hint){
+		this.hintedTile = hint;
 	}
 }
