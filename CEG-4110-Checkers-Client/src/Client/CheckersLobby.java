@@ -414,7 +414,7 @@ public class CheckersLobby implements CheckersClient {
 	@Override
 	public void newMsg(String user, String msg, boolean pm) {
 		if (pm) {
-			output("[PM] " + user + ": " + msg);
+			output("[PM] From " + user + ": " + msg);
 		} else
 			output(user + ": " + msg);
 	}

@@ -131,15 +131,15 @@ public class lobbyWindow extends JFrame {
 			tableLabel.setIconTextGap(-125);
 			tableLabel.setOpaque(true);
 			tableLabel.setLayout(null);
-			
+
 			tableListFlowPanel.add(tableLabel);
-			tableLabel.setText("\n\n  Table " + array[i]);
-			tableLabel.setFont(new Font("Serif", Font.PLAIN, 24));
+			tableLabel.setText("Table " + array[i]);
+			tableLabel.setFont(new Font("Serif", Font.PLAIN, 20));
 			tableLabel.setForeground(Color.red);
-			tableLabel.setAlignmentX(SwingConstants.CENTER);
-			tableLabel.setAlignmentY(SwingConstants.BOTTOM);
-			
-			
+			tableLabel
+					.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+			tableLabel.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
+
 			tableListFlowPanel.updateUI();
 			tidHashTable.put(tableLabel, array[i]);
 
@@ -205,8 +205,20 @@ public class lobbyWindow extends JFrame {
 				if (chatInputField.getText().length() > 0) {
 					if (curState == State.inLobby) {
 						try {
-							serverConnection.sendMsg_All(chatInputField
-									.getText());
+
+							String input = chatInputField.getText();
+							// Private Message
+							if (input.startsWith("@")) {
+								String pmInput[] = input.split("\\s", 2);
+								String recp = pmInput[0].substring(1);
+								String msg = pmInput[1];
+								serverConnection.sendMsg(recp, msg);
+								if (!recp.equals(myName))
+									addTextMainLobbyWindow("[PM to " + recp
+											+ "] "  + ": " + msg);
+							} else
+								serverConnection.sendMsg_All(chatInputField
+										.getText());
 						} catch (RemoteException e) {
 							e.printStackTrace();
 							System.out.println("Caught error sending message?");
