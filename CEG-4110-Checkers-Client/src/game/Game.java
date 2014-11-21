@@ -232,7 +232,7 @@ public class Game extends JPanel implements MouseListener {
 			stats.setColor1Icon(null);
 			stats.setColor2Icon(opponentsIcon);
 		}
-		repaint();repaint();//TODO do i need these repaints??
+		repaint();
 	}
 
 	public void setBoardState(byte[][] boardState) {
@@ -264,7 +264,7 @@ public class Game extends JPanel implements MouseListener {
         	replayFile = new replayFile();
         	String fileName = JOptionPane.showInputDialog(this, "What would you like to name the replay: ", "Name?"); 
         	try {
-				replayFile.writeFile(fileName, states);
+				replay.replayFile.writeFile(fileName, states);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}

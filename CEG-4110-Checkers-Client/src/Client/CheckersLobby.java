@@ -413,7 +413,11 @@ public class CheckersLobby implements CheckersClient {
 		Table table = new Table(t, myName, "-1");
 		tablesHashMap.put(t, table);
 		this.myTid = t;
-		table.setPlayer1(true);
+		try {
+			serverConnection.getTblStatus(myName, t);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
 	}
 
 	// you cannot perform the requested op because you are not in the lobby.
@@ -470,7 +474,12 @@ public class CheckersLobby implements CheckersClient {
 		Table table = tablesHashMap.get(tid);
 		table.setBlackseat(blackSeat);
 		table.setRedseat(redSeat);
-
+		if (blackSeat.equalsIgnoreCase(myName)){
+			table.setPlayer1(true);
+		}
+		else if (redSeat.equalsIgnoreCase(myName)){
+			table.setPlayer1(false);
+		}
 		myTable.update(); // call to update in case the corresponding table was
 							// changed
 
