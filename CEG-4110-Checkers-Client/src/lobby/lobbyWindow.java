@@ -345,9 +345,7 @@ public class lobbyWindow extends JFrame {
 			key.setIcon(getIconForTable(tablesHashMap.get(pairs.getValue()),
 					selected));
 
-			tidHashTable.put(key, (Integer) pairs.getValue());
-
-			it.remove(); // avoids a ConcurrentModificationException
+//			it.remove(); // avoids a ConcurrentModificationException
 		}
 	}
 
