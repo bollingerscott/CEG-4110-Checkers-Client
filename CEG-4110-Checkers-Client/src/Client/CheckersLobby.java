@@ -139,7 +139,8 @@ public class CheckersLobby implements CheckersClient {
 	private Map<Integer, Table> tablesHashMap = new HashMap<>();
 
 	private TableScreen myTable;
-	private final String DEFAULT_SERVER_IP = "::1"; //130.108.28.165 //Derek's server
+	private final String DEFAULT_SERVER_IP = "::1"; // 130.108.28.165 //Derek's
+													// server
 
 	public CheckersLobby() {
 		super();
@@ -165,7 +166,8 @@ public class CheckersLobby implements CheckersClient {
 	@Override
 	public void badMessage() {
 		debugOutput(">> badMessage()");
-		JOptionPane.showMessageDialog(myLobby, "Bad TCP message", "Alert!", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(myLobby, "Bad TCP message", "Alert!",
+				JOptionPane.ERROR_MESSAGE);
 
 	}
 
@@ -212,14 +214,18 @@ public class CheckersLobby implements CheckersClient {
 	@Override
 	public void errorInLobby() {
 		output(">> You cannot perform that action from within the lobby.");
-		JOptionPane.showMessageDialog(myLobby, "You cannot perform that action from within the lobby.", "Alert!", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(myLobby,
+				"You cannot perform that action from within the lobby.",
+				"Alert!", JOptionPane.ERROR_MESSAGE);
 	}
 
 	// called if you say you are ready on a table with no current game.
 	@Override
 	public void gameNotCreatedYet() {
 		output(">> Please wait for an opponent before starting the game.");
-		JOptionPane.showMessageDialog(myLobby, "Please wait for an opponent before starting the game.", "Alert!", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(myLobby,
+				"Please wait for an opponent before starting the game.",
+				"Alert!", JOptionPane.ERROR_MESSAGE);
 	}
 
 	// alert that at the table you are sitting at, a game is starting.
@@ -283,7 +289,8 @@ public class CheckersLobby implements CheckersClient {
 	@Override
 	public void illegalMove() {
 		output(">> That move is illegal!");
-		JOptionPane.showMessageDialog(myLobby, "That move is illegal!", "Alert!", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(myLobby, "That move is illegal!",
+				"Alert!", JOptionPane.ERROR_MESSAGE);
 	}
 
 	private void initialize() {
@@ -300,7 +307,7 @@ public class CheckersLobby implements CheckersClient {
 		frame.getContentPane().add(serverTextField);
 		serverTextField.setColumns(10);
 
-		Username = new JTextField("Name");
+		Username = new JTextField("Name" + (int) (Math.random() * 25000));
 		Username.setBounds(135, 138, 146, 23);
 		frame.getContentPane().add(Username);
 		Username.setColumns(10);
@@ -368,7 +375,9 @@ public class CheckersLobby implements CheckersClient {
 
 	@Override
 	public void nameIllegal() throws RemoteException {
-		JOptionPane.showMessageDialog(null, "The name requested is in illegal. Please choose another.", "Error", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(null,
+				"The name requested is in illegal. Please choose another.",
+				"Error", JOptionPane.ERROR_MESSAGE);
 		curState = State.notConnected;
 		myLobby.syncState(curState);
 
@@ -378,7 +387,9 @@ public class CheckersLobby implements CheckersClient {
 	@Override
 	public void nameInUseError() {
 		Username.setText("");
-		JOptionPane.showMessageDialog(null, "The name requested is in use. Please choose another.", "Error", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(null,
+				"The name requested is in use. Please choose another.",
+				"Error", JOptionPane.ERROR_MESSAGE);
 		curState = State.notConnected;
 		myLobby.syncState(curState);
 
@@ -390,7 +401,9 @@ public class CheckersLobby implements CheckersClient {
 	// ///////////////////////////////////////////////////////////////
 	@Override
 	public void networkException(String msg) {
-		JOptionPane.showMessageDialog(null, "A network exception has occured. Connection lost.", "Error", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(null,
+				"A network exception has occured. Connection lost.", "Error",
+				JOptionPane.ERROR_MESSAGE);
 		curState = State.notConnected;
 		myLobby.syncState(curState);
 
@@ -412,6 +425,7 @@ public class CheckersLobby implements CheckersClient {
 		myLobby.addTables(myIntArray);
 		Table table = new Table(t, myName, "-1");
 		tablesHashMap.put(t, table);
+		myLobby.tablesHashMap.put(t, table);
 		this.myTid = t;
 		table.setPlayer1(true);
 	}
@@ -420,7 +434,9 @@ public class CheckersLobby implements CheckersClient {
 	@Override
 	public void notInLobby() {
 		output(">> You cannot perform that action from outside of the lobby.");
-		JOptionPane.showMessageDialog(myLobby, "You cannot perform that action from outside the lobby", "Alert!", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(myLobby,
+				"You cannot perform that action from outside the lobby",
+				"Alert!", JOptionPane.ERROR_MESSAGE);
 	}
 
 	// called if you send a stop observing command but you are not observing a
@@ -428,14 +444,17 @@ public class CheckersLobby implements CheckersClient {
 	@Override
 	public void notObserving() {
 		debugOutput(">> notObserving()");
-		JOptionPane.showMessageDialog(myLobby, "You are not observing any tables", "Alert!", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(myLobby,
+				"You are not observing any tables", "Alert!",
+				JOptionPane.ERROR_MESSAGE);
 	}
 
 	// called if it is not your turn but you make a move.
 	@Override
 	public void notYourTurn() {
 		output(">> It is not your turn!");
-		JOptionPane.showMessageDialog(myLobby, "It is not your turn!", "Alert!", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(myLobby, "It is not your turn!",
+				"Alert!", JOptionPane.ERROR_MESSAGE);
 	}
 
 	@Override
@@ -458,8 +477,8 @@ public class CheckersLobby implements CheckersClient {
 	@Override
 	public void nowObserving(int tid) {
 		debugOutput(">> nowObserving(" + tid + ")");
-		observeGamesMap.put(tid, new GameWindow(true, serverConnection, myLobby,
-				tablesHashMap.get(tid), ""));
+		observeGamesMap.put(tid, new GameWindow(true, serverConnection,
+				myLobby, tablesHashMap.get(tid), ""));
 	}
 
 	// an alert saying that a table state has changed.
@@ -470,7 +489,8 @@ public class CheckersLobby implements CheckersClient {
 		Table table = tablesHashMap.get(tid);
 		table.setBlackseat(blackSeat);
 		table.setRedseat(redSeat);
-
+		myLobby.tablesHashMap = this.tablesHashMap;
+		myLobby.updateTableImages();
 		myTable.update(); // call to update in case the corresponding table was
 							// changed
 
@@ -497,11 +517,13 @@ public class CheckersLobby implements CheckersClient {
 	@Override
 	public void oppNotReady() {
 		output(">> Please wait for your opponent to start the game.");
-		JOptionPane.showMessageDialog(myLobby, "Please wait for your opponent to start the game.", "Alert!", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(myLobby,
+				"Please wait for your opponent to start the game.", "Alert!",
+				JOptionPane.ERROR_MESSAGE);
 	}
 
 	// Outputs to main window in lobby window.
-	private void output(String s) {//Split String
+	private void output(String s) {// Split String
 		List<String> parts = new ArrayList<String>();
 		int len = s.length();
 		for (int i = 0; i < len; i += 48) {
@@ -524,7 +546,11 @@ public class CheckersLobby implements CheckersClient {
 	@Override
 	public void tableFull() {
 		output(">> The table you are trying to join is full. Please choose another one.");
-		JOptionPane.showMessageDialog(myLobby, "The table you are trying to join is full. Please choose another one.", "Alert!", JOptionPane.ERROR_MESSAGE);
+		JOptionPane
+				.showMessageDialog(
+						myLobby,
+						"The table you are trying to join is full. Please choose another one.",
+						"Alert!", JOptionPane.ERROR_MESSAGE);
 	}
 
 	// same preconditions as onTable()
@@ -554,7 +580,9 @@ public class CheckersLobby implements CheckersClient {
 	@Override
 	public void tblNotExists() {
 		debugOutput(">> tblNotExists()");
-		JOptionPane.showMessageDialog(myLobby, "The table queried does not exist", "Alert!", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(myLobby,
+				"The table queried does not exist", "Alert!",
+				JOptionPane.ERROR_MESSAGE);
 	}
 
 	// Updates user list, common funciton used by add/remove user as well as
