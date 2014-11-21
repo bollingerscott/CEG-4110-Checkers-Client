@@ -126,7 +126,7 @@ public class CheckersLobby implements CheckersClient {
 	private String myColor;
 	private boolean isCheckers;
 	private byte[][] curBoardState;
-	private boolean debug = false; // set true for debug mode, which prints more
+	private boolean debug = true; // set true for debug mode, which prints more
 	private static lobbyWindow myLobby;
 	private JFrame frame;
 	private JTextField serverTextField;

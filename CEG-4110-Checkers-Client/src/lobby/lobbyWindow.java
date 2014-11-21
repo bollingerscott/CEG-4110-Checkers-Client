@@ -1,5 +1,6 @@
 package lobby;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
@@ -24,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import table.Table;
 import Client.CheckersLobby.State;
@@ -52,6 +54,7 @@ public class lobbyWindow extends JFrame {
 									// are possible. Sync'd from Checkers Lobby
 	private boolean newTableCreation; // Used for selecting your newly created
 										// table
+	private boolean addedAlready = false;
 	private Map<JLabel, Integer> tidHashTable; // used for extracting tid from a
 												// jlabel rather than making new
 												// class for JPANEL that contain
@@ -77,6 +80,16 @@ public class lobbyWindow extends JFrame {
 	public void addInitialTables(Map<Integer, Table> tablesHashMap2) {
 		System.out.println("init tables size " + tablesHashMap2.size());
 		tablesHashMap = tablesHashMap2;
+		if (tableListFlowPanel != null) {
+			addedAlready = true;
+			int[] initTids = new int[tablesHashMap.keySet().size()];
+			int i = 0;
+			for (Integer value : tablesHashMap.keySet()) {
+				initTids[i] = value;
+				i++;
+			}
+			addTables(initTids);
+		}
 	}
 
 	// Actually adds tables to panel
@@ -115,8 +128,18 @@ public class lobbyWindow extends JFrame {
 			} else {
 				tableLabel.setIcon(getIconForTable(currentTable, false));
 			}
-
+			tableLabel.setIconTextGap(-125);
+			tableLabel.setOpaque(true);
+			tableLabel.setLayout(null);
+			
 			tableListFlowPanel.add(tableLabel);
+			tableLabel.setText("\n\n  Table " + array[i]);
+			tableLabel.setFont(new Font("Serif", Font.PLAIN, 24));
+			tableLabel.setForeground(Color.red);
+			tableLabel.setAlignmentX(SwingConstants.CENTER);
+			tableLabel.setAlignmentY(SwingConstants.BOTTOM);
+			
+			
 			tableListFlowPanel.updateUI();
 			tidHashTable.put(tableLabel, array[i]);
 
@@ -145,19 +168,19 @@ public class lobbyWindow extends JFrame {
 	private void initialize() {
 
 		normalTableIconE = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				getClass().getResource("/unselectedTableEmpty.jpg")));
+				getClass().getResource("/unselectedTableEmpty.png")));
 		highlightedTableIconE = new ImageIcon(Toolkit.getDefaultToolkit()
-				.getImage(getClass().getResource("/selectedTableEmpty.jpg")));
+				.getImage(getClass().getResource("/selectedTableEmpty.png")));
 
 		normalTableIconH = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				getClass().getResource("/unselectedTableHalfFill.jpg")));
+				getClass().getResource("/unselectedTableHalfFill.png")));
 		highlightedTableIconH = new ImageIcon(Toolkit.getDefaultToolkit()
-				.getImage(getClass().getResource("/selectedTableHalfFill.jpg")));
+				.getImage(getClass().getResource("/selectedTableHalfFill.png")));
 
 		normalTableIconF = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				getClass().getResource("/unselectedFull.jpg")));
+				getClass().getResource("/unselectedFull.png")));
 		highlightedTableIconF = new ImageIcon(Toolkit.getDefaultToolkit()
-				.getImage(getClass().getResource("/selectedTableFull.jpg")));
+				.getImage(getClass().getResource("/selectedTableFull.png")));
 
 		frame = new JFrame();
 		frame.setBounds(100, 100, 1028, 735);
@@ -278,7 +301,7 @@ public class lobbyWindow extends JFrame {
 
 		tableListFlowPanel = new JPanel();
 		scrollPane.setViewportView(tableListFlowPanel);
-		tableListFlowPanel.setLayout(new GridLayout(0, 5, 0, 0));
+		tableListFlowPanel.setLayout(new GridLayout(0, 3, 0, 0));
 
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.setBounds(424, 11, 123, 622);
@@ -310,13 +333,15 @@ public class lobbyWindow extends JFrame {
 		lobbyWindow.curState = curState;
 		initialize();
 		updateUsers();
-		int[] initTids = new int[tablesHashMap.keySet().size()];
-		int i = 0;
-		for (Integer value : tablesHashMap.keySet()) {
-			initTids[i] = value;
-			i++;
+		if (!addedAlready) {
+			int[] initTids = new int[tablesHashMap.keySet().size()];
+			int i = 0;
+			for (Integer value : tablesHashMap.keySet()) {
+				initTids[i] = value;
+				i++;
+			}
+			addTables(initTids);
 		}
-		addTables(initTids);
 	}
 
 	public void syncState(State a) {
@@ -345,7 +370,7 @@ public class lobbyWindow extends JFrame {
 			key.setIcon(getIconForTable(tablesHashMap.get(pairs.getValue()),
 					selected));
 
-//			it.remove(); // avoids a ConcurrentModificationException
+			// it.remove(); // avoids a ConcurrentModificationException
 		}
 	}
 
