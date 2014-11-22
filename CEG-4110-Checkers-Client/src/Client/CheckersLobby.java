@@ -506,9 +506,6 @@ public class CheckersLobby implements CheckersClient {
 		if (myTable != null){
 			myTable.update(); // call to update in case the corresponding table was changed
 		}
-		myLobby.updateTableImages(table);
-		myTable.update(); // call to update in case the corresponding table was changed
-
 	}
 
 	// called when your opponent leaves the table

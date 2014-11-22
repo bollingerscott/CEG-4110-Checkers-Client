@@ -10,7 +10,7 @@ import RMIConnection.Interfaces.RMIServerInterface;
 
 public class ForfeitButton extends JButton {
 	
-	public ForfeitButton(final RMIServerInterface server, final String user, final String opponent){
+	public ForfeitButton(final RMIServerInterface server, final String user, final String opponent, final GameWindow window){
 		setText("Forfeit");
 		addActionListener(new ActionListener(){
 			@Override
@@ -18,6 +18,7 @@ public class ForfeitButton extends JButton {
 				try {
 					server.sendMsg(opponent, "I forfeit");
 					server.leaveTable(user);
+					window.dispose();
 				} catch (RemoteException e1) {
 					e1.printStackTrace();
 				}

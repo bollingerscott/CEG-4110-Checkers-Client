@@ -139,7 +139,7 @@ public class GameWindow extends JFrame {
 		getContentPane().add(chatBar);
 		chatBar.repaint();
 		
-		forfeitButton = new ForfeitButton(server, user, game.getOpponent());
+		forfeitButton = new ForfeitButton(server, user, game.getOpponent(), this);
 		forfeitButton.setBounds(536, 558, 96, 35);
 		getContentPane().add(forfeitButton);
 		
@@ -150,7 +150,7 @@ public class GameWindow extends JFrame {
 		if (observer){
 			hntbtnHint.setEnabled(false);
 			forfeitButton.setEnabled(false);
-		}	
+		}
 	}
 
 	public boolean isTurn() {

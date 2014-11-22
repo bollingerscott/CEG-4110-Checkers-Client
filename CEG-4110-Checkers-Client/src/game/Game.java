@@ -205,12 +205,12 @@ public class Game extends JPanel implements MouseListener {
 	private void move(String user, int fr, int fc, int tr, int tc){
 		setStats();
 		moves += 1;
-		playMoveSound();
 		try {
 			server.move(user, fr, fc, tr, tc);
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
+		playMoveSound();
 		turn = false;
 	}
 
