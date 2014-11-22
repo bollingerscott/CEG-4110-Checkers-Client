@@ -21,11 +21,14 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import table.Table;
 import Client.CheckersLobby.State;
@@ -62,6 +65,7 @@ public class lobbyWindow extends JFrame {
 	public Map<Integer, Table> tablesHashMap;
 
 	private JList<String> jListOfUsers;
+	private String selectedUser = ""; // Used for pm
 
 	/**
 	 * Init for lobby. sets table and user list so they can be edited before the
@@ -125,8 +129,7 @@ public class lobbyWindow extends JFrame {
 			if (newTableCreation) {
 				Table oldActive = tablesHashMap.get(tidHashTable
 						.get(currentlyActiveTable));
-				currentlyActiveTable.setIcon(getIconForTable(
-						oldActive, false));
+				currentlyActiveTable.setIcon(getIconForTable(oldActive, false));
 				tableLabel.setIcon(getIconForTable(currentTable, true));
 				currentlyActiveTable = tableLabel;
 			} else {
@@ -322,9 +325,34 @@ public class lobbyWindow extends JFrame {
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.setBounds(424, 11, 123, 622);
 		frame.getContentPane().add(scrollPane_1);
-
+		final JPopupMenu popup = new JPopupMenu();
+		JMenuItem menuItem = new JMenuItem("Send a PM");
+		menuItem.addMouseListener(new MouseAdapter() {
+			// Adds PM tag to the input
+			public void mouseReleased(MouseEvent e) {
+				chatInputField.setText("@" + selectedUser + " ");
+			}
+		});
+		popup.add(menuItem);
 		jListOfUsers = new JList<String>();
 		jListOfUsers.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		jListOfUsers.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				maybeShowPopup(e);
+			}
+
+			public void mouseReleased(MouseEvent e) {
+				int index = jListOfUsers.locationToIndex(e.getPoint());
+				selectedUser = usersInMainChat.get(index);
+				maybeShowPopup(e);
+			}
+
+			private void maybeShowPopup(MouseEvent e) {
+				if (e.isPopupTrigger())
+					popup.show(e.getComponent(), e.getX(), e.getY());
+			}
+		});
 		scrollPane_1.setViewportView(jListOfUsers);
 
 		frame.setVisible(true);
