@@ -30,6 +30,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import replay.GetReplayFile;
 import table.Table;
 import Client.CheckersLobby.State;
 import RMIConnection.Interfaces.RMIServerInterface;
@@ -310,6 +311,11 @@ public class lobbyWindow extends JFrame {
 		tableControlButtons.add(btnObserveTable);
 
 		JButton btnWatchReplays = new JButton("Watch Replays");
+		btnWatchReplays.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				new GetReplayFile();
+			}
+		});
 		btnWatchReplays.setBounds(697, 644, 196, 42);
 		frame.getContentPane().add(btnWatchReplays);
 		// TODO stretch goal of replays window. Don't focus now.

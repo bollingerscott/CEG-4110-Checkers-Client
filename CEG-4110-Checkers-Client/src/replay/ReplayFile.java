@@ -12,15 +12,20 @@ import java.util.Scanner;
  * A replay is a list of board states. This is done to make it easiest to 
  * save and load replays.
  */
-public class replayFile {
+public class ReplayFile {
 
-	public static final String fileExtension = "CKRSREPLAY";
+	public static final String fileExtension = ".CKRSREPLAY";
 
-	public static void writeFile(String fileName, List<byte[][]> states)
-			throws FileNotFoundException {
+	public static void writeFile(String fileName, List<byte[][]> states) {
 		
 		File file = new File(fileName);
-		PrintWriter pw = new PrintWriter(file);
+		PrintWriter pw = null;
+		try {
+			pw = new PrintWriter(file);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		pw.println(states.size()); // very first thing in the file is how many
 									// states to read in
@@ -28,7 +33,7 @@ public class replayFile {
 		for (byte[][] state : states) {
 			for (byte[] row : state) {
 				for (byte tile : row) {
-					pw.print(tile);
+					pw.print(tile + " ");
 				}
 				pw.println();
 			}

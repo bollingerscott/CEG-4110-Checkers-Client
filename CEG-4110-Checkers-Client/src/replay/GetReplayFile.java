@@ -20,7 +20,7 @@ import javax.swing.JButton;
  * appropriate file extension. A user can choose one and launch a replay from
  * it.
  */
-public class getReplayFile extends JFrame {
+public class GetReplayFile extends JFrame {
 
 	private JPanel contentPane;
 	private File selectedFile = null;
@@ -32,7 +32,7 @@ public class getReplayFile extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					getReplayFile frame = new getReplayFile();
+					GetReplayFile frame = new GetReplayFile();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -44,12 +44,12 @@ public class getReplayFile extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public getReplayFile() {
+	public GetReplayFile() {
 		
 		super();
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 181);
+		setBounds(100, 100, 450, 80);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -60,7 +60,7 @@ public class getReplayFile extends JFrame {
 		File[] filesList = dir.listFiles();
 		ArrayList<File> fileList = new ArrayList();
 		for (File file : filesList) {
-		    if (file.isFile() && file.toString().endsWith(replayFile.fileExtension)) {
+		    if (file.isFile() && file.toString().endsWith(ReplayFile.fileExtension)) {
 		        fileList.add(file);
 		        System.out.println("File: " + file.toString());
 		    }
@@ -88,7 +88,7 @@ public class getReplayFile extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				if (selectedFile != null) {
 					try {
-						ReplayFrame rFrame = new ReplayFrame(replayFile.readFile(selectedFile));
+						ReplayFrame rFrame = new ReplayFrame(ReplayFile.readFile(selectedFile));
 						rFrame.paintComponents(rFrame.getGraphics()); //forces a repaint. possible bug: repaint() will not work wor initial window
 					} catch (FileNotFoundException e) {
 						// TODO Auto-generated catch block
@@ -101,7 +101,7 @@ public class getReplayFile extends JFrame {
 		});
 		selectedFile = fileList.get(0);
 		contentPane.add(btnNewButton, BorderLayout.EAST);
-		
+		this.setVisible(true);
 
 	}
 
