@@ -18,6 +18,7 @@ public class replayFile {
 
 	public static void writeFile(String fileName, List<byte[][]> states)
 			throws FileNotFoundException {
+		
 		File file = new File(fileName);
 		PrintWriter pw = new PrintWriter(file);
 
@@ -38,7 +39,7 @@ public class replayFile {
 
 	public static List<byte[][]> readFile(File file)
 			throws FileNotFoundException {
-		ArrayList<byte[][]> list = new ArrayList();
+		ArrayList<byte[][]> list = new ArrayList<byte[][]>();
 
 		Scanner scanner = new Scanner(file);
 		
