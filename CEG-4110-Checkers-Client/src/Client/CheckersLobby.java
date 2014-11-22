@@ -422,10 +422,12 @@ public class CheckersLobby implements CheckersClient {
 	@Override
 	public void newTable(int t) {
 		int[] myIntArray = { t };
-		myLobby.addTables(myIntArray);
+		
 		Table table = new Table(t, myName, "-1");
 		tablesHashMap.put(t, table);
 		myLobby.tablesHashMap.put(t, table);
+		myLobby.addTables(myIntArray);
+
 		this.myTid = t;
 		table.setPlayer1(true);
 	}
@@ -490,7 +492,7 @@ public class CheckersLobby implements CheckersClient {
 		table.setBlackseat(blackSeat);
 		table.setRedseat(redSeat);
 		myLobby.tablesHashMap = this.tablesHashMap;
-		myLobby.updateTableImages();
+		myLobby.updateTableImages(table);
 		myTable.update(); // call to update in case the corresponding table was
 							// changed
 

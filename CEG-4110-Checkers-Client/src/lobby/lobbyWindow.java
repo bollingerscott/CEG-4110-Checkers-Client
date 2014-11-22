@@ -215,7 +215,7 @@ public class lobbyWindow extends JFrame {
 								serverConnection.sendMsg(recp, msg);
 								if (!recp.equals(myName))
 									addTextMainLobbyWindow("[PM to " + recp
-											+ "] "  + ": " + msg);
+											+ "] " + ": " + msg);
 							} else
 								serverConnection.sendMsg_All(chatInputField
 										.getText());
@@ -370,19 +370,15 @@ public class lobbyWindow extends JFrame {
 
 	}
 
-	public void updateTableImages() {
-		Iterator it = tidHashTable.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry pairs = (Map.Entry) it.next();
-			boolean selected = false;
-			if (((JLabel) pairs.getKey()).equals(currentlyActiveTable)) {
-				selected = true;
+	public void updateTableImages(Table table) {
+		Integer tid = table.getTid();
+		for (JLabel value : tidHashTable.keySet()) {
+			if (value.getText().contains(tid.toString())) {
+				if (value == currentlyActiveTable) {
+					value.setIcon(getIconForTable(table, true));
+				} else
+					value.setIcon(getIconForTable(table, false));
 			}
-			JLabel key = (JLabel) pairs.getKey();
-			key.setIcon(getIconForTable(tablesHashMap.get(pairs.getValue()),
-					selected));
-
-			// it.remove(); // avoids a ConcurrentModificationException
 		}
 	}
 
