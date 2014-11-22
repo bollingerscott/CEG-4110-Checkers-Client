@@ -21,11 +21,14 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import table.Table;
 import Client.CheckersLobby.State;
@@ -50,18 +53,19 @@ public class lobbyWindow extends JFrame {
 	private ArrayList<String> usersInMainChat; // List of users in main chat
 	// JList for PMs
 	private static State curState; // Current state, not altered within here
-									// however important for knowing if clicks
-									// are possible. Sync'd from Checkers Lobby
+	// however important for knowing if clicks
+	// are possible. Sync'd from Checkers Lobby
 	private boolean newTableCreation; // Used for selecting your newly created
-										// table
+	// table
 	private boolean addedAlready = false;
 	private Map<JLabel, Integer> tidHashTable; // used for extracting tid from a
-												// jlabel rather than making new
-												// class for JPANEL that contain
-												// an ID.
+	// jlabel rather than making new
+	// class for JPANEL that contain
+	// an ID.
 	public Map<Integer, Table> tablesHashMap;
 
 	private JList<String> jListOfUsers;
+	private String selectedUser = ""; // Used for pm
 
 	/**
 	 * Init for lobby. sets table and user list so they can be edited before the
@@ -123,6 +127,9 @@ public class lobbyWindow extends JFrame {
 			});
 
 			if (newTableCreation) {
+				Table oldActive = tablesHashMap.get(tidHashTable
+						.get(currentlyActiveTable));
+				currentlyActiveTable.setIcon(getIconForTable(oldActive, false));
 				tableLabel.setIcon(getIconForTable(currentTable, true));
 				currentlyActiveTable = tableLabel;
 			} else {
@@ -137,7 +144,7 @@ public class lobbyWindow extends JFrame {
 			tableLabel.setFont(new Font("Serif", Font.PLAIN, 20));
 			tableLabel.setForeground(Color.red);
 			tableLabel
-					.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+			.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 			tableLabel.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
 
 			tableListFlowPanel.updateUI();
@@ -215,7 +222,7 @@ public class lobbyWindow extends JFrame {
 								serverConnection.sendMsg(recp, msg);
 								if (!recp.equals(myName))
 									addTextMainLobbyWindow("[PM to " + recp
-											+ "] "  + ": " + msg);
+											+ "] " + ": " + msg);
 							} else
 								serverConnection.sendMsg_All(chatInputField
 										.getText());
@@ -318,9 +325,34 @@ public class lobbyWindow extends JFrame {
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.setBounds(424, 11, 123, 622);
 		frame.getContentPane().add(scrollPane_1);
-
+		final JPopupMenu popup = new JPopupMenu();
+		JMenuItem menuItem = new JMenuItem("Send a PM");
+		menuItem.addMouseListener(new MouseAdapter() {
+			// Adds PM tag to the input
+			public void mouseReleased(MouseEvent e) {
+				chatInputField.setText("@" + selectedUser + " ");
+			}
+		});
+		popup.add(menuItem);
 		jListOfUsers = new JList<String>();
 		jListOfUsers.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		jListOfUsers.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				maybeShowPopup(e);
+			}
+
+			public void mouseReleased(MouseEvent e) {
+				int index = jListOfUsers.locationToIndex(e.getPoint());
+				selectedUser = usersInMainChat.get(index);
+				maybeShowPopup(e);
+			}
+
+			private void maybeShowPopup(MouseEvent e) {
+				if (e.isPopupTrigger())
+					popup.show(e.getComponent(), e.getX(), e.getY());
+			}
+		});
 		scrollPane_1.setViewportView(jListOfUsers);
 
 		frame.setVisible(true);
@@ -370,18 +402,15 @@ public class lobbyWindow extends JFrame {
 
 	}
 
-	public void updateTableImages() {
-		Iterator<Map.Entry<JLabel, Integer>> it = tidHashTable.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry<JLabel, Integer> pairs = it.next();
-			boolean selected = false;
-			if ((pairs.getKey()).equals(currentlyActiveTable)) {
-				selected = true;
+	public void updateTableImages(Table table) {
+		Integer tid = table.getTid();
+		for (JLabel value : tidHashTable.keySet()) {
+			if (value.getText().contains(tid.toString())) {
+				if (value == currentlyActiveTable) {
+					value.setIcon(getIconForTable(table, true));
+				} else
+					value.setIcon(getIconForTable(table, false));
 			}
-			JLabel key = pairs.getKey();
-			key.setIcon(getIconForTable(tablesHashMap.get(pairs.getValue()),
-					selected));
-			// it.remove(); // avoids a ConcurrentModificationException
 		}
 	}
 
