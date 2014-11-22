@@ -17,7 +17,7 @@ import javax.swing.JButton;
 /*
  * launches a JFrame with a combo box and a start button. The comboBox is
  * populated with all of the files in the working directory that have the 
- * appropriate file extension. A user can choose one and lauch a replay from
+ * appropriate file extension. A user can choose one and launch a replay from
  * it.
  */
 public class getReplayFile extends JFrame {
@@ -45,6 +45,9 @@ public class getReplayFile extends JFrame {
 	 * Create the frame.
 	 */
 	public getReplayFile() {
+		
+		super();
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 181);
 		contentPane = new JPanel();
@@ -59,9 +62,10 @@ public class getReplayFile extends JFrame {
 		for (File file : filesList) {
 		    if (file.isFile() && file.toString().endsWith(replayFile.fileExtension)) {
 		        fileList.add(file);
+		        System.out.println("File: " + file.toString());
 		    }
 		}
-		JComboBox<File> comboBox = new JComboBox<File>(filesList);
+		JComboBox<File> comboBox = new JComboBox<File>(fileList.toArray(new File[fileList.size()]));
 		comboBox.addActionListener(new ActionListener() {
 
 			@Override
@@ -75,9 +79,9 @@ public class getReplayFile extends JFrame {
 		});
 		
 		
-		contentPane.add(comboBox, BorderLayout.WEST);
+		contentPane.add(comboBox, BorderLayout.CENTER);
 		
-		JButton btnNewButton = new JButton("New button");
+		JButton btnNewButton = new JButton("Open");
 		btnNewButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -85,6 +89,7 @@ public class getReplayFile extends JFrame {
 				if (selectedFile != null) {
 					try {
 						ReplayFrame rFrame = new ReplayFrame(replayFile.readFile(selectedFile));
+						rFrame.paintComponents(rFrame.getGraphics()); //forces a repaint. possible bug: repaint() will not work wor initial window
 					} catch (FileNotFoundException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -94,7 +99,8 @@ public class getReplayFile extends JFrame {
 			}
 			
 		});
-		contentPane.add(btnNewButton, BorderLayout.CENTER);
+		selectedFile = fileList.get(0);
+		contentPane.add(btnNewButton, BorderLayout.EAST);
 		
 
 	}
