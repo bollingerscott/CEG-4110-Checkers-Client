@@ -123,6 +123,10 @@ public class lobbyWindow extends JFrame {
 			});
 
 			if (newTableCreation) {
+				Table oldActive = tablesHashMap.get(tidHashTable
+						.get(currentlyActiveTable));
+				currentlyActiveTable.setIcon(getIconForTable(
+						oldActive, false));
 				tableLabel.setIcon(getIconForTable(currentTable, true));
 				currentlyActiveTable = tableLabel;
 			} else {
