@@ -60,7 +60,6 @@ public class GameWindow extends JFrame {
 	/**
 	 * Create the application.
 	 */
-
 	public GameWindow(boolean observer, RMIServerInterface server, lobbyWindow myLobby, Table myTable, String myColor) {
 		super();
 		GameWindow.server = server;
@@ -151,9 +150,7 @@ public class GameWindow extends JFrame {
 		if (observer){
 			hntbtnHint.setEnabled(false);
 			forfeitButton.setEnabled(false);
-		}
-		
-		//TODO hint ai algorithm stretch goal		
+		}	
 	}
 
 	public boolean isTurn() {

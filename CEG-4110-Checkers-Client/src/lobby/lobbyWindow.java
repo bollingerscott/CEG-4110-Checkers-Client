@@ -1,5 +1,6 @@
 package lobby;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
@@ -14,6 +15,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import javax.swing.DefaultListModel;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -23,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import table.Table;
 import Client.CheckersLobby.State;
@@ -51,12 +54,14 @@ public class lobbyWindow extends JFrame {
 									// are possible. Sync'd from Checkers Lobby
 	private boolean newTableCreation; // Used for selecting your newly created
 										// table
-	private Map<JLabel, Table> tidHashTable; // used for extracting tid from a
+	private boolean addedAlready = false;
+	private Map<JLabel, Integer> tidHashTable; // used for extracting tid from a
 												// jlabel rather than making new
 												// class for JPANEL that contain
 												// an ID.
+	public Map<Integer, Table> tablesHashMap;
+
 	private JList<String> jListOfUsers;
-	private Map<Integer, Table> tablesHashMap;
 
 	/**
 	 * Init for lobby. sets table and user list so they can be edited before the
@@ -67,7 +72,7 @@ public class lobbyWindow extends JFrame {
 		usersInMainChat = new ArrayList<String>();
 		tablesHashMap = new HashMap<>();
 		curState = State.notConnected;
-		tidHashTable = new HashMap<JLabel, Table>();
+		tidHashTable = new HashMap<JLabel, Integer>();
 		newTableCreation = false;
 	}
 
@@ -75,13 +80,16 @@ public class lobbyWindow extends JFrame {
 	public void addInitialTables(Map<Integer, Table> tablesHashMap2) {
 		System.out.println("init tables size " + tablesHashMap2.size());
 		tablesHashMap = tablesHashMap2;
-		int[] initTids = new int[tablesHashMap2.keySet().size()];
-		int i = 0;
-		for (Integer value : tablesHashMap2.keySet()) {
-			initTids[i] = value;
-			i++;
+		if (tableListFlowPanel != null) {
+			addedAlready = true;
+			int[] initTids = new int[tablesHashMap.keySet().size()];
+			int i = 0;
+			for (Integer value : tablesHashMap.keySet()) {
+				initTids[i] = value;
+				i++;
+			}
+			addTables(initTids);
 		}
-		addTables(initTids);
 	}
 
 	// Actually adds tables to panel
@@ -90,97 +98,51 @@ public class lobbyWindow extends JFrame {
 
 		for (int i = 0; i < array.length; i++) {
 			// TODO change to use images that are 1/2 2/2 etc.
-			final JLabel table = new JLabel();
-			String redPlayer = tablesHashMap.get(array[i]).getRedseat();
-			String blackPlayer = tablesHashMap.get(array[i]).getBlackseat();
-			int numberAtTable = 0;
+			final JLabel tableLabel = new JLabel();
+			Table currentTable = tablesHashMap.get(array[i]);
 
-			if (redPlayer != "-1") {
-				numberAtTable++;
-			}
-			if (blackPlayer != "-1") {
-				numberAtTable++;
-			}
 			// GET NUMBER OF ADDING TABLE AND CURRENT TABLE
-			table.addMouseListener(new MouseAdapter() {
+			tableLabel.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
 					if (curState == State.inLobby) {
 						if (currentlyActiveTable != null) {
-							String curActiveBlack = tidHashTable.get(
-									currentlyActiveTable).getBlackseat();
-							String curActiveRed = tidHashTable.get(
-									currentlyActiveTable).getRedseat();
-							int numberAtActiveTable = 0;
-							if (curActiveBlack != "-1") {
-								numberAtActiveTable++;
-							}
-							if (curActiveRed != "-1") {
-								numberAtActiveTable++;
-							}
-							if (numberAtActiveTable == 0) {
-								currentlyActiveTable.setIcon(normalTableIconE);
-							}
-							if (numberAtActiveTable == 1) {
-								currentlyActiveTable.setIcon(normalTableIconH);
+							Table oldActive = tablesHashMap.get(tidHashTable
+									.get(currentlyActiveTable));
+							currentlyActiveTable.setIcon(getIconForTable(
+									oldActive, false));
+						}
+						Table newActive = tablesHashMap.get(tidHashTable
+								.get(tableLabel));
+						currentlyActiveTable = tableLabel;
+						currentlyActiveTable.setIcon(getIconForTable(newActive,
+								true));
 
-							}
-							if (numberAtActiveTable == 2) {
-								currentlyActiveTable.setIcon(normalTableIconF);
-							}
-						}
-						currentlyActiveTable = table;
-						String black = tidHashTable.get(table).getBlackseat();
-						String red = tidHashTable.get(table).getRedseat();
-						int numberAtTable = 0;
-						if (black != "-1") {
-							numberAtTable++;
-						}
-						if (red != "-1") {
-							numberAtTable++;
-						}
-						if (numberAtTable == 0) {
-							table.setIcon(highlightedTableIconE);
-						}
-						if (numberAtTable == 1) {
-							table.setIcon(highlightedTableIconH);
-
-						}
-						if (numberAtTable == 2) {
-							table.setIcon(highlightedTableIconF);
-						}
 					}
 				}
 			});
-			tidHashTable.put(table, tablesHashMap.get(array[i]));
 
 			if (newTableCreation) {
-				if (numberAtTable == 0) {
-					table.setIcon(highlightedTableIconE);
-				}
-				if (numberAtTable == 1) {
-					table.setIcon(highlightedTableIconH);
-
-				}
-				if (numberAtTable == 2) {
-					table.setIcon(highlightedTableIconF);
-
-				}
-
-				currentlyActiveTable = table;
-			} else if (numberAtTable == 0) {
-				table.setIcon(normalTableIconE);
+				tableLabel.setIcon(getIconForTable(currentTable, true));
+				currentlyActiveTable = tableLabel;
+			} else {
+				tableLabel.setIcon(getIconForTable(currentTable, false));
 			}
-			if (numberAtTable == 1) {
-				table.setIcon(normalTableIconH);
+			tableLabel.setIconTextGap(-125);
+			tableLabel.setOpaque(true);
+			tableLabel.setLayout(null);
 
-			}
-			if (numberAtTable == 2) {
-				table.setIcon(normalTableIconF);
+			tableListFlowPanel.add(tableLabel);
+			tableLabel.setText("Table " + array[i]);
+			tableLabel.setFont(new Font("Serif", Font.PLAIN, 20));
+			tableLabel.setForeground(Color.red);
+			tableLabel
+					.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+			tableLabel.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
 
-			}
-			tableListFlowPanel.add(table);
 			tableListFlowPanel.updateUI();
+			tidHashTable.put(tableLabel, array[i]);
+
 		}
 	}
 
@@ -206,19 +168,19 @@ public class lobbyWindow extends JFrame {
 	private void initialize() {
 
 		normalTableIconE = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				getClass().getResource("/unselectedTableEmpty.jpg")));
+				getClass().getResource("/unselectedTableEmpty.png")));
 		highlightedTableIconE = new ImageIcon(Toolkit.getDefaultToolkit()
-				.getImage(getClass().getResource("/selectedTableEmpty.jpg")));
+				.getImage(getClass().getResource("/selectedTableEmpty.png")));
 
 		normalTableIconH = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				getClass().getResource("/unselectedTableHalfFill.jpg")));
+				getClass().getResource("/unselectedTableHalfFill.png")));
 		highlightedTableIconH = new ImageIcon(Toolkit.getDefaultToolkit()
-				.getImage(getClass().getResource("/selectedTableHalfFill.jpg")));
+				.getImage(getClass().getResource("/selectedTableHalfFill.png")));
 
 		normalTableIconF = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				getClass().getResource("/unselectedFull.jpg")));
+				getClass().getResource("/unselectedFull.png")));
 		highlightedTableIconF = new ImageIcon(Toolkit.getDefaultToolkit()
-				.getImage(getClass().getResource("/selectedTableFull.jpg")));
+				.getImage(getClass().getResource("/selectedTableFull.png")));
 
 		frame = new JFrame();
 		frame.setBounds(100, 100, 1028, 735);
@@ -243,8 +205,20 @@ public class lobbyWindow extends JFrame {
 				if (chatInputField.getText().length() > 0) {
 					if (curState == State.inLobby) {
 						try {
-							serverConnection.sendMsg_All(chatInputField
-									.getText());
+
+							String input = chatInputField.getText();
+							// Private Message
+							if (input.startsWith("@")) {
+								String pmInput[] = input.split("\\s", 2);
+								String recp = pmInput[0].substring(1);
+								String msg = pmInput[1];
+								serverConnection.sendMsg(recp, msg);
+								if (!recp.equals(myName))
+									addTextMainLobbyWindow("[PM to " + recp
+											+ "] "  + ": " + msg);
+							} else
+								serverConnection.sendMsg_All(chatInputField
+										.getText());
 						} catch (RemoteException e) {
 							e.printStackTrace();
 							System.out.println("Caught error sending message?");
@@ -278,8 +252,7 @@ public class lobbyWindow extends JFrame {
 				try {
 					if (curState.equals(State.inLobby)
 							&& currentlyActiveTable != null) {
-						int tid = tidHashTable.get(currentlyActiveTable)
-								.getTid();
+						int tid = tidHashTable.get(currentlyActiveTable);
 						serverConnection.joinTable(myName, tid);
 						// Should queue up lobby window server messages to
 						// handle
@@ -316,8 +289,7 @@ public class lobbyWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (currentlyActiveTable != null) {
 					try {
-						int tid = tidHashTable.get(currentlyActiveTable)
-								.getTid();
+						int tid = tidHashTable.get(currentlyActiveTable);
 						System.out.println(tid);
 						serverConnection.observeTable(myName, tid);
 						// Should que up lobby window server messages to handle
@@ -341,7 +313,7 @@ public class lobbyWindow extends JFrame {
 
 		tableListFlowPanel = new JPanel();
 		scrollPane.setViewportView(tableListFlowPanel);
-		tableListFlowPanel.setLayout(new GridLayout(0, 5, 0, 0));
+		tableListFlowPanel.setLayout(new GridLayout(0, 3, 0, 0));
 
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.setBounds(424, 11, 123, 622);
@@ -373,6 +345,15 @@ public class lobbyWindow extends JFrame {
 		lobbyWindow.curState = curState;
 		initialize();
 		updateUsers();
+		if (!addedAlready) {
+			int[] initTids = new int[tablesHashMap.keySet().size()];
+			int i = 0;
+			for (Integer value : tablesHashMap.keySet()) {
+				initTids[i] = value;
+				i++;
+			}
+			addTables(initTids);
+		}
 	}
 
 	public void syncState(State a) {
@@ -386,6 +367,47 @@ public class lobbyWindow extends JFrame {
 			model.addElement(userName);
 		}
 		jListOfUsers.setModel(model);
+
+	}
+
+	public void updateTableImages() {
+		Iterator<Map.Entry<JLabel, Integer>> it = tidHashTable.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<JLabel, Integer> pairs = it.next();
+			boolean selected = false;
+			if ((pairs.getKey()).equals(currentlyActiveTable)) {
+				selected = true;
+			}
+			JLabel key = pairs.getKey();
+			key.setIcon(getIconForTable(tablesHashMap.get(pairs.getValue()),
+					selected));
+			// it.remove(); // avoids a ConcurrentModificationException
+		}
+	}
+
+	public Icon getIconForTable(Table table, boolean selected) {
+		int count = 0;
+		if (!table.getBlackseat().equals("-1")) {
+			count++;
+		}
+		if (!table.getRedseat().equals("-1")) {
+			count++;
+		}
+		if (selected) {
+			if (count == 2) {
+				return highlightedTableIconF;
+			} else if (count == 1) {
+				return highlightedTableIconH;
+			} else
+				return highlightedTableIconE;
+		} else {
+			if (count == 2) {
+				return normalTableIconF;
+			} else if (count == 1) {
+				return normalTableIconH;
+			} else
+				return normalTableIconE;
+		}
 
 	}
 }
