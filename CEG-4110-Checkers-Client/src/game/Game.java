@@ -20,7 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 
 import table.Table;
-import replay.replayFile;
+import replay.ReplayFile;
 import RMIConnection.Interfaces.RMIServerInterface;
 
 /*
@@ -53,7 +53,7 @@ public class Game extends JPanel implements MouseListener {
 	private boolean flip = false;
 	private boolean start = true;
 	private Clip moveChecker;
-	private replayFile replayFile;
+	private ReplayFile replayFile;
 	private List<byte[][]> states;
 	private Tile hintedTile;
 
@@ -210,7 +210,6 @@ public class Game extends JPanel implements MouseListener {
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
-		playMoveSound();
 		turn = false;
 	}
 
@@ -218,6 +217,7 @@ public class Game extends JPanel implements MouseListener {
 	protected void paintComponent(Graphics g){
 		if (myTable.isChanged() || start){
 			setBoardState(myTable.getBoardState());
+			playMoveSound();
 			myTable.setChanged(false);
 			start = false;
 		}
@@ -261,13 +261,10 @@ public class Game extends JPanel implements MouseListener {
 		ResultScreen result = new ResultScreen(gameStatus);
 	    int reply = JOptionPane.showConfirmDialog(this, "Would you like to save a replay of this game?", "Replay?", JOptionPane.YES_NO_OPTION);
         if (reply == JOptionPane.YES_OPTION) {
-        	replayFile = new replayFile();
+        	replayFile = new ReplayFile();
         	String fileName = JOptionPane.showInputDialog(this, "What would you like to name the replay: ", "Name?"); 
-        	try {
-				replay.replayFile.writeFile(fileName, states);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
+			fileName += ReplayFile.fileExtension;
+        	replayFile.writeFile(fileName, states);
         }
 	}
 

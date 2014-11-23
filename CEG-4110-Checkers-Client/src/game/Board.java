@@ -363,6 +363,10 @@ public class Board extends JPanel implements MouseListener {
 		return clickedTile;
 	}
 	
+	public void setClickedTile(Tile tile){
+		this.clickedTile = tile;
+	}
+	
 	public void setClick(boolean click){
 		this.click = click;
 	}

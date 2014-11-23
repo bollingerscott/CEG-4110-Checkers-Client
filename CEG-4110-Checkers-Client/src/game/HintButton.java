@@ -23,6 +23,7 @@ public class HintButton extends JButton {
 					game.getBoard().getClickedTile().reset();
 					game.getBoard().enable(game.getBoard().getClickedTile(), false);
 					game.getBoard().setClick(false);
+					game.getBoard().setClickedTile(null);
 				}
 				hint();
 			}

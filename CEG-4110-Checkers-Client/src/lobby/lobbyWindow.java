@@ -30,6 +30,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import replay.GetReplayFile;
 import table.Table;
 import Client.CheckersLobby.State;
 import RMIConnection.Interfaces.RMIServerInterface;
@@ -190,7 +191,7 @@ public class lobbyWindow extends JFrame {
 				.getImage(getClass().getResource("/selectedTableFull.png")));
 
 		frame = new JFrame();
-		frame.setBounds(100, 100, 1028, 735);
+		frame.setBounds(100, 100, 1028, 665);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		frame.setTitle("Lobby");
@@ -246,12 +247,12 @@ public class lobbyWindow extends JFrame {
 		chatPlaceHolderPanel.add(chatTextArea);
 
 		JPanel tableControlButtons = new JPanel();
-		tableControlButtons.setBounds(556, 560, 446, 73);
+		tableControlButtons.setBounds(424, 550, 578, 84);
 		frame.getContentPane().add(tableControlButtons);
 		tableControlButtons.setLayout(null);
 
 		JButton btnJoinTable = new JButton("Join Table");
-		btnJoinTable.setBounds(10, 11, 145, 43);
+		btnJoinTable.setBounds(304, 11, 127, 51);
 		tableControlButtons.add(btnJoinTable);// TODO Table logic?
 		btnJoinTable.addActionListener(new ActionListener() {
 			@Override
@@ -272,7 +273,7 @@ public class lobbyWindow extends JFrame {
 		});
 
 		JButton btnCreateTable = new JButton("Create Table");
-		btnCreateTable.setBounds(165, 11, 127, 43);
+		btnCreateTable.setBounds(143, 11, 149, 51);
 		tableControlButtons.add(btnCreateTable);
 		btnCreateTable.addActionListener(new ActionListener() {
 			@Override
@@ -306,13 +307,17 @@ public class lobbyWindow extends JFrame {
 				}
 			}
 		});
-		btnObserveTable.setBounds(309, 11, 127, 43);
+		btnObserveTable.setBounds(441, 11, 127, 51);
 		tableControlButtons.add(btnObserveTable);
 
 		JButton btnWatchReplays = new JButton("Watch Replays");
-		btnWatchReplays.setBounds(697, 644, 196, 42);
-		frame.getContentPane().add(btnWatchReplays);
-		// TODO stretch goal of replays window. Don't focus now.
+		btnWatchReplays.setBounds(0, 11, 133, 51);
+		tableControlButtons.add(btnWatchReplays);
+		btnWatchReplays.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				new GetReplayFile();
+			}
+		});
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(556, 11, 446, 539);
@@ -323,7 +328,7 @@ public class lobbyWindow extends JFrame {
 		tableListFlowPanel.setLayout(new GridLayout(0, 3, 0, 0));
 
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(424, 11, 123, 622);
+		scrollPane_1.setBounds(424, 11, 123, 539);
 		frame.getContentPane().add(scrollPane_1);
 		final JPopupMenu popup = new JPopupMenu();
 		JMenuItem menuItem = new JMenuItem("Send a PM");
@@ -335,6 +340,7 @@ public class lobbyWindow extends JFrame {
 		});
 		popup.add(menuItem);
 		jListOfUsers = new JList<String>();
+		jListOfUsers.setVisibleRowCount(50);
 		jListOfUsers.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		jListOfUsers.addMouseListener(new MouseAdapter() {
 			@Override
