@@ -131,7 +131,7 @@ public class CheckersLobby implements CheckersClient {
 	private JFrame frame;
 	private JTextField serverTextField;
 	private JTextField Username;
-
+	private boolean createdLobby = false;
 	private JButton btnStartClient;
 	private GameWindow game;
 	private Integer myTid;
@@ -297,6 +297,7 @@ public class CheckersLobby implements CheckersClient {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
 		frame.getContentPane().setLayout(null);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		btnStartClient = new JButton("Start Client!");
 		btnStartClient.setBounds(299, 104, 125, 23);
@@ -333,18 +334,16 @@ public class CheckersLobby implements CheckersClient {
 		try {
 			if (curState.equals(State.notConnected)) {
 				this.myName = Username.getText(); // setting class variable
-				Username.setText("");
+				// Username.setText("");
 				String ip = serverTextField.getText();
-				serverTextField.setText("");
+				// serverTextField.setText("");
 				if (!serverConnection.connectToServer(ip, this.myName)) {
-					System.out
-							.println("Connection failed. Check console output of RMI process for information.");
-				} else {
+					JOptionPane.showMessageDialog(null,
+							"Unable to connect, is the Server IP correct?",
+							"Error", JOptionPane.ERROR_MESSAGE);
+				} else { // TODO
 					System.out.println("Connection success");
 					curState = State.connected;
-					myLobby.syncState(curState);
-					frame.setVisible(false);
-					myLobby.startWindow(serverConnection, this.myName, curState);
 				}
 			}
 
@@ -422,7 +421,7 @@ public class CheckersLobby implements CheckersClient {
 	@Override
 	public void newTable(int t) {
 		int[] myIntArray = { t };
-		
+
 		Table table = new Table(t, myName, "-1");
 		tablesHashMap.put(t, table);
 		myLobby.tablesHashMap.put(t, table);
@@ -606,6 +605,11 @@ public class CheckersLobby implements CheckersClient {
 	// alert that you have joined the lobby
 	@Override
 	public void youInLobby() {
+		if (!createdLobby) {
+			frame.setVisible(false);
+			myLobby.startWindow(serverConnection, this.myName, curState);
+			createdLobby = true;
+		}
 		curState = State.inLobby;
 		myLobby.syncState(curState);
 		output(">> Welcome to the game lobby.");

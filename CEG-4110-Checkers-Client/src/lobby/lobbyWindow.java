@@ -24,9 +24,11 @@ import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
@@ -53,6 +55,7 @@ public class lobbyWindow extends JFrame {
 	private JPanel tableListFlowPanel;
 	private ArrayList<String> usersInMainChat; // List of users in main chat
 	// JList for PMs
+	private JScrollPane chatScrollPane;
 	private static State curState; // Current state, not altered within here
 									// however important for knowing if clicks
 									// are possible. Sync'd from Checkers Lobby
@@ -64,6 +67,7 @@ public class lobbyWindow extends JFrame {
 												// class for JPANEL that contain
 												// an ID.
 	public Map<Integer, Table> tablesHashMap;
+	private JButton btnObserveTable;
 
 	private JList<String> jListOfUsers;
 	private String selectedUser = ""; // Used for pm
@@ -122,7 +126,11 @@ public class lobbyWindow extends JFrame {
 						currentlyActiveTable = tableLabel;
 						currentlyActiveTable.setIcon(getIconForTable(newActive,
 								true));
-
+						if (currentlyActiveTable.getIcon() != normalTableIconF
+								&& currentlyActiveTable.getIcon() != highlightedTableIconF) {
+							btnObserveTable.setEnabled(false);
+						} else
+							btnObserveTable.setEnabled(true);
 					}
 				}
 			});
@@ -162,6 +170,9 @@ public class lobbyWindow extends JFrame {
 			} else
 				chatTextArea.setText(chatTextArea.getText() + "\n" + string);
 		}
+		chatTextArea.select(Integer.MAX_VALUE, 0);
+		// JScrollBar vertical = chatScrollPane.getVerticalScrollBar();
+		// vertical.setValue(vertical.getMaximum());
 	}
 
 	public State getCurState() {
@@ -241,10 +252,17 @@ public class lobbyWindow extends JFrame {
 		chatSendButton.setBounds(276, 579, 118, 32);
 		chatPlaceHolderPanel.add(chatSendButton);
 
+		chatScrollPane = new JScrollPane();
+		chatScrollPane
+				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		chatScrollPane.setBounds(1, 1, 393, 557);
+		chatPlaceHolderPanel.add(chatScrollPane);
+
 		chatTextArea = new JTextArea();
+		chatScrollPane.setViewportView(chatTextArea);
 		chatTextArea.setEditable(false);
-		chatTextArea.setBounds(0, 0, 394, 576);
-		chatPlaceHolderPanel.add(chatTextArea);
+
+		chatPlaceHolderPanel.add(chatScrollPane);
 
 		JPanel tableControlButtons = new JPanel();
 		tableControlButtons.setBounds(556, 560, 446, 73);
@@ -291,7 +309,7 @@ public class lobbyWindow extends JFrame {
 			}
 		});
 
-		JButton btnObserveTable = new JButton("Observe Table");
+		btnObserveTable = new JButton("Observe Table");
 		btnObserveTable.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -307,6 +325,7 @@ public class lobbyWindow extends JFrame {
 				}
 			}
 		});
+		btnObserveTable.setEnabled(false);
 		btnObserveTable.setBounds(309, 11, 127, 43);
 		tableControlButtons.add(btnObserveTable);
 
