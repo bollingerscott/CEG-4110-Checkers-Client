@@ -223,7 +223,6 @@ public class Board extends JPanel implements MouseListener {
 			enable(clickedTile, false);
 			clickedTile = null;
 		} else {
-			clickedTile = null;
 			moving = false;
 		}
 	}

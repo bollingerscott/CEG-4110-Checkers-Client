@@ -56,7 +56,7 @@ public class GetReplayFile extends JFrame {
 		setContentPane(contentPane);
 		
 		//set content for JComboBox
-		File dir = new File(".");
+		File dir = new File("./Replays/");
 		File[] filesList = dir.listFiles();
 		ArrayList<File> fileList = new ArrayList();
 		for (File file : filesList) {

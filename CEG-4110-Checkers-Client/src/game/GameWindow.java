@@ -193,6 +193,7 @@ public class GameWindow extends JFrame {
 		chatSendButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				if (!observer){
 				if (chatInputField.getText().length() > 0) {
 					try {
 						String input = chatInputField.getText();
@@ -203,6 +204,10 @@ public class GameWindow extends JFrame {
 						System.out.println("Caught error sending message?");
 
 					}
+				}
+				}
+				else {
+					JOptionPane.showMessageDialog(myLobby, "You are observing and cannot send messages in the game", "Alert!", JOptionPane.ERROR_MESSAGE);
 				}
 				chatInputField.setText("");
 			}

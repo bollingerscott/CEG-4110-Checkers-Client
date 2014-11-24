@@ -18,7 +18,7 @@ public class ReplayFile {
 
 	public static void writeFile(String fileName, List<byte[][]> states) {
 		
-		File file = new File(fileName);
+		File file = new File("./Replays/"+fileName);
 		PrintWriter pw = null;
 		try {
 			pw = new PrintWriter(file);
