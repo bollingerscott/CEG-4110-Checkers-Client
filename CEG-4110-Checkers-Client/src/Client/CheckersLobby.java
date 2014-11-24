@@ -226,6 +226,7 @@ public class CheckersLobby implements CheckersClient {
 		JOptionPane.showMessageDialog(myLobby,
 				"Please wait for an opponent before starting the game.",
 				"Alert!", JOptionPane.ERROR_MESSAGE);
+		myTable.setRead(false);
 	}
 
 	// alert that at the table you are sitting at, a game is starting.
@@ -507,10 +508,8 @@ public class CheckersLobby implements CheckersClient {
 	// called when your opponent leaves the table
 	@Override
 	public void oppLeftTable() {
-		if (myTable != null) {
-			myTable.oppLeft();
-		}
 		CheckersLobby.curState = State.inLobby;
+		myLobby.syncState(curState);
 		debugOutput("[SYSTEM] oppLeftTable()");
 	}
 
@@ -526,6 +525,7 @@ public class CheckersLobby implements CheckersClient {
 	public void oppNotReady() {
 		output("[SYSTEM] Please wait for your opponent to start the game.");
 		JOptionPane.showMessageDialog(myLobby, "Please wait for your opponent to start the game.", "Alert!", JOptionPane.ERROR_MESSAGE);
+		myTable.setRead(false);
 	}
 
 	// Outputs to main window in lobby window.

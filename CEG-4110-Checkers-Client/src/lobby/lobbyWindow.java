@@ -67,6 +67,7 @@ public class lobbyWindow extends JFrame {
 
 	private JList<String> jListOfUsers;
 	private String selectedUser = ""; // Used for pm
+	private JButton btnJoinTable;
 
 	/**
 	 * Init for lobby. sets table and user list so they can be edited before the
@@ -126,6 +127,11 @@ public class lobbyWindow extends JFrame {
 						btnObserveTable.setEnabled(false);
 					} else
 						btnObserveTable.setEnabled(true);
+					if (currentlyActiveTable.getIcon() == normalTableIconF
+							|| currentlyActiveTable.getIcon() == highlightedTableIconF) {
+						btnJoinTable.setEnabled(false);
+					} else
+						btnJoinTable.setEnabled(true);
 				}
 			});
 
@@ -263,7 +269,7 @@ public class lobbyWindow extends JFrame {
 		frame.getContentPane().add(tableControlButtons);
 		tableControlButtons.setLayout(null);
 
-		JButton btnJoinTable = new JButton("Join Table");
+		btnJoinTable = new JButton("Join Table");
 		btnJoinTable.setBounds(304, 11, 127, 51);
 		tableControlButtons.add(btnJoinTable);// TODO Table logic?
 		btnJoinTable.addActionListener(new ActionListener() {
