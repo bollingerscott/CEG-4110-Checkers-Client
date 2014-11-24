@@ -19,10 +19,10 @@ import RMIConnection.Interfaces.RMIServerInterface;
  * to receive messages.
  */
 public class ChatBar extends JPanel {
-	private JTextField textField;
+	private JTextField inputField;
 	private RMIServerInterface server;
 	private JButton btnNewButton;
-	private JTextArea textArea;
+	private JTextArea outputArea;
 	
 	
 	/**
@@ -38,8 +38,8 @@ public class ChatBar extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				//grab text, parse it to figure out if it is public or private, and send it appropriately.
-				String str = textField.getText();
-				textField.setText("");
+				String str = inputField.getText();
+				inputField.setText("");
 				
 				//if private, send privae
 				String[] arr = str.split(" ");
@@ -49,7 +49,6 @@ public class ChatBar extends JPanel {
 					try {
 						server.sendMsg(recipient, message);
 					} catch (RemoteException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -57,7 +56,6 @@ public class ChatBar extends JPanel {
 					try {
 						server.sendMsg_All(str);
 					} catch (RemoteException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -65,13 +63,13 @@ public class ChatBar extends JPanel {
 		});
 		add(btnNewButton, BorderLayout.EAST);
 		
-		textField = new JTextField();
-		add(textField, BorderLayout.SOUTH);
-		textField.setColumns(10);
+		inputField = new JTextField();
+		add(inputField, BorderLayout.SOUTH);
+		inputField.setColumns(10);
 		
-		textArea = new JTextArea();
-		textArea.setEditable(false);
-		add(textArea, BorderLayout.CENTER);
+		outputArea = new JTextArea();
+		outputArea.setEditable(false);
+		add(outputArea, BorderLayout.CENTER);
 
 	}
 	
@@ -84,7 +82,7 @@ public class ChatBar extends JPanel {
 			msg += "\n";
 		}
 		String newLine = user + ": " + msg;
-		textArea.setText(textArea.getText() + newLine);
+		outputArea.setText(outputArea.getText() + newLine);
 	}
 	
 

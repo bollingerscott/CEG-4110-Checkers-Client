@@ -37,19 +37,19 @@ public class Game extends JPanel implements MouseListener {
 	private Board board;
 	private String user;
 	private String opponent;
-	private Integer moves = 0;
-	private Integer opponentMoves = 0;
+	private Integer blackSeatMoves = 0;
+	private Integer redSeatMoves = 0;
 	private String color;
 	private static RMIServerInterface server;
 	private Table myTable;
 	private String gameStatus = "tie";
-	private boolean turn = true;
+	private boolean turn;
 	private Image wood;
 	private boolean observer;
-	private Integer left, taken, opponentLeft, opponentTaken;
+	private Integer blackSeatTaken, redSeatTaken, blackSeatLeft, redSeatLeft;
 	private Stats stats;
-	private ImageIcon myIcon;
-	private ImageIcon opponentsIcon;
+	private ImageIcon blackSeatIcon;
+	private ImageIcon redSeatIcon;
 	private boolean flip = false;
 	private boolean start = true;
 	private Clip moveChecker;
@@ -85,18 +85,16 @@ public class Game extends JPanel implements MouseListener {
 		setStats();
 		setColor(color);
 
-		if (myTable.isPlayer1()){
+		/*if (myTable.isPlayer1()){
 			user = myTable.getBlackseat();
 			opponent = myTable.getRedseat();
-			stats.getName1().setText(user);
-			stats.getName2().setText(opponent);
 		}
 		else {
 			user = myTable.getRedseat();
 			opponent = myTable.getBlackseat();
-			stats.getName2().setText(user);
-			stats.getName1().setText(opponent);
-		}
+		}*/
+		stats.getBlackSeatName().setText(myTable.getBlackseat());
+		stats.getRedSeatName().setText(myTable.getRedseat());
 
 		addMouseListener(this);
 
@@ -126,32 +124,32 @@ public class Game extends JPanel implements MouseListener {
 		return gameStatus;
 	}
 
-	public Integer getLeft() {
-		return left;
+	public Integer getBlackSeatTaken() {
+		return blackSeatTaken;
 	}
 
-	public Integer getMoves() {
-		return moves;
+	public Integer getBlackSeatMoves() {
+		return blackSeatMoves;
 	}
 
 	public String getOpponent() {
 		return opponent;
 	}
 
-	public Integer getOpponentLeft() {
-		return opponentLeft;
+	public Integer getBlackSeatLeft() {
+		return blackSeatLeft;
 	}
 
-	public Integer getOpponentMoves() {
-		return opponentMoves;
+	public Integer getRedSeatMoves() {
+		return redSeatMoves;
 	}
 
-	public Integer getOpponentTaken() {
-		return opponentTaken;
+	public Integer getRedSeatLeft() {
+		return redSeatLeft;
 	}
 
-	public Integer getTaken() {
-		return taken;
+	public Integer getRedSeatTaken() {
+		return redSeatTaken;
 	}
 
 	public String getUser() {
@@ -178,6 +176,7 @@ public class Game extends JPanel implements MouseListener {
 			if (board.isMoving()){
 				move(user, board.getFr(), board.getFc(), board.getTr(), board.getTc());
 				board.setMoving(false);
+				playMoveSound();
 			}
 		}
 	}
@@ -204,7 +203,12 @@ public class Game extends JPanel implements MouseListener {
 
 	private void move(String user, int fr, int fc, int tr, int tc){
 		setStats();
-		moves += 1;
+		if (myTable.getBlackseat().equals(this.user)){
+			blackSeatMoves += 1;
+		}
+		else {
+			redSeatMoves += 1;
+		}
 		try {
 			server.move(user, fr, fc, tr, tc);
 		} catch (RemoteException e) {
@@ -215,9 +219,10 @@ public class Game extends JPanel implements MouseListener {
 
 	@Override
 	protected void paintComponent(Graphics g){
+		super.paintComponent(g);
 		if (myTable.isChanged() || start){
+			if (!start) {}
 			setBoardState(myTable.getBoardState());
-			playMoveSound();
 			myTable.setChanged(false);
 			start = false;
 		}
@@ -225,12 +230,24 @@ public class Game extends JPanel implements MouseListener {
 		g.drawImage(wood, 0, 0, null);
 		setStats();
 		if (isTurn()){
-			stats.setColor1Icon(myIcon);
-			stats.setColor2Icon(null);
+			if (color.equals("black")){
+				stats.setBlackSeatIconVisible(true);
+				stats.setRedSeatIconVisible(false);
+			}
+			else {
+				stats.setBlackSeatIconVisible(false);
+				stats.setRedSeatIconVisible(true);
+			}
 		}
 		else {
-			stats.setColor1Icon(null);
-			stats.setColor2Icon(opponentsIcon);
+			if (color.equals("black")){
+				stats.setBlackSeatIconVisible(false);
+				stats.setRedSeatIconVisible(true);
+			}
+			else {
+				stats.setBlackSeatIconVisible(true);
+				stats.setRedSeatIconVisible(false);
+			}
 		}
 		repaint();
 	}
@@ -245,13 +262,9 @@ public class Game extends JPanel implements MouseListener {
 		if (color.equals("black")){
 			board.setBoard_state(myTable.getBoardState());
 			board.setOppositeColor("red");
-			this.myIcon = (new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_piece.png"))));
-			this.opponentsIcon = (new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_checker.png"))));
 		}
 		else if (!isObserver()){
 			board.setOppositeColor("black");
-			this.myIcon = (new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_checker.png"))));
-			this.opponentsIcon = (new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_piece.png"))));
 		}
 		board.setColor(color);
 	}
@@ -268,12 +281,12 @@ public class Game extends JPanel implements MouseListener {
         }
 	}
 
-	public void setLeft(Integer left) {
-		this.left = left;
+	public void setBlackSeatTaken(Integer blackSeatTaken) {
+		this.blackSeatTaken = blackSeatTaken;
 	}
 
-	public void setMoves(Integer moves) {
-		this.moves = moves;
+	public void setBlackSeatMoves(Integer blackSeatMoves) {
+		this.blackSeatMoves = blackSeatMoves;
 	}
 
 	public void setObserver(boolean observer) {
@@ -282,54 +295,36 @@ public class Game extends JPanel implements MouseListener {
 
 	public void setOpponent(String opponent) {
 		this.opponent = opponent;
-		stats.getName2().setText(opponent);
 	}
 
-	public void setOpponentLeft(Integer opponentLeft) {
-		this.opponentLeft = opponentLeft;
+	public void setBlackSeatLeft(Integer blackSeatLeft) {
+		this.blackSeatLeft = blackSeatLeft;
 	}
 
-	public void setOpponentMoves(Integer opponentMoves) {
-		this.opponentMoves = opponentMoves;
+	public void setRedSeatMoves(Integer redSeatMoves) {
+		this.redSeatMoves = redSeatMoves;
 	}
 
-	public void setOpponentTaken(Integer opponentTaken) {
-		this.opponentTaken = opponentTaken;
+	public void setRedSeatLeft(Integer redSeatLeft) {
+		this.redSeatLeft = redSeatLeft;
 	}
 
 	public void setStats(){
-		if (color.equals("red")){
-			setTaken(board.getBlackTaken());
-			setLeft(board.getRedLeft());
-			setOpponentTaken(board.getRedTaken());
-			setOpponentLeft(board.getBlackLeft());
-		}
-		else {
-			setTaken(board.getRedTaken());
-			setLeft(board.getBlackLeft());
-			setOpponentTaken(board.getBlackTaken());
-			setOpponentLeft(board.getRedLeft());
-		}
-		if (myTable.isPlayer1()){
-			stats.getMoves1().setText(moves.toString());
-			stats.getMoves2().setText(opponentMoves.toString());
-			stats.getLeft1().setText(left.toString());
-			stats.getLeft2().setText(opponentLeft.toString());
-			stats.getTaken1().setText(taken.toString());
-			stats.getTaken2().setText(opponentTaken.toString());
-		}
-		else {
-			stats.getMoves2().setText(moves.toString());
-			stats.getMoves1().setText(opponentMoves.toString());
-			stats.getLeft2().setText(left.toString());
-			stats.getLeft1().setText(opponentLeft.toString());
-			stats.getTaken2().setText(taken.toString());
-			stats.getTaken1().setText(opponentTaken.toString());
-		}
+		setRedSeatLeft(board.getRedLeft());
+		setBlackSeatTaken(board.getBlackTaken());
+		setRedSeatTaken(board.getRedTaken());
+		setBlackSeatLeft(board.getBlackLeft());
+		
+		stats.getBlackSeatMoves().setText(blackSeatMoves.toString());
+		stats.getRedSeatMoves().setText(redSeatMoves.toString());
+		stats.getBlackSeatLeft().setText(blackSeatLeft.toString());
+		stats.getRedSeatLeft().setText(redSeatLeft.toString());
+		stats.getBlackSeatTaken().setText(redSeatTaken.toString());
+		stats.getRedSeatTaken().setText(blackSeatTaken.toString());
 	}
 
-	public void setTaken(Integer taken) {
-		this.taken = taken;
+	public void setRedSeatTaken(Integer redSeatTaken) {
+		this.redSeatTaken = redSeatTaken;
 	}
 
 	public void setTurn(boolean turn) {
@@ -338,7 +333,6 @@ public class Game extends JPanel implements MouseListener {
 
 	public void setUser(String user) {
 		this.user = user;
-		stats.getName1().setText(user);
 	}
 
 	public Board getBoard() {

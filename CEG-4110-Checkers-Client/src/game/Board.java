@@ -69,42 +69,44 @@ public class Board extends JPanel implements MouseListener {
 	}
 
 	public void enable(Tile tile, boolean enable) {
-		if (tile.getPiece().getType().equals("king")) {
-			try {
-				if (!board[tile.getCoordY() + 1][tile.getCoordX() - 1].isOccupied()) {
-					board[tile.getCoordY() + 1][tile.getCoordX() - 1].setEnable(enable);
-				} 
-				else if (board[tile.getCoordY()+1][tile.getCoordX()-1].getPiece().getColor().equals(oppositeColor) && !(board[tile.getCoordY()+2][tile.getCoordX()-2].isOccupied())){
-					board[tile.getCoordY()+2][tile.getCoordX()-2].setEnable(enable);
+		if (tile.getPiece() != null){
+			if (tile.getPiece().getType().equals("king")) {
+				try {
+					if (!board[tile.getCoordY() + 1][tile.getCoordX() - 1].isOccupied()) {
+						board[tile.getCoordY() + 1][tile.getCoordX() - 1].setEnable(enable);
+					} 
+					else if (board[tile.getCoordY()+1][tile.getCoordX()-1].getPiece().getColor().equals(oppositeColor) && !(board[tile.getCoordY()+2][tile.getCoordX()-2].isOccupied())){
+						board[tile.getCoordY()+2][tile.getCoordX()-2].setEnable(enable);
+					}
+				} catch (IndexOutOfBoundsException ex) {}
+				try {
+					if (!board[tile.getCoordY() + 1][tile.getCoordX() + 1].isOccupied()) {
+						board[tile.getCoordY() + 1][tile.getCoordX() + 1].setEnable(enable);
+					} 
+					else if (board[tile.getCoordY() + 1][tile.getCoordX() + 1].getPiece().getColor().equals(oppositeColor) && !(board[tile.getCoordY() + 2][tile.getCoordX() + 2].isOccupied())) {
+						board[tile.getCoordY() + 2][tile.getCoordX() + 2].setEnable(enable);
+					}
+				} catch (IndexOutOfBoundsException ex) {
 				}
-			} catch (IndexOutOfBoundsException ex) {}
+			}
 			try {
-				if (!board[tile.getCoordY() + 1][tile.getCoordX() + 1].isOccupied()) {
-					board[tile.getCoordY() + 1][tile.getCoordX() + 1].setEnable(enable);
+				if (!board[tile.getCoordY() - 1][tile.getCoordX() - 1].isOccupied()) {
+					board[tile.getCoordY() - 1][tile.getCoordX() - 1].setEnable(enable);
 				} 
-				else if (board[tile.getCoordY() + 1][tile.getCoordX() + 1].getPiece().getColor().equals(oppositeColor) && !(board[tile.getCoordY() + 2][tile.getCoordX() + 2].isOccupied())) {
-					board[tile.getCoordY() + 2][tile.getCoordX() + 2].setEnable(enable);
+				else if (board[tile.getCoordY() - 1][tile.getCoordX() - 1].getPiece().getColor().equals(oppositeColor) && !(board[tile.getCoordY() - 2][tile.getCoordX() - 2].isOccupied())) {
+					board[tile.getCoordY() - 2][tile.getCoordX() - 2].setEnable(enable);
 				}
 			} catch (IndexOutOfBoundsException ex) {
 			}
-		}
-		try {
-			if (!board[tile.getCoordY() - 1][tile.getCoordX() - 1].isOccupied()) {
-				board[tile.getCoordY() - 1][tile.getCoordX() - 1].setEnable(enable);
-			} 
-			else if (board[tile.getCoordY() - 1][tile.getCoordX() - 1].getPiece().getColor().equals(oppositeColor) && !(board[tile.getCoordY() - 2][tile.getCoordX() - 2].isOccupied())) {
-				board[tile.getCoordY() - 2][tile.getCoordX() - 2].setEnable(enable);
+			try {
+				if (!board[tile.getCoordY() - 1][tile.getCoordX() + 1].isOccupied()) {
+					board[tile.getCoordY() - 1][tile.getCoordX() + 1].setEnable(enable);
+				} 
+				else if (board[tile.getCoordY() - 1][tile.getCoordX() + 1].getPiece().getColor().equals(oppositeColor) && !(board[tile.getCoordY() - 2][tile.getCoordX() + 2].isOccupied())) {
+					board[tile.getCoordY() - 2][tile.getCoordX() + 2].setEnable(enable);
+				}
+			} catch (IndexOutOfBoundsException ex) {
 			}
-		} catch (IndexOutOfBoundsException ex) {
-		}
-		try {
-			if (!board[tile.getCoordY() - 1][tile.getCoordX() + 1].isOccupied()) {
-				board[tile.getCoordY() - 1][tile.getCoordX() + 1].setEnable(enable);
-			} 
-			else if (board[tile.getCoordY() - 1][tile.getCoordX() + 1].getPiece().getColor().equals(oppositeColor) && !(board[tile.getCoordY() - 2][tile.getCoordX() + 2].isOccupied())) {
-				board[tile.getCoordY() - 2][tile.getCoordX() + 2].setEnable(enable);
-			}
-		} catch (IndexOutOfBoundsException ex) {
 		}
 	}
 
@@ -200,6 +202,7 @@ public class Board extends JPanel implements MouseListener {
 		// if clicked on same tile reset it
 		else if (clickedTile == tile) {
 			click = false;
+			clickedTile = null;
 			tile.reset();
 			moving = false;
 			fc = fr = -1;
@@ -218,7 +221,9 @@ public class Board extends JPanel implements MouseListener {
 			}
 			moving = true;
 			enable(clickedTile, false);
+			clickedTile = null;
 		} else {
+			clickedTile = null;
 			moving = false;
 		}
 	}
@@ -245,6 +250,7 @@ public class Board extends JPanel implements MouseListener {
 
 	@Override
 	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
 		int x = 0;
 		int y = -TILE_LENGTH;
 		for (int i = 0; i < LENGTH; i++) {
@@ -358,15 +364,15 @@ public class Board extends JPanel implements MouseListener {
 	public void setTr(int tr) {
 		this.tr = tr;
 	}
-	
+
 	public Tile getClickedTile(){
 		return clickedTile;
 	}
-	
+
 	public void setClickedTile(Tile tile){
 		this.clickedTile = tile;
 	}
-	
+
 	public void setClick(boolean click){
 		this.click = click;
 	}

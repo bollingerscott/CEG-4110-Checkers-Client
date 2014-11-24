@@ -43,6 +43,7 @@ public class Table {
 		return changed;
 	}
 
+	//Player 1 = black seat
 	public boolean isPlayer1() {
 		return player1;
 	}

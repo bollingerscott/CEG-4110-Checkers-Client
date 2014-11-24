@@ -11,7 +11,6 @@ import java.awt.event.MouseEvent;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.swing.DefaultListModel;
@@ -27,8 +26,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
+import javax.swing.ScrollPaneConstants;
 
 import replay.GetReplayFile;
 import table.Table;
@@ -53,6 +51,7 @@ public class lobbyWindow extends JFrame {
 	private JPanel tableListFlowPanel;
 	private ArrayList<String> usersInMainChat; // List of users in main chat
 	// JList for PMs
+	private JScrollPane chatScrollPane;
 	private static State curState; // Current state, not altered within here
 	// however important for knowing if clicks
 	// are possible. Sync'd from Checkers Lobby
@@ -64,6 +63,7 @@ public class lobbyWindow extends JFrame {
 	// class for JPANEL that contain
 	// an ID.
 	public Map<Integer, Table> tablesHashMap;
+	private JButton btnObserveTable;
 
 	private JList<String> jListOfUsers;
 	private String selectedUser = ""; // Used for pm
@@ -110,20 +110,22 @@ public class lobbyWindow extends JFrame {
 			tableLabel.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					if (curState == State.inLobby) {
-						if (currentlyActiveTable != null) {
-							Table oldActive = tablesHashMap.get(tidHashTable
-									.get(currentlyActiveTable));
-							currentlyActiveTable.setIcon(getIconForTable(
-									oldActive, false));
-						}
-						Table newActive = tablesHashMap.get(tidHashTable
-								.get(tableLabel));
-						currentlyActiveTable = tableLabel;
-						currentlyActiveTable.setIcon(getIconForTable(newActive,
-								true));
-
+					if (currentlyActiveTable != null) {
+						Table oldActive = tablesHashMap.get(tidHashTable
+								.get(currentlyActiveTable));
+						currentlyActiveTable.setIcon(getIconForTable(
+								oldActive, false));
 					}
+					Table newActive = tablesHashMap.get(tidHashTable
+							.get(tableLabel));
+					currentlyActiveTable = tableLabel;
+					currentlyActiveTable.setIcon(getIconForTable(newActive,
+							true));
+					if (currentlyActiveTable.getIcon() != normalTableIconF
+							&& currentlyActiveTable.getIcon() != highlightedTableIconF) {
+						btnObserveTable.setEnabled(false);
+					} else
+						btnObserveTable.setEnabled(true);
 				}
 			});
 
@@ -162,6 +164,9 @@ public class lobbyWindow extends JFrame {
 			} else
 				chatTextArea.setText(chatTextArea.getText() + "\n" + string);
 		}
+		chatTextArea.select(Integer.MAX_VALUE, 0);
+		// JScrollBar vertical = chatScrollPane.getVerticalScrollBar();
+		// vertical.setValue(vertical.getMaximum());
 	}
 
 	public State getCurState() {
@@ -202,7 +207,7 @@ public class lobbyWindow extends JFrame {
 		chatPlaceHolderPanel.setLayout(null);
 
 		chatInputField = new JTextField();
-		chatInputField.setBounds(0, 579, 266, 32);
+		chatInputField.setBounds(0, 569, 266, 42);
 		chatPlaceHolderPanel.add(chatInputField);
 		chatInputField.setColumns(10);
 
@@ -238,13 +243,20 @@ public class lobbyWindow extends JFrame {
 				}
 			}
 		});
-		chatSendButton.setBounds(276, 579, 118, 32);
+		chatSendButton.setBounds(276, 569, 118, 42);
 		chatPlaceHolderPanel.add(chatSendButton);
 
+		chatScrollPane = new JScrollPane();
+		chatScrollPane
+		.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		chatScrollPane.setBounds(1, 1, 393, 557);
+		chatPlaceHolderPanel.add(chatScrollPane);
+
 		chatTextArea = new JTextArea();
+		chatScrollPane.setViewportView(chatTextArea);
 		chatTextArea.setEditable(false);
-		chatTextArea.setBounds(0, 0, 394, 576);
-		chatPlaceHolderPanel.add(chatTextArea);
+
+		chatPlaceHolderPanel.add(chatScrollPane);
 
 		JPanel tableControlButtons = new JPanel();
 		tableControlButtons.setBounds(424, 550, 578, 84);
@@ -291,7 +303,7 @@ public class lobbyWindow extends JFrame {
 			}
 		});
 
-		JButton btnObserveTable = new JButton("Observe Table");
+		btnObserveTable = new JButton("Observe Table");
 		btnObserveTable.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -307,6 +319,8 @@ public class lobbyWindow extends JFrame {
 				}
 			}
 		});
+
+		btnObserveTable.setEnabled(false);
 		btnObserveTable.setBounds(441, 11, 127, 51);
 		tableControlButtons.add(btnObserveTable);
 

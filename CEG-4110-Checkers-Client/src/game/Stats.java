@@ -3,6 +3,7 @@ package game;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Toolkit;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -12,16 +13,16 @@ import javax.swing.JTextField;
 @SuppressWarnings("serial")
 public class Stats extends JPanel {
 	
-	private JTextField name1;
-	private JTextField moves1;
-	private JTextField taken1;
-	private JTextField left1;
-	private JTextField name2;
-	private JTextField moves2;
-	private JTextField taken2;
-	private JTextField left2;
-	private JLabel color2;
-	private JLabel color1;
+	private JTextField blackSeatName;
+	private JTextField blackSeatMoves;
+	private JTextField blackSeatTaken;
+	private JTextField blackSeatLeft;
+	private JTextField redSeatName;
+	private JTextField redSeatMoves;
+	private JTextField redSeatTaken;
+	private JTextField redSeatLeft;
+	private JLabel redSeatIcon;
+	private JLabel blackSeatIcon;
 
 	/**
 	 * Create the panel.
@@ -36,14 +37,14 @@ public class Stats extends JPanel {
 		lblPlayer1.setBounds(10, 6, 236, 40);
 		add(lblPlayer1);
 		
-		name1 = new JTextField();
-		name1.setForeground(Color.BLACK);
-		name1.setBackground(Color.LIGHT_GRAY);
-		name1.setFont(new Font("Tahoma", Font.PLAIN, 32));
-		name1.setEditable(false);
-		name1.setBounds(10, 47, 200, 40);
-		add(name1);
-		name1.setColumns(10);
+		blackSeatName = new JTextField();
+		blackSeatName.setForeground(Color.BLACK);
+		blackSeatName.setBackground(Color.LIGHT_GRAY);
+		blackSeatName.setFont(new Font("Tahoma", Font.PLAIN, 32));
+		blackSeatName.setEditable(false);
+		blackSeatName.setBounds(10, 47, 200, 40);
+		add(blackSeatName);
+		blackSeatName.setColumns(10);
 		
 		JLabel lblMoves1 = new JLabel("Moves");
 		lblMoves1.setForeground(Color.BLACK);
@@ -64,32 +65,32 @@ public class Stats extends JPanel {
 		lblPiecesLeft1.setBounds(10, 189, 106, 40);
 		add(lblPiecesLeft1);
 		
-		moves1 = new JTextField();
-		moves1.setForeground(Color.BLACK);
-		moves1.setFont(new Font("Tahoma", Font.PLAIN, 24));
-		moves1.setBackground(Color.LIGHT_GRAY);
-		moves1.setEditable(false);
-		moves1.setBounds(135, 103, 75, 40);
-		add(moves1);
-		moves1.setColumns(10);
+		blackSeatMoves = new JTextField();
+		blackSeatMoves.setForeground(Color.BLACK);
+		blackSeatMoves.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		blackSeatMoves.setBackground(Color.LIGHT_GRAY);
+		blackSeatMoves.setEditable(false);
+		blackSeatMoves.setBounds(135, 103, 75, 40);
+		add(blackSeatMoves);
+		blackSeatMoves.setColumns(10);
 		
-		taken1 = new JTextField();
-		taken1.setForeground(Color.BLACK);
-		taken1.setFont(new Font("Tahoma", Font.PLAIN, 24));
-		taken1.setBackground(Color.LIGHT_GRAY);
-		taken1.setEditable(false);
-		taken1.setColumns(10);
-		taken1.setBounds(135, 148, 75, 40);
-		add(taken1);
+		blackSeatTaken = new JTextField();
+		blackSeatTaken.setForeground(Color.BLACK);
+		blackSeatTaken.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		blackSeatTaken.setBackground(Color.LIGHT_GRAY);
+		blackSeatTaken.setEditable(false);
+		blackSeatTaken.setColumns(10);
+		blackSeatTaken.setBounds(135, 148, 75, 40);
+		add(blackSeatTaken);
 		
-		left1 = new JTextField();
-		left1.setForeground(Color.BLACK);
-		left1.setFont(new Font("Tahoma", Font.PLAIN, 24));
-		left1.setBackground(Color.LIGHT_GRAY);
-		left1.setEditable(false);
-		left1.setColumns(10);
-		left1.setBounds(135, 194, 75, 40);
-		add(left1);
+		blackSeatLeft = new JTextField();
+		blackSeatLeft.setForeground(Color.BLACK);
+		blackSeatLeft.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		blackSeatLeft.setBackground(Color.LIGHT_GRAY);
+		blackSeatLeft.setEditable(false);
+		blackSeatLeft.setColumns(10);
+		blackSeatLeft.setBounds(135, 194, 75, 40);
+		add(blackSeatLeft);
 		
 		JLabel lblVs = new JLabel("VS");
 		lblVs.setFont(new Font("Tahoma", Font.PLAIN, 28));
@@ -103,14 +104,14 @@ public class Stats extends JPanel {
 		lblPlayer2.setBounds(10, 290, 206, 40);
 		add(lblPlayer2);
 		
-		name2 = new JTextField();
-		name2.setForeground(Color.BLACK);
-		name2.setBackground(Color.LIGHT_GRAY);
-		name2.setFont(new Font("Tahoma", Font.PLAIN, 32));
-		name2.setEditable(false);
-		name2.setColumns(10);
-		name2.setBounds(10, 331, 200, 40);
-		add(name2);
+		redSeatName = new JTextField();
+		redSeatName.setForeground(Color.BLACK);
+		redSeatName.setBackground(Color.LIGHT_GRAY);
+		redSeatName.setFont(new Font("Tahoma", Font.PLAIN, 32));
+		redSeatName.setEditable(false);
+		redSeatName.setColumns(10);
+		redSeatName.setBounds(10, 331, 200, 40);
+		add(redSeatName);
 		
 		JLabel lblMoves2 = new JLabel("Moves");
 		lblMoves2.setForeground(Color.BLACK);
@@ -130,95 +131,119 @@ public class Stats extends JPanel {
 		lblLeft2.setBounds(10, 487, 106, 40);
 		add(lblLeft2);
 		
-		moves2 = new JTextField();
-		moves2.setForeground(Color.BLACK);
-		moves2.setFont(new Font("Tahoma", Font.PLAIN, 24));
-		moves2.setBackground(Color.LIGHT_GRAY);
-		moves2.setEditable(false);
-		moves2.setColumns(10);
-		moves2.setBounds(135, 382, 75, 40);
-		add(moves2);
+		redSeatMoves = new JTextField();
+		redSeatMoves.setForeground(Color.BLACK);
+		redSeatMoves.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		redSeatMoves.setBackground(Color.LIGHT_GRAY);
+		redSeatMoves.setEditable(false);
+		redSeatMoves.setColumns(10);
+		redSeatMoves.setBounds(135, 382, 75, 40);
+		add(redSeatMoves);
 		
-		taken2 = new JTextField();
-		taken2.setForeground(Color.BLACK);
-		taken2.setFont(new Font("Tahoma", Font.PLAIN, 24));
-		taken2.setBackground(Color.LIGHT_GRAY);
-		taken2.setEditable(false);
-		taken2.setColumns(10);
-		taken2.setBounds(135, 436, 75, 40);
-		add(taken2);
+		redSeatTaken = new JTextField();
+		redSeatTaken.setForeground(Color.BLACK);
+		redSeatTaken.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		redSeatTaken.setBackground(Color.LIGHT_GRAY);
+		redSeatTaken.setEditable(false);
+		redSeatTaken.setColumns(10);
+		redSeatTaken.setBounds(135, 436, 75, 40);
+		add(redSeatTaken);
 		
-		left2 = new JTextField();
-		left2.setForeground(Color.BLACK);
-		left2.setFont(new Font("Tahoma", Font.PLAIN, 24));
-		left2.setBackground(Color.LIGHT_GRAY);
-		left2.setEditable(false);
-		left2.setColumns(10);
-		left2.setBounds(135, 487, 75, 40);
-		add(left2);
+		redSeatLeft = new JTextField();
+		redSeatLeft.setForeground(Color.BLACK);
+		redSeatLeft.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		redSeatLeft.setBackground(Color.LIGHT_GRAY);
+		redSeatLeft.setEditable(false);
+		redSeatLeft.setColumns(10);
+		redSeatLeft.setBounds(135, 487, 75, 40);
+		add(redSeatLeft);
 		
-		color2 = new JLabel("");
-		color2.setBounds(135, 284, 85, 46);
-		add(color2);
+		redSeatIcon = new JLabel("");
+		redSeatIcon.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_checker.png"))));
+		redSeatIcon.setBounds(135, 284, 85, 46);
+		add(redSeatIcon);
 		
-		color1 = new JLabel("");
-		color1.setBounds(142, 0, 85, 46);
-		add(color1);
+		blackSeatIcon = new JLabel("");
+		blackSeatIcon.setBounds(142, 0, 85, 46);
+		blackSeatIcon.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_piece.png"))));
+		add(blackSeatIcon);
 
 	}
 	
-	public JLabel getColor1() {
-		return color1;
-	}
-
-	public JLabel getColor2() {
-		return color2;
-	}
-
-	public JTextField getLeft1() {
-		return left1;
-	}
-
-	public JTextField getLeft2() {
-		return left2;
-	}
-
-	public JTextField getMoves1() {
-		return moves1;
-	}
-
-	public JTextField getMoves2() {
-		return moves2;
-	}
-
-	public JTextField getName1() {
-		return name1;
-	}
-
-	public JTextField getName2() {
-		return name2;
-	}
-
-	public JTextField getTaken1() {
-		return taken1;
-	}
-
-	public JTextField getTaken2() {
-		return taken2;
+	public void setBlackSeatIconVisible(boolean visible){
+		blackSeatIcon.setVisible(visible);
 	}
 	
-	public void setColor1Icon(ImageIcon i){
-		color1.setIcon(i);
-		//repaint();
-	}
-	
-	public void setColor2Icon(ImageIcon i){
-		color2.setIcon(i);
-		//repaint();
+	public void setRedSeatIconVisible(boolean visible){
+		redSeatIcon.setVisible(visible);
 	}
 
 	@Override
 	protected void paintComponent(Graphics g){
-		
+		super.paintComponent(g);
+	}
+
+	public JTextField getBlackSeatName() {
+		return blackSeatName;
+	}
+
+	public void setBlackSeatName(JTextField blackSeatName) {
+		this.blackSeatName = blackSeatName;
+	}
+
+	public JTextField getBlackSeatMoves() {
+		return blackSeatMoves;
+	}
+
+	public void setBlackSeatMoves(JTextField blackSeatMoves) {
+		this.blackSeatMoves = blackSeatMoves;
+	}
+
+	public JTextField getBlackSeatTaken() {
+		return blackSeatTaken;
+	}
+
+	public void setBlackSeatTaken(JTextField blackSeatTaken) {
+		this.blackSeatTaken = blackSeatTaken;
+	}
+
+	public JTextField getBlackSeatLeft() {
+		return blackSeatLeft;
+	}
+
+	public void setBlackSeatLeft(JTextField blackSeatLeft) {
+		this.blackSeatLeft = blackSeatLeft;
+	}
+
+	public JTextField getRedSeatName() {
+		return redSeatName;
+	}
+
+	public void setRedSeatName(JTextField redSeatName) {
+		this.redSeatName = redSeatName;
+	}
+
+	public JTextField getRedSeatMoves() {
+		return redSeatMoves;
+	}
+
+	public void setRedSeatMoves(JTextField redSeatMoves) {
+		this.redSeatMoves = redSeatMoves;
+	}
+
+	public JTextField getRedSeatTaken() {
+		return redSeatTaken;
+	}
+
+	public void setRedSeatTaken(JTextField redSeatTaken) {
+		this.redSeatTaken = redSeatTaken;
+	}
+
+	public JTextField getRedSeatLeft() {
+		return redSeatLeft;
+	}
+
+	public void setRedSeatLeft(JTextField redSeatLeft) {
+		this.redSeatLeft = redSeatLeft;
 	}
 }

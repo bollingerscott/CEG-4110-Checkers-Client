@@ -131,7 +131,7 @@ public class CheckersLobby implements CheckersClient {
 	private JFrame frame;
 	private JTextField serverTextField;
 	private JTextField Username;
-
+	private boolean createdLobby = false;
 	private JButton btnStartClient;
 	private GameWindow game;
 	private Integer myTid;
@@ -140,7 +140,7 @@ public class CheckersLobby implements CheckersClient {
 
 	private TableScreen myTable;
 	private final String DEFAULT_SERVER_IP = "::1"; // 130.108.28.165 //Derek's
-													// server
+	// server
 
 	public CheckersLobby() {
 		super();
@@ -159,13 +159,13 @@ public class CheckersLobby implements CheckersClient {
 		myTable.close();
 		myTable = null;
 
-		debugOutput(">> You have left the table");
+		debugOutput("[SYSTEM] You have left the table");
 	}
 
 	// called if the client sends an ill-formated TCP message
 	@Override
 	public void badMessage() {
-		debugOutput(">> badMessage()");
+		debugOutput("[SYSTEM] badMessage()");
 		JOptionPane.showMessageDialog(myLobby, "Bad TCP message", "Alert!",
 				JOptionPane.ERROR_MESSAGE);
 
@@ -213,7 +213,7 @@ public class CheckersLobby implements CheckersClient {
 	// you cannot perform the requested operation because you are in the lobby.
 	@Override
 	public void errorInLobby() {
-		output(">> You cannot perform that action from within the lobby.");
+		output("[SYSTEM] You cannot perform that action from within the lobby.");
 		JOptionPane.showMessageDialog(myLobby,
 				"You cannot perform that action from within the lobby.",
 				"Alert!", JOptionPane.ERROR_MESSAGE);
@@ -222,7 +222,7 @@ public class CheckersLobby implements CheckersClient {
 	// called if you say you are ready on a table with no current game.
 	@Override
 	public void gameNotCreatedYet() {
-		output(">> Please wait for an opponent before starting the game.");
+		output("[SYSTEM] Please wait for an opponent before starting the game.");
 		JOptionPane.showMessageDialog(myLobby,
 				"Please wait for an opponent before starting the game.",
 				"Alert!", JOptionPane.ERROR_MESSAGE);
@@ -254,13 +254,12 @@ public class CheckersLobby implements CheckersClient {
 				for (int x = 0; x < 19; x++)
 					curBoardState[y][x] = 0;
 		}
-		game = new GameWindow(false, serverConnection, myLobby,
-				tablesHashMap.get(myTid), myColor);
+		game = new GameWindow(false, serverConnection, myLobby, tablesHashMap.get(myTid), myColor);
 		game.setUser(myName);
 
 		myTable.close();
 		myTable = null;
-		
+
 		myLobby.setVisible(false);
 	}
 
@@ -288,7 +287,7 @@ public class CheckersLobby implements CheckersClient {
 	// the requested move is illegal.
 	@Override
 	public void illegalMove() {
-		output(">> That move is illegal!");
+		output("[SYSTEM] That move is illegal!");
 		JOptionPane.showMessageDialog(myLobby, "That move is illegal!",
 				"Alert!", JOptionPane.ERROR_MESSAGE);
 	}
@@ -297,6 +296,7 @@ public class CheckersLobby implements CheckersClient {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
 		frame.getContentPane().setLayout(null);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		btnStartClient = new JButton("Start Client!");
 		btnStartClient.setBounds(299, 104, 125, 23);
@@ -333,18 +333,14 @@ public class CheckersLobby implements CheckersClient {
 		try {
 			if (curState.equals(State.notConnected)) {
 				this.myName = Username.getText(); // setting class variable
-				Username.setText("");
 				String ip = serverTextField.getText();
-				serverTextField.setText("");
 				if (!serverConnection.connectToServer(ip, this.myName)) {
-					System.out
-							.println("Connection failed. Check console output of RMI process for information.");
+					JOptionPane.showMessageDialog(null,
+							"Unable to connect, is the Server IP correct?",
+							"Error", JOptionPane.ERROR_MESSAGE);
 				} else {
 					System.out.println("Connection success");
 					curState = State.connected;
-					myLobby.syncState(curState);
-					frame.setVisible(false);
-					myLobby.startWindow(serverConnection, this.myName, curState);
 				}
 			}
 
@@ -360,10 +356,10 @@ public class CheckersLobby implements CheckersClient {
 	public void joinedTable(int tid) {
 		curState = State.onTable;
 		myLobby.syncState(curState);
-		debugOutput(">> You have joined table " + Integer.toString(tid));
+		debugOutput("[SYSTEM] You have joined table " + Integer.toString(tid));
 
 		Table table = tablesHashMap.get(tid);
-		
+
 		this.myTid = tid;
 		if (myTable == null) {
 			myTable = new TableScreen(serverConnection, myName, tid, table);
@@ -439,7 +435,7 @@ public class CheckersLobby implements CheckersClient {
 	// you cannot perform the requested op because you are not in the lobby.
 	@Override
 	public void notInLobby() {
-		output(">> You cannot perform that action from outside of the lobby.");
+		output("[SYSTEM] You cannot perform that action from outside of the lobby.");
 		JOptionPane.showMessageDialog(myLobby,
 				"You cannot perform that action from outside the lobby",
 				"Alert!", JOptionPane.ERROR_MESSAGE);
@@ -449,7 +445,7 @@ public class CheckersLobby implements CheckersClient {
 	// table.
 	@Override
 	public void notObserving() {
-		debugOutput(">> notObserving()");
+		debugOutput("[SYSTEM] notObserving()");
 		JOptionPane.showMessageDialog(myLobby,
 				"You are not observing any tables", "Alert!",
 				JOptionPane.ERROR_MESSAGE);
@@ -458,7 +454,7 @@ public class CheckersLobby implements CheckersClient {
 	// called if it is not your turn but you make a move.
 	@Override
 	public void notYourTurn() {
-		output(">> It is not your turn!");
+		output("[SYSTEM] It is not your turn!");
 		JOptionPane.showMessageDialog(myLobby, "It is not your turn!",
 				"Alert!", JOptionPane.ERROR_MESSAGE);
 	}
@@ -466,7 +462,7 @@ public class CheckersLobby implements CheckersClient {
 	@Override
 	public void nowJoinedLobby(String user) {
 		if (user.equals(this.myName)) {
-			output(">> You have  joined the lobby.");
+			output("[SYSTEM] You have  joined the lobby.");
 		}
 		lobbyUserList.add(user);
 		updateUserList();
@@ -482,7 +478,7 @@ public class CheckersLobby implements CheckersClient {
 	// you are now observing table tid.
 	@Override
 	public void nowObserving(int tid) {
-		debugOutput(">> nowObserving(" + tid + ")");
+		debugOutput("[SYSTEM] nowObserving(" + tid + ")");
 		observeGamesMap.put(tid, new GameWindow(true, serverConnection,
 				myLobby, tablesHashMap.get(tid), ""));
 	}
@@ -495,12 +491,12 @@ public class CheckersLobby implements CheckersClient {
 		Table table = tablesHashMap.get(tid);
 		table.setBlackseat(blackSeat);
 		table.setRedseat(redSeat);
-		if (blackSeat.equalsIgnoreCase(myName)){
+		/*if (blackSeat.equalsIgnoreCase(myName)){
 			table.setPlayer1(true);
 		}
 		else if (redSeat.equalsIgnoreCase(myName)){
 			table.setPlayer1(false);
-		}
+		}*/
 		myLobby.tablesHashMap = this.tablesHashMap;
 		myLobby.updateTableImages(table);
 		if (myTable != null){
@@ -515,20 +511,20 @@ public class CheckersLobby implements CheckersClient {
 			myTable.oppLeft();
 		}
 		CheckersLobby.curState = State.inLobby;
-		debugOutput(">> oppLeftTable()");
+		debugOutput("[SYSTEM] oppLeftTable()");
 	}
 
 	// notice that your opponent has moved from position (fr,fc) to (tr,tc)
 	@Override
 	public void oppMove(int fr, int fc, int tr, int tc) {
-		debugOutput(">> oppMove(" + fr + "," + fc + "," + tr + "," + tc + ")");
+		debugOutput("[SYSTEM] oppMove(" + fr + "," + fc + "," + tr + "," + tc + ")");
 		game.setOppMoves((game.getOppMoves()) + 1);
 	}
 
 	// called if you send a game command but your opponent is not ready
 	@Override
 	public void oppNotReady() {
-		output(">> Please wait for your opponent to start the game.");
+		output("[SYSTEM] Please wait for your opponent to start the game.");
 		JOptionPane.showMessageDialog(myLobby, "Please wait for your opponent to start the game.", "Alert!", JOptionPane.ERROR_MESSAGE);
 	}
 
@@ -541,33 +537,38 @@ public class CheckersLobby implements CheckersClient {
 		}
 
 		for (String string : parts) {
-			myLobby.addTextMainLobbyWindow(string);
+			if (curState == State.inGame) {
+				game.addTextGameWindow(string);
+			}
+			else {
+				myLobby.addTextMainLobbyWindow(string);
+			}
 		}
 	}
 
 	// you stopped observing table tid.
 	@Override
 	public void stoppedObserving(int tid) {
-		debugOutput(">> stoppedObserving(" + tid + ")");
+		debugOutput("[SYSTEM] stoppedObserving(" + tid + ")");
 		observeGamesMap.remove(tid);
 	}
 
 	// the table your trying to join is full.
 	@Override
 	public void tableFull() {
-		output(">> The table you are trying to join is full. Please choose another one.");
+		output("[SYSTEM] The table you are trying to join is full. Please choose another one.");
 		JOptionPane
-				.showMessageDialog(
-						myLobby,
-						"The table you are trying to join is full. Please choose another one.",
-						"Alert!", JOptionPane.ERROR_MESSAGE);
+		.showMessageDialog(
+				myLobby,
+				"The table you are trying to join is full. Please choose another one.",
+				"Alert!", JOptionPane.ERROR_MESSAGE);
 	}
 
 	// same preconditions as onTable()
 	// called immediately after onTable()
 	public void tableGame(int tid) throws RemoteException {
 		System.out.println("outputmethod tablegame");
-		output(">> tableGame called");
+		output("[SYSTEM] tableGame called");
 		newTable(tid);
 	}
 
@@ -588,7 +589,7 @@ public class CheckersLobby implements CheckersClient {
 	// the table queried does not exist.
 	@Override
 	public void tblNotExists() {
-		debugOutput(">> tblNotExists()");
+		debugOutput("[SYSTEM] tblNotExists()");
 		JOptionPane.showMessageDialog(myLobby,
 				"The table queried does not exist", "Alert!",
 				JOptionPane.ERROR_MESSAGE);
@@ -613,9 +614,14 @@ public class CheckersLobby implements CheckersClient {
 	// alert that you have joined the lobby
 	@Override
 	public void youInLobby() {
+		if (!createdLobby) {
+			frame.dispose();
+			myLobby.startWindow(serverConnection, this.myName, curState);
+			createdLobby = true;
+		}
 		curState = State.inLobby;
 		myLobby.syncState(curState);
-		output(">> Welcome to the game lobby.");
+		output("[SYSTEM] Welcome to the game lobby.");
 	}
 
 	// alert that you have left the lobby
@@ -623,20 +629,20 @@ public class CheckersLobby implements CheckersClient {
 	public void youLeftLobby() {
 		curState = State.connected;
 		myLobby.syncState(curState);
-		output(">> You have left the game lobby.");
+		output("[SYSTEM] You have left the game lobby.");
 	}
 
 	// notice that for the game you are playing, you lost.
 	@Override
 	public void youLose() {
-		debugOutput(">> youLose()");
+		debugOutput("[SYSTEM] youLose()");
 		game.setStatus("lose");
 	}
 
 	// its your turn.
 	@Override
 	public void yourTurn() {
-		debugOutput(">> yourTurn()");
+		debugOutput("[SYSTEM] yourTurn()");
 		game.setTurn(true);
 	}
 

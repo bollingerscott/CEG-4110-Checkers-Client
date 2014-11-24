@@ -107,20 +107,22 @@ public class Tile extends JPanel implements MouseListener {
 	
 	public void reset(){
 		setTile(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_tile.jpg")));
-		if (getPiece().getColor().equals("red")){
-			if (getPiece().getType().equalsIgnoreCase("regular")){
-				getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_checker.png")));
+		if (getPiece() != null) {
+			if (getPiece().getColor().equals("red")){
+				if (getPiece().getType().equalsIgnoreCase("regular")){
+					getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_checker.png")));
+				}
+				else {
+					getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_king_checker.png")));
+				}
 			}
 			else {
-				getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_king_checker.png")));
-			}
-		}
-		else {
-			if (getPiece().getType().equalsIgnoreCase("regular")){
-				getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_piece.png")));
-			}
-			else {
-				getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_king_piece.png")));
+				if (getPiece().getType().equalsIgnoreCase("regular")){
+					getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_piece.png")));
+				}
+				else {
+					getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_king_piece.png")));
+				}
 			}
 		}
 		

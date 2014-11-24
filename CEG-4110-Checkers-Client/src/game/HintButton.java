@@ -19,13 +19,15 @@ public class HintButton extends JButton {
 		addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
-				if (game.getBoard().getClickedTile() != null){
-					game.getBoard().getClickedTile().reset();
-					game.getBoard().enable(game.getBoard().getClickedTile(), false);
-					game.getBoard().setClick(false);
-					game.getBoard().setClickedTile(null);
+				if (game.isTurn()){
+					if (game.getBoard().getClickedTile() != null){
+						game.getBoard().getClickedTile().reset();
+						game.getBoard().enable(game.getBoard().getClickedTile(), false);
+						game.getBoard().setClick(false);
+						game.getBoard().setClickedTile(null);
+					}
+					hint();
 				}
-				hint();
 			}
 		});
 	}
@@ -97,7 +99,7 @@ public class HintButton extends JButton {
 								enabled = true;
 							}
 						} catch (IndexOutOfBoundsException ex) {}
-						}
+					}
 					else {
 						try {
 							if (!board[tile.getCoordY() - 1][tile.getCoordX() + 1].isOccupied()) {
@@ -111,7 +113,7 @@ public class HintButton extends JButton {
 							break;
 						} catch (IndexOutOfBoundsException ex) {}
 					}
-					
+
 				}
 				if (enabled){
 					tile.clicked();
