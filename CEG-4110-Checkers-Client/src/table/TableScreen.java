@@ -13,6 +13,7 @@ import javax.swing.SwingConstants;
 
 import RMIConnection.Interfaces.RMIServerInterface;
 import java.awt.Font;
+import Chat.ChatBar;
 
 /*
  * Displays a table before a match. Each player's ready status is indicated by a picture. Clicking the picture
@@ -33,6 +34,7 @@ public class TableScreen {
 
 	JLabel opponentLabel;
 	JLabel myLabel;
+	private ChatBar chatBar;
 
 	/**
 	 * Create the panel.
@@ -52,7 +54,7 @@ public class TableScreen {
 		frame = new JFrame();
 		frame.setTitle("Table " + tableID);
 		frame.getContentPane().setLayout(null);
-		frame.setBounds(100, 100, 500, 300);
+		frame.setBounds(100, 100, 500, 443);
 		readyButton = new ReadyButton();
 
 		readyButton.setBounds(197, 164, 64, 63);
@@ -74,6 +76,14 @@ public class TableScreen {
 		lblVs.setFont(new Font("Tahoma", Font.PLAIN, 28));
 		lblVs.setBounds(217, 11, 44, 45);
 		frame.getContentPane().add(lblVs);
+		
+		chatBar = new ChatBar(server);
+		chatBar.setBounds(10, 238, 464, 160);
+		chatBar.setObserver(false);
+		chatBar.setCurState("onTable");
+		chatBar.setOpponent(opponentName);
+		chatBar.setUserName(userName);
+		frame.getContentPane().add(chatBar);
 
 		this.update();
 
@@ -90,6 +100,10 @@ public class TableScreen {
 		});
 	}
 
+	public void sendMsg(String s){
+		chatBar.addMessage(userName, s);
+	}
+	
 	public boolean getReady() {
 		return this.readyButton.getReady();
 	}
@@ -122,6 +136,7 @@ public class TableScreen {
 		else {
 			opponentName = table.getBlackseat();
 		}
+		chatBar.setOpponent(opponentName);
 		if (userName.equals("-1")) {
 			myLabel.setText("Empty");
 		}

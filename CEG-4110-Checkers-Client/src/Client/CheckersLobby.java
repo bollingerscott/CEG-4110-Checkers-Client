@@ -538,10 +538,13 @@ public class CheckersLobby implements CheckersClient {
 
 		for (String string : parts) {
 			if (curState == State.inGame) {
-				game.addTextGameWindow(string);
+				game.sendMsg(string);
 			}
-			else {
+			else if (curState == State.inLobby){
 				myLobby.addTextMainLobbyWindow(string);
+			}
+			else if (curState == State.onTable){
+				myTable.sendMsg(string);
 			}
 		}
 	}

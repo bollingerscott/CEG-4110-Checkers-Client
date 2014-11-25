@@ -3,6 +3,8 @@ package Chat;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.rmi.RemoteException;
 
 import javax.swing.JButton;
@@ -19,61 +21,91 @@ import RMIConnection.Interfaces.RMIServerInterface;
  * to receive messages.
  */
 public class ChatBar extends JPanel {
+	
 	private JTextField inputField;
 	private RMIServerInterface server;
 	private JButton btnNewButton;
 	private JTextArea outputArea;
-	
-	
+	private String curState;
+	private String opponent;
+	private boolean observer;
+	private String userName;
+
 	/**
 	 * Create the panel.
 	 */
 	public ChatBar(final RMIServerInterface server) {
 		this.server = server;
-		
+
 		setLayout(new BorderLayout(0, 0));
-		
+
 		btnNewButton = new JButton("Send!");
 		btnNewButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				//grab text, parse it to figure out if it is public or private, and send it appropriately.
-				String str = inputField.getText();
-				inputField.setText("");
-				
-				//if private, send privae
-				String[] arr = str.split(" ");
-				if (arr[0].charAt(0) == '@') {
-					String message = str.substring(arr[0].length());
-					String recipient = arr[0].substring(1);
-					try {
-						server.sendMsg(recipient, message);
-					} catch (RemoteException e) {
-						e.printStackTrace();
-					}
-				}
-				else {//else send public
-					try {
-						server.sendMsg_All(str);
-					} catch (RemoteException e) {
-						e.printStackTrace();
-					}
-				}
+				inputSubmit();
 			}
 		});
 		add(btnNewButton, BorderLayout.EAST);
-		
+
 		inputField = new JTextField();
 		add(inputField, BorderLayout.SOUTH);
 		inputField.setColumns(10);
-		
+		inputField.addKeyListener(new KeyAdapter() {
+			// Listener for ENTER key
+			public void keyPressed(KeyEvent evt) {
+				if (evt.getKeyCode() == 10)
+					inputSubmit();
+			}
+		});
+
 		outputArea = new JTextArea();
 		outputArea.setEditable(false);
 		add(outputArea, BorderLayout.CENTER);
 
 	}
-	
-	
+
+
+	protected void inputSubmit() {
+		//grab text, parse it to figure out if it is public or private, and send it appropriately.
+		String str = inputField.getText();
+		inputField.setText("");
+		if (curState.equals("inLobby")){
+			//if private, send private
+			String[] arr = str.split(" ");
+			if (arr[0].charAt(0) == '@') {
+				String message = str.substring(arr[0].length());
+				String recipient = arr[0].substring(1);
+				try {
+					server.sendMsg(recipient, message);
+					addMessage(userName, message);
+				} catch (RemoteException e) {
+					e.printStackTrace();
+				}
+			}
+			else {//else send public
+				try {
+					server.sendMsg_All(str);
+					addMessage(userName, str);
+				} catch (RemoteException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		else if (curState.equals("onTable") || curState.equals("inGame")){
+			if (!observer){
+				try {
+					server.sendMsg(opponent, str);
+					addMessage(userName, str);
+				}
+				catch (RemoteException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+
 	/*
 	 * currently appends a new message from
 	 */
@@ -84,6 +116,27 @@ public class ChatBar extends JPanel {
 		String newLine = user + ": " + msg;
 		outputArea.setText(outputArea.getText() + newLine);
 	}
+
+
+	public String getCurState() {
+		return curState;
+	}
+
+
+	public void setCurState(String curState) {
+		this.curState = curState;
+	}
+
+	public void setOpponent(String opp){
+		opponent = opp;
+	}
+
+	public void setObserver(boolean ob){
+		observer = ob;
+	}
 	
+	public void setUserName(String user){
+		userName = user;
+	}
 
 }

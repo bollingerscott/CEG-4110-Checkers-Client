@@ -64,11 +64,12 @@ public class GameWindow extends JFrame {
 	private Table myTable;
 	private ForfeitButton forfeitButton;
 	private HintButton hntbtnHint;
-	//private ChatBar chatBar;
+	private ChatBar chatBar;
 	private JTextField chatInputField;
 	private JTextArea chatTextArea;
 	private JScrollPane chatScrollPane;
 	private String opponentName;
+	
 
 	/**
 	 * Create the application.
@@ -154,10 +155,14 @@ public class GameWindow extends JFrame {
 		getContentPane().add(game);
 		game.repaint();
 
-		/*chatBar = new ChatBar(server);
+		chatBar = new ChatBar(server);
 		chatBar.setBounds(6, 436, 521, 161);
 		getContentPane().add(chatBar);
-		chatBar.repaint();*/
+		chatBar.setCurState("inGame");
+		chatBar.setOpponent(opponentName);
+		chatBar.setUserName(user);
+		chatBar.setObserver(observer);
+		chatBar.repaint();
 
 		forfeitButton = new ForfeitButton(server, user, game.getOpponent(), this);
 		forfeitButton.setRolloverEnabled(true);
@@ -177,69 +182,12 @@ public class GameWindow extends JFrame {
 			hntbtnHint.setEnabled(false);
 			forfeitButton.setEnabled(false);
 		}
-
-		JPanel chatPlaceHolderPanel = new JPanel();
-		chatPlaceHolderPanel.setBackground(Color.DARK_GRAY);
-		chatPlaceHolderPanel.setBounds(10, 437, 517, 171);
-		getContentPane().add(chatPlaceHolderPanel);
-		chatPlaceHolderPanel.setLayout(null);
-
-		chatInputField = new JTextField();
-		chatInputField.setBounds(1, 127, 421, 33);
-		chatPlaceHolderPanel.add(chatInputField);
-		chatInputField.setColumns(10);
-
-		JButton chatSendButton = new JButton("Send");
-		chatSendButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				if (!observer){
-				if (chatInputField.getText().length() > 0) {
-					try {
-						String input = chatInputField.getText();
-						System.out.println(opponentName);
-							server.sendMsg(opponentName, input);
-					} catch (RemoteException e) {
-						e.printStackTrace();
-						System.out.println("Caught error sending message?");
-
-					}
-				}
-				}
-				else {
-					JOptionPane.showMessageDialog(myLobby, "You are observing and cannot send messages in the game", "Alert!", JOptionPane.ERROR_MESSAGE);
-				}
-				chatInputField.setText("");
-			}
-		});
-		chatSendButton.setBounds(432, 127, 85, 33);
-		chatPlaceHolderPanel.add(chatSendButton);
-
-		chatScrollPane = new JScrollPane();
-		chatScrollPane
-		.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		chatScrollPane.setBounds(0, 1, 517, 115);
-		chatPlaceHolderPanel.add(chatScrollPane);
-
-		chatTextArea = new JTextArea();
-		chatScrollPane.setViewportView(chatTextArea);
-		chatTextArea.setEditable(false);
-
-		chatPlaceHolderPanel.add(chatScrollPane);
-		chatPlaceHolderPanel.repaint();
 	}
 
-	// Adds to main table screen
-	public void addTextGameWindow(String string) {
-		if (chatTextArea != null) {
-			if (chatTextArea.getText().length() == 0) {
-				chatTextArea.setText(string);
-			} else
-				chatTextArea.setText(chatTextArea.getText() + "\n" + string);
-		}
-		chatTextArea.select(Integer.MAX_VALUE, 0);
+	public void sendMsg(String s){
+		chatBar.addMessage(user, s);
 	}
-
+	
 	public boolean isTurn() {
 		return turn;
 	}
@@ -267,5 +215,6 @@ public class GameWindow extends JFrame {
 	public void setUser(String user) {
 		this.user = user;
 		game.setUser(user);
+		chatBar.setUserName(user);
 	}
 }

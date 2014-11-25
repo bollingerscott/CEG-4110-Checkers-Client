@@ -6,6 +6,8 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.rmi.RemoteException;
@@ -216,37 +218,19 @@ public class lobbyWindow extends JFrame {
 		chatInputField.setBounds(0, 569, 266, 42);
 		chatPlaceHolderPanel.add(chatInputField);
 		chatInputField.setColumns(10);
+		chatInputField.addKeyListener(new KeyAdapter() {
+			// Listener for ENTER key
+			public void keyPressed(KeyEvent evt) {
+				if (evt.getKeyCode() == 10)
+					inputSubmit();
+			}
+		});
 
 		JButton chatSendButton = new JButton("Send");
 		chatSendButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if (chatInputField.getText().length() > 0) {
-					if (curState == State.inLobby) {
-						try {
-
-							String input = chatInputField.getText();
-							// Private Message
-							if (input.startsWith("@")) {
-								String pmInput[] = input.split("\\s", 2);
-								String recp = pmInput[0].substring(1);
-								String msg = pmInput[1];
-								serverConnection.sendMsg(recp, msg);
-								if (!recp.equals(myName))
-									addTextMainLobbyWindow("[PM to " + recp
-											+ "] " + ": " + msg);
-							} else
-								serverConnection.sendMsg_All(chatInputField
-										.getText());
-						} catch (RemoteException e) {
-							e.printStackTrace();
-							System.out.println("Caught error sending message?");
-
-						}
-					}
-					chatInputField.setText("");
-
-				}
+				inputSubmit();
 			}
 		});
 		chatSendButton.setBounds(276, 569, 118, 42);
@@ -385,6 +369,34 @@ public class lobbyWindow extends JFrame {
 
 	}
 
+	public void inputSubmit(){
+		if (chatInputField.getText().length() > 0) {
+			if (curState == State.inLobby) {
+				try {
+
+					String input = chatInputField.getText();
+					// Private Message
+					if (input.startsWith("@")) {
+						String pmInput[] = input.split("\\s", 2);
+						String recp = pmInput[0].substring(1);
+						String msg = pmInput[1];
+						serverConnection.sendMsg(recp, msg);
+						if (!recp.equals(myName))
+							addTextMainLobbyWindow("[PM to " + recp
+									+ "] " + ": " + msg);
+					} else
+						serverConnection.sendMsg_All(chatInputField
+								.getText());
+				} catch (RemoteException e) {
+					e.printStackTrace();
+					System.out.println("Caught error sending message?");
+
+				}
+			}
+			chatInputField.setText("");
+		}
+	}
+	
 	// Sets users before lobby has been intialized.
 	public void setUsers(ArrayList<String> lobbyUserList) {
 		usersInMainChat = lobbyUserList;
