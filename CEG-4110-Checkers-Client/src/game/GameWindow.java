@@ -33,24 +33,6 @@ import RMIConnection.Interfaces.RMIServerInterface;
 @SuppressWarnings("serial")
 public class GameWindow extends JFrame {
 
-	/**
-	 * Launch the application. for testing
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					@SuppressWarnings("unused")
-					GameWindow window = new GameWindow(false, null, null, new Table(1, "Bob", "Scott"), "red");
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
-			}
-		});
-	}
-
 	private static RMIServerInterface server;
 	private boolean observer;
 	private Integer oppMoves = 0;
@@ -60,14 +42,11 @@ public class GameWindow extends JFrame {
 	private String myColor;
 	private Game game;
 	private Stats stats;
-	private lobbyWindow myLobby;
+	private static lobbyWindow myLobby;
 	private Table myTable;
 	private ForfeitButton forfeitButton;
 	private HintButton hntbtnHint;
 	private ChatBar chatBar;
-	private JTextField chatInputField;
-	private JTextArea chatTextArea;
-	private JScrollPane chatScrollPane;
 	private String opponentName;
 	
 
@@ -80,6 +59,7 @@ public class GameWindow extends JFrame {
 		GameWindow.server = server;
 		this.observer = observer;
 		this.myLobby = myLobby;
+		myLobby.setVisible(false);
 		this.myTable = myTable;
 		this.myColor = myColor;
 		myTable.setPlayer1(false);
@@ -130,7 +110,7 @@ public class GameWindow extends JFrame {
 					} catch (RemoteException e1) {
 						e1.printStackTrace();
 					}
-					//getMyLobby().setVisible(true);
+					//myLobby.setVisible(true);
 				}
 				else {
 					try {

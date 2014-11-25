@@ -60,6 +60,7 @@ public class ChatBar extends JPanel {
 		});
 
 		outputArea = new JTextArea();
+		outputArea.setLineWrap(true);
 		outputArea.setEditable(false);
 		add(outputArea, BorderLayout.CENTER);
 

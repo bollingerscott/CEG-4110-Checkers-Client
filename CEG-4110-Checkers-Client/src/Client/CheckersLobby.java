@@ -423,7 +423,6 @@ public class CheckersLobby implements CheckersClient {
 		Table table = new Table(t, myName, "-1");
 		tablesHashMap.put(t, table);
 		myLobby.tablesHashMap.put(t, table);
-		myLobby.addTables(myIntArray);
 
 		this.myTid = t;
 		try {
@@ -431,6 +430,7 @@ public class CheckersLobby implements CheckersClient {
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
+		myLobby.addTables(myIntArray);
 	}
 
 	// you cannot perform the requested op because you are not in the lobby.
@@ -530,22 +530,14 @@ public class CheckersLobby implements CheckersClient {
 
 	// Outputs to main window in lobby window.
 	private void output(String s) {// Split String
-		List<String> parts = new ArrayList<String>();
-		int len = s.length();
-		for (int i = 0; i < len; i += 48) {
-			parts.add(s.substring(i, Math.min(len, i + 48)));
+		if (curState == State.inGame) {
+			game.sendMsg(s);
 		}
-
-		for (String string : parts) {
-			if (curState == State.inGame) {
-				game.sendMsg(string);
-			}
-			else if (curState == State.inLobby){
-				myLobby.addTextMainLobbyWindow(string);
-			}
-			else if (curState == State.onTable){
-				myTable.sendMsg(string);
-			}
+		else if (curState == State.inLobby){
+			myLobby.addTextMainLobbyWindow(s);
+		}
+		else if (curState == State.onTable){
+			myTable.sendMsg(s);
 		}
 	}
 
