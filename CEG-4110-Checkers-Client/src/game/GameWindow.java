@@ -194,6 +194,8 @@ public class GameWindow extends JFrame {
 		if (observer){
 			hntbtnHint.setEnabled(false);
 			forfeitButton.setEnabled(false);
+			//chatBar.setEnabled(false);
+			//chatBar.enableInputMethods(false);
 		}
 	}
 

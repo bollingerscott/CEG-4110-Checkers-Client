@@ -9,6 +9,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JComboBox;
@@ -24,7 +25,7 @@ public class GetReplayFile extends JFrame {
 
 	private JPanel contentPane;
 	private File selectedFile = null;
-
+	private File dir = new File("./Replays/");
 
 
 	/**
@@ -42,7 +43,6 @@ public class GetReplayFile extends JFrame {
 		setContentPane(contentPane);
 		
 		//set content for JComboBox
-		File dir = new File("./Replays/");
 		File[] filesList = dir.listFiles();
 		ArrayList<File> fileList = new ArrayList();
 		for (File file : filesList) {
@@ -77,7 +77,6 @@ public class GetReplayFile extends JFrame {
 						ReplayFrame rFrame = new ReplayFrame(ReplayFile.readFile(selectedFile));
 						rFrame.paintComponents(rFrame.getGraphics()); //forces a repaint. possible bug: repaint() will not work wor initial window
 					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					
@@ -85,10 +84,22 @@ public class GetReplayFile extends JFrame {
 			}
 			
 		});
-		selectedFile = fileList.get(0);
 		contentPane.add(btnNewButton, BorderLayout.EAST);
-		this.setVisible(true);
+		try {
+			selectedFile = fileList.get(0);
+			this.setVisible(true);
+		}
+		catch (IndexOutOfBoundsException e){
+			JOptionPane.showMessageDialog(null, "There are no replays recorded", "Error", JOptionPane.ERROR_MESSAGE);
+			this.dispose();
+		}
+		
+		
 
+	}
+	
+	public boolean notEmpty(){
+		return dir.listFiles().length == 0;
 	}
 
 }

@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 import java.rmi.RemoteException;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -87,6 +88,7 @@ public class ChatBar extends JPanel {
 			else {//else send public
 				try {
 					server.sendMsg_All(str);
+
 					addMessage(userName, str);
 				} catch (RemoteException e) {
 					e.printStackTrace();
@@ -96,12 +98,16 @@ public class ChatBar extends JPanel {
 		else if (curState.equals("onTable") || curState.equals("inGame")){
 			if (!observer){
 				try {
-					server.sendMsg(opponent, str);
+					server.sendMsg(opponent, str);	
+					str = userName + ": " + str;
 					addMessage(userName, str);
 				}
 				catch (RemoteException e) {
 					e.printStackTrace();
 				}
+			}
+			else {
+				JOptionPane.showMessageDialog(this, "As an observer you cannot chat with players in the game\nto prevent cheating", "Alert!", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}
@@ -114,7 +120,13 @@ public class ChatBar extends JPanel {
 		if (msg.charAt(msg.length() - 1) != '\n') {//other clients might or might not send messages with a new line char
 			msg += "\n";
 		}
-		String newLine = user + ": " + msg;
+		String newLine = "";
+		if (user.equalsIgnoreCase(opponent)){
+			newLine = opponent + ": " + msg;	
+		}
+		else {
+			newLine = msg;
+		}
 		outputArea.setText(outputArea.getText() + newLine);
 	}
 

@@ -410,7 +410,7 @@ public class CheckersLobby implements CheckersClient {
 	// update.
 	@Override
 	public void newMsg(String user, String msg, boolean pm) {
-		if (pm) {
+		if (pm && curState == State.inLobby) {
 			output("[PM] From " + user + ": " + msg);
 		} else
 			output(user + ": " + msg);
@@ -492,12 +492,7 @@ public class CheckersLobby implements CheckersClient {
 		Table table = tablesHashMap.get(tid);
 		table.setBlackseat(blackSeat);
 		table.setRedseat(redSeat);
-		/*if (blackSeat.equalsIgnoreCase(myName)){
-			table.setPlayer1(true);
-		}
-		else if (redSeat.equalsIgnoreCase(myName)){
-			table.setPlayer1(false);
-		}*/
+
 		myLobby.tablesHashMap = this.tablesHashMap;
 		myLobby.updateTableImages(table);
 		if (myTable != null){
