@@ -183,11 +183,6 @@ public class lobbyWindow extends JFrame {
 		return curState;
 	}
 
-	/**
-	 * Test GIT COmment Initialize the contents of the frame.
-	 * 
-	 * @wbp.parser.entryPoint
-	 */
 	private void initialize() {
 
 		normalTableIconE = new ImageIcon(Toolkit.getDefaultToolkit().getImage(
