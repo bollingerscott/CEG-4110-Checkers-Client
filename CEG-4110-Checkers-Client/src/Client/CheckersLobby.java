@@ -140,6 +140,7 @@ public class CheckersLobby implements CheckersClient {
 
 	private TableScreen myTable;
 	private final String DEFAULT_SERVER_IP = "::1"; // 130.108.28.165 //Derek's
+
 	// server
 
 	public CheckersLobby() {
@@ -166,9 +167,9 @@ public class CheckersLobby implements CheckersClient {
 	@Override
 	public void badMessage() {
 		debugOutput("[SYSTEM] badMessage()");
-		JOptionPane.showMessageDialog(myLobby, "Bad TCP message", "Alert!",
-				JOptionPane.ERROR_MESSAGE);
-
+		// JOptionPane.showMessageDialog(myLobby, "Bad TCP message", "Alert!",
+		// JOptionPane.ERROR_MESSAGE);
+		// No need for alerts on bad TCP MSG?
 	}
 
 	// alert that your color is Black, for the game.
@@ -255,7 +256,8 @@ public class CheckersLobby implements CheckersClient {
 				for (int x = 0; x < 19; x++)
 					curBoardState[y][x] = 0;
 		}
-		game = new GameWindow(false, serverConnection, myLobby, tablesHashMap.get(myTid), myColor);
+		game = new GameWindow(false, serverConnection, myLobby,
+				tablesHashMap.get(myTid), myColor);
 		game.setUser(myName);
 
 		myTable.close();
@@ -492,16 +494,16 @@ public class CheckersLobby implements CheckersClient {
 		Table table = tablesHashMap.get(tid);
 		table.setBlackseat(blackSeat);
 		table.setRedseat(redSeat);
-		/*if (blackSeat.equalsIgnoreCase(myName)){
-			table.setPlayer1(true);
-		}
-		else if (redSeat.equalsIgnoreCase(myName)){
-			table.setPlayer1(false);
-		}*/
+		/*
+		 * if (blackSeat.equalsIgnoreCase(myName)){ table.setPlayer1(true); }
+		 * else if (redSeat.equalsIgnoreCase(myName)){ table.setPlayer1(false);
+		 * }
+		 */
 		myLobby.tablesHashMap = this.tablesHashMap;
 		myLobby.updateTableImages(table);
-		if (myTable != null){
-			myTable.update(); // call to update in case the corresponding table was changed
+		if (myTable != null) {
+			myTable.update(); // call to update in case the corresponding table
+								// was changed
 		}
 	}
 
@@ -516,7 +518,8 @@ public class CheckersLobby implements CheckersClient {
 	// notice that your opponent has moved from position (fr,fc) to (tr,tc)
 	@Override
 	public void oppMove(int fr, int fc, int tr, int tc) {
-		debugOutput("[SYSTEM] oppMove(" + fr + "," + fc + "," + tr + "," + tc + ")");
+		debugOutput("[SYSTEM] oppMove(" + fr + "," + fc + "," + tr + "," + tc
+				+ ")");
 		game.setOppMoves((game.getOppMoves()) + 1);
 	}
 
@@ -524,7 +527,9 @@ public class CheckersLobby implements CheckersClient {
 	@Override
 	public void oppNotReady() {
 		output("[SYSTEM] Please wait for your opponent to start the game.");
-		JOptionPane.showMessageDialog(myLobby, "Please wait for your opponent to start the game.", "Alert!", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(myLobby,
+				"Please wait for your opponent to start the game.", "Alert!",
+				JOptionPane.ERROR_MESSAGE);
 		myTable.setRead(false);
 	}
 
@@ -539,11 +544,9 @@ public class CheckersLobby implements CheckersClient {
 		for (String string : parts) {
 			if (curState == State.inGame) {
 				game.sendMsg(string);
-			}
-			else if (curState == State.inLobby){
+			} else if (curState == State.inLobby) {
 				myLobby.addTextMainLobbyWindow(string);
-			}
-			else if (curState == State.onTable){
+			} else if (curState == State.onTable) {
 				myTable.sendMsg(string);
 			}
 		}
@@ -561,10 +564,10 @@ public class CheckersLobby implements CheckersClient {
 	public void tableFull() {
 		output("[SYSTEM] The table you are trying to join is full. Please choose another one.");
 		JOptionPane
-		.showMessageDialog(
-				myLobby,
-				"The table you are trying to join is full. Please choose another one.",
-				"Alert!", JOptionPane.ERROR_MESSAGE);
+				.showMessageDialog(
+						myLobby,
+						"The table you are trying to join is full. Please choose another one.",
+						"Alert!", JOptionPane.ERROR_MESSAGE);
 	}
 
 	// same preconditions as onTable()
