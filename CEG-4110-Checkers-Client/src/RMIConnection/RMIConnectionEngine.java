@@ -1,4 +1,5 @@
 package RMIConnection;
+import java.net.URISyntaxException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
@@ -41,7 +42,12 @@ import RMIConnection.Interfaces.RMIServerInterface;
 public class RMIConnectionEngine {
 	public static void main(String args[]){		
 		//next establish a presence in the RMI registry.
-		System.setProperty("java.security.policy","file:./src/RMIConnection/server.policy");
+		try {
+			System.setProperty("java.security.policy", RMIConnectionEngine.class.getClassLoader().getResource("RMIConnection/server.policy").toURI().toString());
+		} catch (URISyntaxException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		System.setProperty("java.rmi.server.codebase", RMIServerInterface.class
 				.getProtectionDomain().getCodeSource().getLocation().toString());
 		

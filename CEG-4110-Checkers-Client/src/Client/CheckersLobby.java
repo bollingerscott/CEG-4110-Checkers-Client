@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -25,6 +26,7 @@ import javax.swing.SwingUtilities;
 import lobby.lobbyWindow;
 import table.Table;
 import table.TableScreen;
+import RMIConnection.RMIConnectionEngine;
 import RMIConnection.Interfaces.CheckersClient;
 import RMIConnection.Interfaces.RMIServerInterface;
 
@@ -42,6 +44,12 @@ public class CheckersLobby implements CheckersClient {
 	}
 
 	public static void main(String[] args) {
+		try {
+			LocateRegistry.createRegistry(1099);
+		} catch (RemoteException e2) {
+			e2.printStackTrace();
+		}
+		RMIConnectionEngine.main(null);
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -139,7 +147,7 @@ public class CheckersLobby implements CheckersClient {
 	private Map<Integer, Table> tablesHashMap = new HashMap<>();
 
 	private TableScreen myTable;
-	private final String DEFAULT_SERVER_IP = "::1"; // 130.108.28.165 //Derek's
+	private final String DEFAULT_SERVER_IP = "130.108.28.165"; // 130.108.28.165 //Derek's
 
 	// server
 
