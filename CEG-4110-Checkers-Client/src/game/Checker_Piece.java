@@ -18,25 +18,45 @@ public class Checker_Piece extends Component {
 	private Image piece;
 	private int x, y = 0;
 	
-	public Checker_Piece(String color, String type, int x, int y){
+	public Checker_Piece(String color, String type, int x, int y, boolean changed){
 		this.color = color;
 		this.x = x;
 		this.y = y;
 		this.type = type;
 		if (color.toLowerCase() == "red"){
-			if (type.toLowerCase().equals("regular")){
-				setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_checker.png")));
+			if (!changed){
+				if (type.toLowerCase().equals("regular")){
+					setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_checker.png")));
+				}
+				else if (type.toLowerCase().equals("king")){
+					setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_king_checker.png")));
+				}
 			}
-			else if (type.toLowerCase().equals("king")){
-				setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_king_checker.png")));
+			else {
+				if (type.toLowerCase().equals("regular")){
+					setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/white_checker.png")));
+				}
+				else if (type.toLowerCase().equals("king")){
+					setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/white_king_checker.png")));
+				}
 			}
 		}
 		else if (color.toLowerCase() == "black") {
-			if (type.toLowerCase().equals("regular")){
-				setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_piece.png")));
+			if (!changed){
+				if (type.toLowerCase().equals("regular")){
+					setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_piece.png")));
+				}
+				else if (type.toLowerCase().equals("king")){
+					setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_king_piece.png")));
+				}
 			}
-			else if (type.toLowerCase().equals("king")){
-				setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_king_piece.png")));
+			else {
+				if (type.toLowerCase().equals("regular")){
+					setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/brown_checker.png")));
+				}
+				else if (type.toLowerCase().equals("king")){
+					setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/brown_king_checker.png")));
+				}
 			}
 		}
 		else {

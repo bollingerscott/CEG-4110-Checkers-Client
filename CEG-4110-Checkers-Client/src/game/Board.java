@@ -44,6 +44,7 @@ public class Board extends JPanel implements MouseListener {
 	private boolean flip;
 	private String color;
 	private String oppositeColor;
+	private boolean changed = false;
 
 	public Board(boolean flip) {
 		super();
@@ -54,9 +55,9 @@ public class Board extends JPanel implements MouseListener {
 			for (int j = 0; j < LENGTH; j++) {
 				if (((i % 2 == 0) && (j % 2 == 0))
 						|| ((i % 2 != 0) && (j % 2 != 0))) {
-					board[i][j] = new Tile("red");
+					board[i][j] = new Tile("red", changed);
 				} else {
-					board[i][j] = new Tile("black");
+					board[i][j] = new Tile("black", changed);
 				}
 			}
 		}
@@ -287,16 +288,16 @@ public class Board extends JPanel implements MouseListener {
 				if (state == 0) {
 					tile.setOccupied(false, null);
 				} else if (state == 1) {
-					tile.setOccupied(true, new Checker_Piece("black", "regular", x, y));
+					tile.setOccupied(true, new Checker_Piece("black", "regular", x, y, changed));
 					blackLeft++;
 				} else if (state == 2) {
-					tile.setOccupied(true, new Checker_Piece("red", "regular", x, y));
+					tile.setOccupied(true, new Checker_Piece("red", "regular", x, y, changed));
 					redLeft++;
 				} else if (state == 3) {
-					tile.setOccupied(true, new Checker_Piece("black", "king", x, y));
+					tile.setOccupied(true, new Checker_Piece("black", "king", x, y, changed));
 					blackLeft++;
 				} else if (state == 4) {
-					tile.setOccupied(true, new Checker_Piece("red", "king", x, y));
+					tile.setOccupied(true, new Checker_Piece("red", "king", x, y, changed));
 					redLeft++;
 				}
 				x += TILE_LENGTH;
@@ -374,5 +375,23 @@ public class Board extends JPanel implements MouseListener {
 
 	public void setClick(boolean click){
 		this.click = click;
+	}
+
+	public void changeColor(String string, String string2) {
+		for (int i = 0; i < LENGTH; i++) {
+			for (int j = 0; j < LENGTH; j++) {
+				if (((i % 2 == 0) && (j % 2 == 0)) || ((i % 2 != 0) && (j % 2 != 0))) {
+					board[i][j] = new Tile(string2, changed);
+				} else {
+					board[i][j] = new Tile(string, changed);
+				}
+			}
+		}
+		readBoardState();
+		click = false;
+	}
+	
+	public void setChanged(boolean changed){
+		this.changed = changed;
 	}
 }

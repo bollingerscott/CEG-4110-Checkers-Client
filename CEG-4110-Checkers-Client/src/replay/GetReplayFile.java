@@ -25,6 +25,8 @@ public class GetReplayFile extends JFrame {
 	private JPanel contentPane;
 	private File selectedFile = null;
 
+
+
 	/**
 	 * Create the frame.
 	 */

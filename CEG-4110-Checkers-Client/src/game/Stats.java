@@ -23,6 +23,8 @@ public class Stats extends JPanel {
 	private JTextField redSeatLeft;
 	private JLabel redSeatIcon;
 	private JLabel blackSeatIcon;
+	private ImageIcon blackSeatImage;
+	private ImageIcon redSeatImage;
 
 	/**
 	 * Create the panel.
@@ -159,13 +161,15 @@ public class Stats extends JPanel {
 		add(redSeatLeft);
 		
 		redSeatIcon = new JLabel("");
-		redSeatIcon.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_checker.png"))));
+		redSeatImage = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_checker.png")));
+		redSeatIcon.setIcon(redSeatImage);
 		redSeatIcon.setBounds(135, 284, 85, 46);
 		add(redSeatIcon);
 		
 		blackSeatIcon = new JLabel("");
 		blackSeatIcon.setBounds(142, 0, 85, 46);
-		blackSeatIcon.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_piece.png"))));
+		blackSeatImage = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_piece.png")));
+		blackSeatIcon.setIcon(blackSeatImage);
 		add(blackSeatIcon);
 
 	}
@@ -245,5 +249,34 @@ public class Stats extends JPanel {
 
 	public void setRedSeatLeft(JTextField redSeatLeft) {
 		this.redSeatLeft = redSeatLeft;
+	}
+
+	public ImageIcon getBlackSeatImage() {
+		return blackSeatImage;
+	}
+
+	public void setBlackSeatImage(ImageIcon blackSeatImage) {
+		this.blackSeatImage = blackSeatImage;
+	}
+
+	public ImageIcon getRedSeatImage() {
+		return redSeatImage;
+	}
+
+	public void setRedSeatImage(ImageIcon redSeatImage) {
+		this.redSeatImage = redSeatImage;
+	}
+	
+	public void changeColor(boolean changed){
+		if (changed){
+			redSeatImage = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/white_checker.png")));
+			blackSeatImage = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/brown_checker.png")));
+		}
+		else {
+			redSeatImage = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_checker.png")));
+			blackSeatImage = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_piece.png")));
+		}
+		blackSeatIcon.setIcon(blackSeatImage);
+		redSeatIcon.setIcon(redSeatImage);
 	}
 }

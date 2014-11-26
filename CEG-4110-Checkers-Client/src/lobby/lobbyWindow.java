@@ -138,9 +138,11 @@ public class lobbyWindow extends JFrame {
 			});
 
 			if (newTableCreation) {
-				Table oldActive = tablesHashMap.get(tidHashTable.get(currentlyActiveTable));
-				currentlyActiveTable.setIcon(getIconForTable(oldActive, false));
-				currentlyActiveTable = null;
+				if (currentlyActiveTable != null){
+					Table oldActive = tablesHashMap.get(tidHashTable.get(currentlyActiveTable));
+					currentlyActiveTable.setIcon(getIconForTable(oldActive, false));
+					currentlyActiveTable = null;
+				}
 				tableLabel.setIcon(getIconForTable(currentTable, true));
 				currentlyActiveTable = tableLabel;
 			} else {
@@ -150,7 +152,6 @@ public class lobbyWindow extends JFrame {
 			tableLabel.setOpaque(true);
 			tableLabel.setLayout(null);
 
-			
 			tableListFlowPanel.add(tableLabel);
 			tableLabel.setText("Table " + array[i]);
 			tableLabel.setFont(new Font("Serif", Font.PLAIN, 20));
@@ -257,7 +258,7 @@ public class lobbyWindow extends JFrame {
 
 		btnJoinTable = new JButton("Join Table");
 		btnJoinTable.setBounds(304, 11, 127, 51);
-		tableControlButtons.add(btnJoinTable);
+		tableControlButtons.add(btnJoinTable);// TODO Table logic?
 		btnJoinTable.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

@@ -48,14 +48,13 @@ public class Game extends JPanel implements MouseListener {
 	private boolean observer;
 	private Integer blackSeatTaken, redSeatTaken, blackSeatLeft, redSeatLeft;
 	private Stats stats;
-	private ImageIcon blackSeatIcon;
-	private ImageIcon redSeatIcon;
 	private boolean flip = false;
 	private boolean start = true;
 	private Clip moveChecker;
 	private ReplayFile replayFile;
 	private List<byte[][]> states;
 	private Tile hintedTile;
+	private boolean changed = false;
 
 	/**
 	 * Create the panel.
@@ -85,14 +84,6 @@ public class Game extends JPanel implements MouseListener {
 		setStats();
 		setColor(color);
 
-		/*if (myTable.isPlayer1()){
-			user = myTable.getBlackseat();
-			opponent = myTable.getRedseat();
-		}
-		else {
-			user = myTable.getRedseat();
-			opponent = myTable.getBlackseat();
-		}*/
 		stats.getBlackSeatName().setText(myTable.getBlackseat());
 		stats.getRedSeatName().setText(myTable.getRedseat());
 
@@ -341,5 +332,13 @@ public class Game extends JPanel implements MouseListener {
 	
 	public void setHintedTile(Tile hint){
 		this.hintedTile = hint;
+	}
+
+	public void changeColor(String string, String string2) {
+		changed = !changed;
+		board.setChanged(changed);
+		board.changeColor(string, string2);
+		stats.changeColor(changed);
+		repaint();
 	}
 }

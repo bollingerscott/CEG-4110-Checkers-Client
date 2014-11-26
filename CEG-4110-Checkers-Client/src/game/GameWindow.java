@@ -1,27 +1,23 @@
 package game;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.rmi.RemoteException;
 
-import javax.swing.JButton;
+import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
 
 import lobby.lobbyWindow;
 import table.Table;
 import Chat.ChatBar;
-import Client.CheckersLobby.State;
 import RMIConnection.Interfaces.RMIServerInterface;
+
+import javax.swing.JRadioButton;
+
+import java.awt.Font;
 
 /*
  * The frame for the game
@@ -42,12 +38,14 @@ public class GameWindow extends JFrame {
 	private String myColor;
 	private Game game;
 	private Stats stats;
-	private static lobbyWindow myLobby;
+	private lobbyWindow myLobby;
 	private Table myTable;
 	private ForfeitButton forfeitButton;
 	private HintButton hntbtnHint;
 	private ChatBar chatBar;
 	private String opponentName;
+	private JRadioButton rdbtnRedBlack;
+	private JRadioButton rdbtnBrownWhite;
 	
 
 	/**
@@ -59,7 +57,6 @@ public class GameWindow extends JFrame {
 		GameWindow.server = server;
 		this.observer = observer;
 		this.myLobby = myLobby;
-		myLobby.setVisible(false);
 		this.myTable = myTable;
 		this.myColor = myColor;
 		myTable.setPlayer1(false);
@@ -96,7 +93,7 @@ public class GameWindow extends JFrame {
 		setResizable(false);
 		setVisible(true);
 		getContentPane().setBackground(Color.DARK_GRAY);
-		setBounds(100, 100, 762, 637);
+		setBounds(100, 100, 762, 645);
 		getContentPane().setLayout(null);
 		addWindowListener(new WindowAdapter() {
 
@@ -110,7 +107,7 @@ public class GameWindow extends JFrame {
 					} catch (RemoteException e1) {
 						e1.printStackTrace();
 					}
-					//myLobby.setVisible(true);
+					//getMyLobby().setVisible(true);
 				}
 				else {
 					try {
@@ -124,7 +121,7 @@ public class GameWindow extends JFrame {
 
 		stats = new Stats();
 		stats.setBackground(Color.DARK_GRAY);
-		stats.setBounds(526, 6, 220, 546);
+		stats.setBounds(526, 6, 220, 533);
 		getContentPane().add(stats);
 		stats.repaint();
 
@@ -136,7 +133,7 @@ public class GameWindow extends JFrame {
 		game.repaint();
 
 		chatBar = new ChatBar(server);
-		chatBar.setBounds(6, 436, 521, 161);
+		chatBar.setBounds(6, 436, 521, 175);
 		getContentPane().add(chatBar);
 		chatBar.setCurState("inGame");
 		chatBar.setOpponent(opponentName);
@@ -147,17 +144,53 @@ public class GameWindow extends JFrame {
 		forfeitButton = new ForfeitButton(server, user, game.getOpponent(), this);
 		forfeitButton.setRolloverEnabled(true);
 		forfeitButton.setDefaultCapable(false);
-		forfeitButton.setBounds(536, 558, 96, 35);
+		forfeitButton.setBounds(537, 576, 96, 35);
 		getContentPane().add(forfeitButton);
 		forfeitButton.setVisible(true);
 		forfeitButton.repaint();
 
 		hntbtnHint = new HintButton(myColor, game);
-		hntbtnHint.setBounds(650, 558, 96, 35);
+		hntbtnHint.setBounds(650, 576, 96, 35);
 		getContentPane().add(hntbtnHint);
 		hntbtnHint.setVisible(true);
 		hntbtnHint.repaint();
+		
+		rdbtnRedBlack = new JRadioButton("Red Black");
+		rdbtnRedBlack.setBounds(536, 546, 96, 23);
+		getContentPane().add(rdbtnRedBlack);
+		rdbtnRedBlack.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		rdbtnRedBlack.setSelected(true);
+		rdbtnRedBlack.setOpaque(false);
+		rdbtnRedBlack.repaint();
+		rdbtnRedBlack.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				game.changeColor("black", "red");
+				
+			}
+		});
+		
+		
+		rdbtnBrownWhite = new JRadioButton("Brown White");
+		rdbtnBrownWhite.setBounds(634, 546, 115, 23);
+		getContentPane().add(rdbtnBrownWhite);
+		rdbtnBrownWhite.setOpaque(false);
+		rdbtnBrownWhite.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		rdbtnBrownWhite.repaint();
+		rdbtnBrownWhite.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				game.changeColor("brown", "white");
+				
+			}
+		});
+		
 
+
+		ButtonGroup group = new ButtonGroup();
+		group.add(rdbtnBrownWhite);
+		group.add(rdbtnRedBlack);
+		
 		if (observer){
 			hntbtnHint.setEnabled(false);
 			forfeitButton.setEnabled(false);

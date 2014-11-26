@@ -22,14 +22,22 @@ public class Tile extends JPanel implements MouseListener {
 	private Checker_Piece piece;
 	private int coordX, coordY;
 	private boolean enable = false;
+	private boolean changed = false;
 	
-	public Tile(String color){
+	public Tile(String color, boolean changed){
 		this.color = color;
+		this.changed = changed;
 		if (color.toLowerCase() == "red"){
 			setTile(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_tile.jpg")));
 		}
 		else if (color.toLowerCase() == "black") {
 			setTile(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_tile.jpg")));
+		}
+		else if (color.toLowerCase() == "white") {
+			setTile(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/white_tile.jpg")));
+		}
+		else if (color.toLowerCase() == "brown") {
+			setTile(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/brown_tile2.jpg")));
 		}
 		else {
 			System.out.println("Bad color");
@@ -106,26 +114,50 @@ public class Tile extends JPanel implements MouseListener {
 	}
 	
 	public void reset(){
-		setTile(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_tile.jpg")));
+		if (color.equals("black")){
+			setTile(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_tile.jpg")));
+		}
+		else {
+			setTile(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/brown_tile2.jpg")));
+		}
 		if (getPiece() != null) {
 			if (getPiece().getColor().equals("red")){
-				if (getPiece().getType().equalsIgnoreCase("regular")){
-					getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_checker.png")));
+				if (!changed){
+					if (getPiece().getType().equalsIgnoreCase("regular")){
+						getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_checker.png")));
+					}
+					else {
+						getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_king_checker.png")));
+					}
 				}
 				else {
-					getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/red_king_checker.png")));
+					if (getPiece().getType().equalsIgnoreCase("regular")){
+						getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/white_checker.png")));
+					}
+					else {
+						getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/white_king_checker.png")));
+					}
 				}
 			}
-			else {
-				if (getPiece().getType().equalsIgnoreCase("regular")){
-					getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_piece.png")));
+			else if (getPiece().getColor().equals("black")){
+				if (!changed){
+					if (getPiece().getType().equalsIgnoreCase("regular")){
+						getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_piece.png")));
+					}
+					else {
+						getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_king_piece.png")));
+					}
 				}
 				else {
-					getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_king_piece.png")));
+					if (getPiece().getType().equalsIgnoreCase("regular")){
+						getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/brown_checker.png")));
+					}
+					else {
+						getPiece().setPiece(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/brown_king_checker.png")));
+					}
 				}
 			}
-		}
-		
+		}	
 	}
 
 	public String setColor(String color) {
@@ -146,7 +178,12 @@ public class Tile extends JPanel implements MouseListener {
 			setTile(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/enabled_tile.jpg")));
 		}
 		else {
-			setTile(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_tile.jpg")));
+			if (color.equals("black")){
+				setTile(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/black_tile.jpg")));
+			}
+			else if (color.equals("brown")){
+				setTile(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/brown_tile2.jpg")));
+			}
 		}
 	}
 
