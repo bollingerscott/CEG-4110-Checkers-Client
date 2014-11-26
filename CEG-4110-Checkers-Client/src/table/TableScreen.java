@@ -12,7 +12,10 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
 import RMIConnection.Interfaces.RMIServerInterface;
+
 import java.awt.Font;
+import java.awt.Toolkit;
+
 import Chat.ChatBar;
 
 /*
@@ -63,12 +66,12 @@ public class TableScreen {
 		myLabel = new JLabel(username);
 		myLabel.setVerticalAlignment(SwingConstants.BOTTOM);
 		myLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		myLabel.setIcon(new ImageIcon("res\\playerIcon.jpg"));
+		myLabel.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/playerIcon.jpg"))));
 		myLabel.setBounds(53, 50, 130, 63);
 		frame.getContentPane().add(myLabel);
 
 		opponentLabel = new JLabel(opponentName);
-		opponentLabel.setIcon(new ImageIcon("res\\playerIcon.jpg"));
+		opponentLabel.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/playerIcon.jpg"))));
 		opponentLabel.setBounds(300, 50, 130, 63);
 		frame.getContentPane().add(opponentLabel);
 

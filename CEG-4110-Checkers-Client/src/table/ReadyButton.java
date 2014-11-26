@@ -1,5 +1,7 @@
 package table;
 
+import java.awt.Toolkit;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
@@ -14,7 +16,7 @@ public class ReadyButton extends JButton{
 private boolean ready = false;
 
 public ReadyButton() {
-	this.setIcon(new ImageIcon("res\\xMark.png"));
+	this.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/xMark.png"))));
 }
 
 public boolean getReady() {
@@ -23,16 +25,16 @@ public boolean getReady() {
 
 public void makeReady() {
 	this.ready = true;
-	this.setIcon(new ImageIcon("res\\checkMark.png"));
+	this.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/checkMark.png"))));
 
 }
 public void setRead(boolean ready) {
 	this.ready = ready;
 	if (ready) {
-		this.setIcon(new ImageIcon("res\\checkMark.png"));
+		this.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/checkMark.png"))));
 	}
 	else {
-		this.setIcon(new ImageIcon("res\\XMark.png"));
+		this.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/xMark.png"))));
 	}
 	
 }
