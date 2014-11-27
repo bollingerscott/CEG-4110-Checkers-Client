@@ -7,6 +7,7 @@ import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.FileNotFoundException;
+import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +51,7 @@ public class Game extends JPanel implements MouseListener {
 	private Stats stats;
 	private boolean flip = false;
 	private boolean start = true;
-	private Clip moveChecker;
+	private URL moveChecker;
 	private ReplayFile replayFile;
 	private List<byte[][]> states;
 	private Tile hintedTile;
@@ -94,10 +95,11 @@ public class Game extends JPanel implements MouseListener {
 
 	private void playMoveSound(){
 		try {
-			moveChecker = AudioSystem.getClip();
-			AudioInputStream inputStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream("/move_checker.wav"));
-			moveChecker.open(inputStream);
-			moveChecker.start();
+			moveChecker = getClass().getResource("/move_checker.wav");
+			AudioInputStream inputStream = AudioSystem.getAudioInputStream(moveChecker);
+			Clip clip = AudioSystem.getClip();
+			clip.open(inputStream);
+			clip.start();
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		}
@@ -165,8 +167,8 @@ public class Game extends JPanel implements MouseListener {
 			}
 			board.mouseClicked(e);
 			if (board.isMoving()){
-				move(user, board.getFr(), board.getFc(), board.getTr(), board.getTc());
 				board.setMoving(false);
+				move(user, board.getFr(), board.getFc(), board.getTr(), board.getTc());	
 				playMoveSound();
 			}
 		}
